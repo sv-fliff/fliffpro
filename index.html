@@ -32,6 +32,11 @@
 :root{--uv:linear-gradient(135deg,#7B4BF0,#3D1BB8);--frame:#0B0A14;--ink:#F4F4F8;--sheet:#120F26;--mu:#9E9BBD;--line:rgba(255,255,255,0.08)}
 :root[data-theme="light"]{--frame:#E7E5F0;--ink:#12121C;--sheet:#FFFFFF;--mu:#5D5D70;--line:rgba(18,18,28,0.08)}
 html,body{height:100%;margin:0;background:var(--frame);font-family:'FP Num','Inter',system-ui,sans-serif}
+/* v3.1.16: iOS 26 installed web app (WebKit bug 301108). With viewport-fit=cover and a translucent status bar, iOS makes the window short by the
+   status bar height, but only while the page itself is shorter than the screen. Make the page as tall as the screen and iOS hands back the full window.
+   The min() cap keeps this a no-op with an opaque status bar; outside an installed app the rule never applies. */
+@media (display-mode: standalone){html{min-height:min(100lvh,calc(100% + env(safe-area-inset-top,0px)))}}
+html.fp-sa{min-height:min(100lvh,calc(100% + env(safe-area-inset-top,0px)))}
 #stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
 #vp{position:relative;width:390px;height:100%;overflow:hidden;background:#08071A}
 :root[data-theme="light"] #vp{background:#F6F6F9}
@@ -984,7 +989,7 @@ function go(name,opts){
 function menu(){
   const sc=document.createElement('div');sc.className='fp-scrim';const sh=document.createElement('div');sh.className='fp-sheet';sh.setAttribute('role','dialog');sh.setAttribute('aria-modal','true');
   const t=S.theme;
-  sh.innerHTML=`<span class="g"></span><h3>Settings</h3>${[['system','Match my device'],['dark','Dark'],['light','Light']].map(([v,n])=>`<button class="o" data-theme-v="${v}"><span>${n}</span>${t===v?'<b>✓</b>':''}</button>`).join('')}<button class="o" data-kal="1" role="switch" aria-checked="${KAL.on}"><span class="kl"><span>Live Kalshi data</span><small>Real NFL prices on Home and Games</small></span><i class="fp-sw${KAL.on?' on':''}" aria-hidden="true"></i></button><button class="o" data-tips="1"><span>Replay feature tips</span></button><button class="o" data-reset="1"><span>Reset demo</span></button><p>Clickable prototype with demo money. Placing an order takes cash and adds it to Portfolio; closing a trade gives the money back.<br><span style="opacity:.7">Prototype v3.1.15</span></p>`;
+  sh.innerHTML=`<span class="g"></span><h3>Settings</h3>${[['system','Match my device'],['dark','Dark'],['light','Light']].map(([v,n])=>`<button class="o" data-theme-v="${v}"><span>${n}</span>${t===v?'<b>✓</b>':''}</button>`).join('')}<button class="o" data-kal="1" role="switch" aria-checked="${KAL.on}"><span class="kl"><span>Live Kalshi data</span><small>Real NFL prices on Home and Games</small></span><i class="fp-sw${KAL.on?' on':''}" aria-hidden="true"></i></button><button class="o" data-tips="1"><span>Replay feature tips</span></button><button class="o" data-reset="1"><span>Reset demo</span></button><p>Clickable prototype with demo money. Placing an order takes cash and adds it to Portfolio; closing a trade gives the money back.<br><span style="opacity:.7">Prototype v3.1.16</span></p>`;
   const close=()=>{sc.remove();sh.remove();};sc.onclick=close;
   sh.onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.themeV){S.theme=b.dataset.themeV;try{localStorage.setItem('fpTheme2',S.theme)}catch(_){}applyTheme();close();render(true);}if(b.dataset.kal){const on=!KAL.on;kalSet(on);b.setAttribute('aria-checked',String(on));b.querySelector('.fp-sw').classList.toggle('on',on);setTimeout(()=>{close();render(true);toast(on?'Live prices on':'Live prices off');},260);return;}if(b.dataset.tips){try{localStorage.removeItem('fpTipNba')}catch(_){}close();toast('Tips will show again');return;}if(b.dataset.reset){S.picks=[];S.betAmt='';S.cash=2418.50;S.pos=BASE_POS();S.amt='50';close();S.screen='FHome';render();toast('Demo reset');}};
   vp.appendChild(sc);vp.appendChild(sh);}
@@ -2389,13 +2394,16 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelec
 // ---------- theme & sizing ----------
 function applyTheme(){let t=S.theme;if(t==='system')t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',t);}
 matchMedia('(prefers-color-scheme: light)').addEventListener('change',()=>{if(S.theme==='system'){applyTheme();render(true);}});
+try{if(navigator.standalone===true)document.documentElement.classList.add('fp-sa');}catch(_){}
 function fit(){const w=window.innerWidth,st=vp.parentElement;
-  if(w<520){const z=w/390;let h=window.innerHeight;
-    // Size the app to the window the browser reports. Anything drawn past that window is cut off by iOS, so a taller app loses its tab bar.
-    // Pin the app to the top edge of a stage with exactly that height.
+  if(w<520){const z=w/390;const h=window.innerHeight;
+    // Size the app to the window the browser reports and pin it to the top edge. (The installed-app short window is fixed in CSS, see v3.1.16.)
     st.style.height=h+'px';st.style.alignItems='flex-start';
     vp.style.zoom=z;vp.style.height=(h/z)+'px';}
   else{st.style.height='';st.style.alignItems='';vp.style.zoom='';vp.style.height='';}}
+// iOS can grow the window a moment after launch without firing resize: re-check for the first seconds and whenever the window size changes
+{let lh=0,n=0;const tick=()=>{if(window.innerHeight!==lh){lh=window.innerHeight;fit();}if(++n<40)setTimeout(tick,n<20?100:500);};setTimeout(tick,50);
+ if(window.visualViewport)window.visualViewport.addEventListener('resize',()=>{if(window.innerHeight!==lh){lh=window.innerHeight;fit();}});}
 window.addEventListener('resize',()=>{fit();});window.addEventListener('orientationchange',()=>setTimeout(fit,300));window.addEventListener('pageshow',()=>fit());setTimeout(fit,400);
 
 // ---------- v3.1.0: player page (tap a player on any prop card) ----------

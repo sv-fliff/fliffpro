@@ -13,6 +13,7 @@
 <title>Edge test A</title>
 <style>
 /* Edge test A: status bar style "black-translucent". A blank page with markers on every edge. No Fliff Pro code. */
+@media (display-mode: standalone){html{min-height:min(100lvh,calc(100% + env(safe-area-inset-top,0px)))}}
 html,body{margin:0;height:100%;background:#1b1b24;color:#fff;font:13px/1.4 ui-monospace,Menlo,monospace}
 .edge{position:fixed;left:0;right:0;height:44px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#000;letter-spacing:.04em}
 #top{top:0;background:#ff5252}
@@ -35,7 +36,7 @@ input{position:fixed;left:12px;right:12px;bottom:70px;height:44px;border-radius:
 function probe(css){var d=document.createElement('div');d.style.cssText='position:fixed;left:0;top:0;width:1px;visibility:hidden;'+css;document.body.appendChild(d);var h=d.getBoundingClientRect().height;d.remove();return Math.round(h);}
 function insets(){var d=document.createElement('div');d.style.cssText='position:fixed;visibility:hidden;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)';document.body.appendChild(d);var c=getComputedStyle(d),r=[c.paddingTop,c.paddingRight,c.paddingBottom,c.paddingLeft].map(function(x){return Math.round(parseFloat(x));});d.remove();return r.join('/');}
 function show(){var vv=window.visualViewport;
-  document.getElementById('info').textContent=['EDGE TEST A  (black-translucent status bar)',
+  document.getElementById('info').textContent=['EDGE TEST A + fix  (black-translucent status bar)',
    'installed app: '+(navigator.standalone===true),
    'window (innerHeight): '+innerHeight,
    'screen height: '+screen.height,
