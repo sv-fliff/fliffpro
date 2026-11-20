@@ -653,6 +653,50 @@ a{color:#3D1BB8}a:hover{color:#12121C}
 .hx-cb .ft{display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid var(--line);font-size:13px;color:var(--mu)}
 .hx-cb .ft b{font-weight:600;color:#D3C5FF}
 :root[data-theme="light"] .hx-cb .ft b{color:#3D1BB8}
+.cb-pg{position:absolute;inset:0;z-index:82;display:flex;align-items:flex-end;gap:6px;padding:0 14px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;pointer-events:none;overscroll-behavior:contain}
+.cb-pg::-webkit-scrollbar{display:none}
+.cb-pg.full,.cb-pg.drag{overflow-x:hidden}
+.cb-card{pointer-events:auto;flex:none;width:100%;height:var(--h);box-sizing:border-box;display:flex;flex-direction:column;scroll-snap-align:center;scroll-snap-stop:always;background:var(--sheet);color:var(--ink);border-radius:28px 28px 0 0;padding:10px 18px 0;transition:height .46s cubic-bezier(.32,.72,0,1);box-shadow:0 -10px 40px rgba(4,3,12,0.28)}
+.cb-pg.drag .cb-card{transition:none}
+.cb-card>.g{flex:none;display:block;width:40px;height:5px;border-radius:3px;background:var(--line);margin:0 auto;position:relative;cursor:grab}
+.cb-card>.g:before{content:"";position:absolute;inset:-12px -70px -14px}
+.cb-top{flex:none;display:flex;justify-content:space-between;align-items:center;height:36px;margin-top:6px}
+.cb-n{font:600 12px 'Space Grotesk',sans-serif;letter-spacing:.04em;color:var(--mu);padding:5px 10px;border-radius:12px;border:1px solid var(--line)}
+.cb-x{width:36px;height:36px;border-radius:18px;border:1px solid var(--line);background:transparent;color:var(--ink);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.cb-hd{flex:none;text-align:center;margin-top:-30px;padding-bottom:14px;pointer-events:none}
+.cb-stack{display:flex;justify-content:center;height:44px}
+.cb-stack i{display:block;width:44px;height:44px;margin-left:-10px;transition:opacity .25s,transform .25s cubic-bezier(.22,1,.36,1)}
+.cb-stack i:first-child{margin-left:0}
+.cb-stack i.off{opacity:.28;transform:scale(.86)}
+.cb-stack i>*{display:block;filter:drop-shadow(0 4px 8px rgba(4,3,12,0.3))}
+.cb-card .cb-hd h3{margin:12px 0 0;font:700 20px 'FP Num','Inter',sans-serif}
+.cb-hd p{margin:2px 0 0;color:var(--mu);font-size:14px}
+.cb-legs{flex:1;min-height:0;overflow:hidden;-webkit-mask-image:linear-gradient(#000 calc(100% - 40px),transparent);mask-image:linear-gradient(#000 calc(100% - 40px),transparent)}
+.cb-pg.full .cb-legs{overflow-y:auto;overscroll-behavior:contain;-webkit-mask-image:none;mask-image:none;scrollbar-width:none}
+.cb-g{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin:12px 2px 8px;font-size:13px}
+.cb-g:first-child{margin-top:2px}
+.cb-g b{font-weight:600;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cb-g span{flex:none;color:var(--mu)}
+.cb-leg{display:flex;align-items:center;gap:10px;height:58px;padding:0 12px;margin-bottom:8px;border-radius:16px;background:rgba(255,255,255,0.06);transition:opacity .25s}
+:root[data-theme="light"] .cb-leg{background:rgba(61,27,184,0.05)}
+.cb-leg>:first-child{flex:none}
+.cb-leg .t{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.cb-leg .t>*{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cb-leg .t small{font-size:13px;color:var(--mu)}
+.cb-leg .t b{font-size:15px;line-height:19px;font-weight:600;color:var(--ink)}
+.cb-leg em{flex:none;font-style:normal;font:600 14px 'Space Grotesk',sans-serif;color:var(--mu)}
+.cb-leg .fp-sw{border:0;padding:0;cursor:pointer}
+.cb-leg.off>:not(.fp-sw){opacity:.4}
+.cb-ft{flex:none;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 2px calc(20px + env(safe-area-inset-bottom));border-top:1px solid var(--line)}
+.cb-ft .pay{min-width:0;display:flex;flex-direction:column;gap:2px}
+.cb-ft .m{font:700 22px 'Space Grotesk',sans-serif;color:#B79CFF;white-space:nowrap}
+:root[data-theme="light"] .cb-ft .m{color:#4B25C9}
+.cb-ft .m span{font:600 13px 'Inter',sans-serif;color:var(--ink);text-transform:uppercase;letter-spacing:.06em}
+.cb-ft small{font-size:13px;color:var(--mu)}
+.cb-buy{flex:none;height:54px;padding:0 30px;border:none;border-radius:27px;background:linear-gradient(135deg,#7B4BF0,#3D1BB8);color:#FFFFFF;font:600 16px 'Space Grotesk',sans-serif;cursor:pointer}
+.cb-buy:disabled{opacity:.4}
+.cb-pg.full .cb-card{box-shadow:none}
+@media (prefers-reduced-motion:reduce){.cb-card,.cb-stack i,.cb-leg{transition:none}}
 .hx-cb:focus-visible{outline:2px solid #D3C5FF;outline-offset:3px}
 /* v3.1.15: player page = full-height page sheet. Patterns (Mobbin): card-stack sheet with a sliver of the screen behind (Mindtrip, Runbuds), hero collapsing into a compact title bar, tabs that stay put under it (FotMob, F1, theScore) */
 .fp-sheet.pl-sheet{top:max(12px,calc(env(safe-area-inset-top,0px) - 4px));bottom:0;height:auto;max-height:none !important;padding:0;overflow-y:auto;overscroll-behavior:contain;border-radius:28px 28px 0 0;background:var(--frame);box-shadow:0 -10px 40px rgba(4,3,12,0.35)}
@@ -1078,7 +1122,7 @@ function go(name,opts){
 function menu(){
   const sc=document.createElement('div');sc.className='fp-scrim';const sh=document.createElement('div');sh.className='fp-sheet';sh.setAttribute('role','dialog');sh.setAttribute('aria-modal','true');
   const t=S.theme;
-  sh.innerHTML=`<span class="g"></span><h3>Settings</h3>${[['system','Match my device'],['dark','Dark'],['light','Light']].map(([v,n])=>`<button class="o" data-theme-v="${v}"><span>${n}</span>${t===v?'<b>✓</b>':''}</button>`).join('')}<button class="o" data-kal="1" role="switch" aria-checked="${KAL.on}"><span class="kl"><span>Live Kalshi data</span><small>Real NFL prices on Home and Games</small></span><i class="fp-sw${KAL.on?' on':''}" aria-hidden="true"></i></button><button class="o" data-tips="1"><span>Replay feature tips</span></button><button class="o" data-reset="1"><span>Reset demo</span></button><p>Clickable prototype with demo money. Placing an order takes cash and adds it to Portfolio; closing a trade gives the money back.<br><span style="opacity:.7">Prototype v3.1.29</span></p>`;
+  sh.innerHTML=`<span class="g"></span><h3>Settings</h3>${[['system','Match my device'],['dark','Dark'],['light','Light']].map(([v,n])=>`<button class="o" data-theme-v="${v}"><span>${n}</span>${t===v?'<b>✓</b>':''}</button>`).join('')}<button class="o" data-kal="1" role="switch" aria-checked="${KAL.on}"><span class="kl"><span>Live Kalshi data</span><small>Real NFL prices on Home and Games</small></span><i class="fp-sw${KAL.on?' on':''}" aria-hidden="true"></i></button><button class="o" data-tips="1"><span>Replay feature tips</span></button><button class="o" data-reset="1"><span>Reset demo</span></button><p>Clickable prototype with demo money. Placing an order takes cash and adds it to Portfolio; closing a trade gives the money back.<br><span style="opacity:.7">Prototype v3.1.30</span></p>`;
   const close=()=>{sc.remove();sh.remove();};sc.onclick=close;
   sh.onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.themeV){S.theme=b.dataset.themeV;try{localStorage.setItem('fpTheme2',S.theme)}catch(_){}applyTheme();close();render(true);}if(b.dataset.kal){const on=!KAL.on;kalSet(on);b.setAttribute('aria-checked',String(on));b.querySelector('.fp-sw').classList.toggle('on',on);setTimeout(()=>{close();render(true);toast(on?'Live prices on':'Live prices off');},260);return;}if(b.dataset.tips){try{localStorage.removeItem('fpTipNba')}catch(_){}close();toast('Tips will show again');return;}if(b.dataset.reset){S.picks=[];S.betAmt='';S.cash=2418.50;S.pos=BASE_POS();S.amt='50';close();S.screen='FHome';render();toast('Demo reset');}};
   vp.appendChild(sc);vp.appendChild(sh);}
@@ -2179,8 +2223,8 @@ function nbaTip(){
 }
 // ---------- v3.1.28: popular combos. Each card is a ready-made set of picks from today's slate; tapping it loads them into the slip. ----------
 function comboSets(lg){const games=Object.values(GD).filter(g=>g&&g.pa!=null&&(!lg||g.lg===lg));if(!games.length)return [];
-  const prop=(g,i)=>{const p=g.props[i];if(!p)return null;const td=p.ln==null;return {pick:`pr|O|${i}|${g.id}`,p:p.po,txt:td?`${cpShort(p.nm)} anytime TD`:`${cpShort(p.nm)} over ${p.ln} ${p.u}`,av:avatar(g.lg,p.nm,p.c,26)};};
-  const ml=g=>{const fav=g.pa>=g.ph;return {pick:`ml|${fav?'X':'Y'}||${g.id}`,p:fav?g.pa:g.ph,txt:`${fav?g.an:g.hn} to win`,av:tileSvg(g.lg,fav?g.a:g.h,26)};};
+  const prop=(g,i)=>{const p=g.props[i];if(!p)return null;const td=p.ln==null;return {pick:`pr|O|${i}|${g.id}`,gid:g.id,a:cpShort(p.nm),b:td?'anytime TD':`over ${p.ln} ${p.u}`,big:()=>avatar(g.lg,p.nm,p.c,44),p:p.po,txt:td?`${cpShort(p.nm)} anytime TD`:`${cpShort(p.nm)} over ${p.ln} ${p.u}`,av:avatar(g.lg,p.nm,p.c,26)};};
+  const ml=g=>{const fav=g.pa>=g.ph;return {pick:`ml|${fav?'X':'Y'}||${g.id}`,gid:g.id,a:fav?g.an:g.hn,b:'to win',big:()=>tileSvg(g.lg,fav?g.a:g.h,44),p:fav?g.pa:g.ph,txt:`${fav?g.an:g.hn} to win`,av:tileSvg(g.lg,fav?g.a:g.h,26)};};
   const wp=games.filter(g=>g.props&&g.props.length);const firstOf=(g,n)=>{const seen=new Set(),out=[];g.props.forEach((p,i)=>{if(!seen.has(p.nm)&&out.length<n){seen.add(p.nm);out.push(prop(g,i));}});return out.filter(Boolean);};
   const sets=[];
   if(wp[0])sets.push(firstOf(wp[0],3));                                              // one game, three players
@@ -2190,14 +2234,73 @@ function comboSets(lg){const games=Object.values(GD).filter(g=>g&&g.pa!=null&&(!
   return sets.filter(x=>x.length>=2).slice(0,4);}
 function comboRow(lg){const sets=comboSets(lg);if(!sets.length)return '';
   return `<div class="hx-row" data-combos style="scroll-snap-type:x proximity;scroll-padding:0 16px">${sets.map((legs,k)=>{const m=legs.reduce((a,x)=>a*(100/Math.max(1,x.p)),1);
-    return `<div class="hx-card hx-cb" role="button" tabindex="0" data-combo="${legs.map(x=>x.pick+'~'+x.p).join(';')}" aria-label="${legs.length}-pick combo, $10 pays ${money(10*m)}: ${legs.map(x=>x.txt).join(', ')}. Add to picks">
+    return `<div class="hx-card hx-cb" role="button" tabindex="0" data-ci="${k}" data-clg="${lg||''}" data-combo="${legs.map(x=>x.pick+'~'+x.p).join(';')}" aria-label="${legs.length}-pick combo, $10 pays ${money(10*m)}: ${legs.map(x=>x.txt).join(', ')}. Open combo">
       <div class="top"><b>$10 pays <em>${money(10*m)}</em></b><i aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="4" width="11" height="16" rx="3"/><path d="M14.5 9v6M11.5 12h6"/><path d="M6 6v12M3 8v8"/></svg></i></div>
       ${legs.map(x=>`<div class="leg">${x.av}<span>${x.txt}</span><em>${x.p}%</em></div>`).join('')}
-      <div class="ft"><span>${legs.length} picks · ${m.toFixed(2)}×</span><b>Add combo</b></div></div>`;}).join('')}</div>`;}
+      <div class="ft"><span>${legs.length} picks · ${m.toFixed(2)}×</span><b>View combo</b></div></div>`;}).join('')}</div>`;}
 function comboLoad(el){const legs=el.dataset.combo.split(';').map(x=>{const [pk,p]=x.split('~');const b=document.createElement('button');b.dataset.pick=pk;b.innerHTML=`<span><b>x</b><small>${p}%</small></span>`;return gmPick(b);}).filter(Boolean);
   if(legs.length<2)return;S.picks=legs;pickPaint(true);toast(`${legs.length} picks added`);setTimeout(betSheet,220);}
-document.addEventListener('click',e=>{const c=e.target.closest('[data-combo]');if(!c||!c.closest('#scroll'))return;e.preventDefault();e.stopImmediatePropagation();comboLoad(c);},true);
-document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches('[data-combo]')){e.preventDefault();comboLoad(e.target);}});
+document.addEventListener('click',e=>{const c=e.target.closest('[data-combo]');if(!c||!c.closest('#scroll'))return;e.preventDefault();e.stopImmediatePropagation();comboSheet(c.dataset.clg||'',+c.dataset.ci||0);},true);
+document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches('[data-combo]')){e.preventDefault();comboSheet(e.target.dataset.clg||'',+e.target.dataset.ci||0);}});
+// combo preview: opens part-height, swipe sideways between combos, pull up for every leg, pull down to dismiss
+function comboSheet(lg,start){const sets=comboSets(lg||undefined);if(!sets.length)return;document.querySelectorAll('.fp-gs').forEach(x=>x.remove());
+  const EASE='cubic-bezier(.32,.72,0,1)',Z=()=>parseFloat(vp.style.zoom)||1;const vh=vp.clientHeight,FULL=vh-Math.max(8,INS.st+8),PEEK=Math.min(FULL,468);
+  const off=sets.map(()=>new Set());let full=false,closing=false,moved=false;
+  const sc=document.createElement('div');sc.className='fp-scrim fp-gs';const pg=document.createElement('div');pg.className='cb-pg fp-gs';pg.style.setProperty('--h',PEEK+'px');
+  const X='<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 2l10 10M12 2L2 12"/></svg>';
+  const legsHtml=(legs,k)=>{let last=null;return legs.map((x,i)=>{const g=GD[x.gid];const hd=x.gid!==last?`<div class="cb-g"><b>${g.lg.toUpperCase()} · ${g.title}</b><span>${g.live?'Live':g.when}</span></div>`:'';last=x.gid;
+    return `${hd}<div class="cb-leg" data-i="${i}">${x.av}<span class="t"><b>${x.a}</b><small>${x.b}</small></span><em>${x.p}%</em><button class="fp-sw on" role="switch" aria-checked="true" aria-label="Include ${x.txt}" data-leg="${k}|${i}"></button></div>`;}).join('');};
+  pg.innerHTML=sets.map((legs,k)=>`<section class="cb-card" data-k="${k}" role="dialog" aria-modal="true" aria-label="Combo ${k+1} of ${sets.length}">
+    <span class="g" data-grab="1" role="button" tabindex="0" aria-label="Show all picks"></span>
+    <div class="cb-top"><span class="cb-n">${k+1} of ${sets.length}</span><button class="cb-x" data-close="1" aria-label="Close">${X}</button></div>
+    <div class="cb-hd"><div class="cb-stack" aria-hidden="true">${legs.map(x=>`<i>${x.big()}</i>`).join('')}</div><h3>Combo</h3><p class="cb-cnt"></p></div>
+    <div class="cb-legs">${legsHtml(legs,k)}</div>
+    <div class="cb-ft"><div class="pay"><b class="m"></b><small></small></div><button class="cb-buy">Buy combo</button></div></section>`).join('');
+  const card=k=>pg.children[k];
+  const paint=k=>{const on=sets[k].filter((_,i)=>!off[k].has(i));const m=on.reduce((a,x)=>a*(100/Math.max(1,x.p)),1);const c=card(k);
+    c.querySelector('.cb-cnt').textContent=on.length===1?'1 pick':on.length+' picks';c.querySelector('.pay .m').innerHTML=on.length?`${m.toFixed(2)}× <span>payout</span>`:'No picks';
+    c.querySelector('.pay small').textContent=on.length?`$10 → ${money(10*m)}`:'Turn a pick back on';const b=c.querySelector('.cb-buy');b.disabled=!on.length;b.textContent=on.length===1?'Buy pick':'Buy combo';
+    [...c.querySelectorAll('.cb-stack i')].forEach((el,i)=>el.classList.toggle('off',off[k].has(i)));};
+  sets.forEach((_,k)=>paint(k));
+  const step=()=>{const a=card(0),b=card(1);return b?b.offsetLeft-a.offsetLeft:1;};const cur=()=>Math.max(0,Math.min(sets.length-1,Math.round(pg.scrollLeft/step())));
+  const fin=()=>{sc.remove();pg.remove();};
+  const close=(y0,then)=>{if(closing)return;closing=true;if(RM.matches){fin();if(then)then();return;}pg.getAnimations().forEach(x=>x.cancel());
+    const an=pg.animate([{transform:`translateY(${y0||0}px)`},{transform:`translateY(${(full?FULL:PEEK)+30}px)`}],{duration:300,easing:EASE,fill:'forwards'});
+    sc.animate([{opacity:parseFloat(sc.style.opacity||'1')},{opacity:0}],{duration:280,easing:'ease-out',fill:'forwards'});an.onfinish=()=>{fin();if(then)then();};setTimeout(fin,440);};
+  const setFull=f=>{full=f;pg.classList.toggle('full',f);pg.style.setProperty('--h',(f?FULL:PEEK)+'px');if(!f)pg.querySelectorAll('.cb-legs').forEach(l=>l.scrollTop=0);
+    pg.querySelectorAll('[data-grab]').forEach(g=>g.setAttribute('aria-label',f?'Show fewer picks':'Show all picks'));};
+  sc.addEventListener('click',()=>close());
+  pg.addEventListener('click',e=>{if(moved){e.preventDefault();e.stopPropagation();return;}const t=e.target;
+    if(t.closest('[data-close]')){close();return;}if(t.closest('[data-grab]')){setFull(!full);return;}
+    const sw=t.closest('[data-leg]');if(sw){const [k,i]=sw.dataset.leg.split('|').map(Number);const on=off[k].has(i);if(on)off[k].delete(i);else off[k].add(i);
+      sw.classList.toggle('on',on);sw.setAttribute('aria-checked',String(on));sw.closest('.cb-leg').classList.toggle('off',!on);paint(k);return;}
+    const buy=t.closest('.cb-buy');if(buy){const k=+buy.closest('.cb-card').dataset.k;const legs=sets[k].filter((_,i)=>!off[k].has(i)).map(x=>{const b=document.createElement('button');b.dataset.pick=x.pick;b.innerHTML=`<span><b>x</b><small>${x.p}%</small></span>`;return gmPick(b);}).filter(Boolean);
+      if(!legs.length)return;S.picks=legs;pickPaint(true);close(0,()=>betSheet());return;}
+    const c=t.closest('.cb-card');if(c&&!full&&+c.dataset.k!==cur())c.scrollIntoView({behavior:RM.matches?'auto':'smooth',inline:'center',block:'nearest'});});
+  pg.addEventListener('keydown',e=>{if(e.key==='Escape')close();if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-grab]')){e.preventDefault();setFull(!full);}});
+  // vertical drag: up grows the sheet to full height, down shrinks it, down again from part height dismisses
+  let d=null;
+  const dStart=(x,y,t)=>{if(closing||t.closest('button'))return;const lg=t.closest('.cb-legs');d={x,y,ly:y,lt:performance.now(),v:0,on:false,h:0,ty:0,lock:full&&lg&&lg.scrollHeight>lg.clientHeight?lg:null};};
+  const dMove=(cx,cy)=>{if(!d)return false;const dy=(cy-d.y)/Z(),dx=(cx-d.x)/Z();
+    if(!d.on){if(Math.abs(dx)>6&&Math.abs(dx)>Math.abs(dy)){d=null;return false;}if(Math.abs(dy)<6)return false;
+      if(d.lock&&(dy<0||d.lock.scrollTop>0)){d=null;return false;}d.on=true;pg.classList.add('drag');pg.getAnimations().forEach(x=>x.cancel());}
+    const now=performance.now(),dt=now-d.lt;if(dt>0){d.v=((cy-d.ly)/Z())/dt;d.ly=cy;d.lt=now;}
+    let h=(full?FULL:PEEK)-dy,ty=0;if(h>FULL)h=FULL+Math.pow(h-FULL,.6);if(h<PEEK){ty=PEEK-h;h=PEEK;}d.h=h;d.ty=ty;
+    pg.style.setProperty('--h',h+'px');pg.style.transform=ty?`translateY(${ty}px)`:'';sc.style.opacity=String(Math.max(0,1-ty/(PEEK*0.9)));return true;};
+  const dEnd=()=>{if(!d)return;const dd=d;d=null;if(!dd.on)return;moved=true;setTimeout(()=>moved=false,60);pg.classList.remove('drag');pg.style.transform='';
+    if(dd.ty>PEEK*0.22||(dd.ty>0&&dd.v>0.55)){pg.style.setProperty('--h',PEEK+'px');close(dd.ty);return;}
+    if(dd.ty>0){sc.animate([{opacity:parseFloat(sc.style.opacity||'1')},{opacity:1}],{duration:260,easing:'ease-out'});if(!RM.matches)pg.animate([{transform:`translateY(${dd.ty}px)`},{transform:'translateY(0)'}],{duration:420,easing:'cubic-bezier(.2,1.25,.4,1)'});}
+    sc.style.opacity='';setFull(dd.v<-0.4?true:dd.v>0.4?false:dd.h>(PEEK+FULL)/2);};
+  pg.addEventListener('touchstart',e=>{if(e.touches.length===1)dStart(e.touches[0].clientX,e.touches[0].clientY,e.target);},{passive:true});
+  pg.addEventListener('touchmove',e=>{if(d&&dMove(e.touches[0].clientX,e.touches[0].clientY)&&e.cancelable)e.preventDefault();},{passive:false});
+  pg.addEventListener('touchend',dEnd);pg.addEventListener('touchcancel',dEnd);
+  pg.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button>0)return;dStart(e.clientX,e.clientY,e.target);});
+  pg.addEventListener('pointermove',e=>{if(e.pointerType==='mouse'&&d)dMove(e.clientX,e.clientY);});
+  window.addEventListener('pointerup',function up(e){if(!pg.isConnected){window.removeEventListener('pointerup',up);return;}if(e.pointerType==='mouse')dEnd();});
+  vp.appendChild(sc);vp.appendChild(pg);pg.scrollLeft=step()*Math.max(0,Math.min(sets.length-1,start||0));
+  if(!RM.matches){sc.animate([{opacity:0},{opacity:1}],{duration:320,easing:'ease-out'});pg.animate([{transform:`translateY(${PEEK}px)`},{transform:'translateY(0)'}],{duration:460,easing:EASE});
+    const c=card(cur());[...c.querySelectorAll('.cb-hd,.cb-g,.cb-leg,.cb-ft')].forEach((el,k)=>el.animate([{opacity:0,transform:'translateY(14px)'},{opacity:1,transform:'translateY(0)'}],{duration:440,delay:120+k*40,easing:EASE,fill:'backwards'}));}}
+
 // ---------- v3.1.25: hero carousel page dots follow the swipe and jump to a card when tapped ----------
 function heroDots(){const car=scroll.querySelector('[aria-label^="Top games"]');const box=car&&car.nextElementSibling;if(!car||!box||box.dataset.dots)return;
   const cards=[...car.children].filter(c=>c.offsetWidth>40);const sp=[...box.querySelectorAll('span')];if(cards.length<2||sp.length<2){if(cards.length<2)box.style.display='none';return;}
