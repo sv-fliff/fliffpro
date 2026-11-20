@@ -637,27 +637,6 @@ a{color:#3D1BB8}a:hover{color:#12121C}
 .hx-list .gs-row em b{display:block;font:700 15px 'Space Grotesk',sans-serif;color:var(--ink);text-align:right}
 .hx-list .gs-row em{text-align:right}
 .hx-note{margin:14px 20px 0;font-size:12px;line-height:1.4;color:var(--mu)}
-/* v3.1.26: player markets as compact rows in one card; a row opens to its line choices and last 5 games */
-.pl-list{padding:2px 14px;display:flex;flex-direction:column}
-.pl-list .pl-mk{gap:0;padding:12px 0;border-bottom:1px solid var(--line)}
-.pl-list .pl-mk:last-child{border-bottom:none}
-.pl-r{display:flex;align-items:center;gap:10px}
-.pl-lb{flex:1;min-width:0;min-height:46px;display:flex;align-items:center;gap:8px;padding:0;border:none;background:none;color:var(--ink);font:inherit;text-align:left;cursor:pointer}
-.pl-lb .tx{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1}
-.pl-lb .tx b{font:700 20px/24px 'Space Grotesk',sans-serif;align-self:flex-start}
-.pl-lb .tx b.dl{text-decoration:underline dotted;text-decoration-thickness:2px;text-underline-offset:4px;text-decoration-color:#B79CFF}
-:root[data-theme="light"] .pl-lb .tx b.dl{text-decoration-color:#5B33D6}
-.pl-lb .tx small{font-size:13px;line-height:18px;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pl-lb .cv{flex:none;color:var(--mu);transition:transform .2s}
-.pl-mk.open .pl-lb .cv{transform:rotate(180deg)}
-.pl-lb:focus-visible{outline:2px solid #D3C5FF;outline-offset:3px;border-radius:10px}
-.pl-list .pl-ou{flex:none;grid-template-columns:repeat(2,82px);gap:6px}
-.pl-list .pl-ou.one{grid-template-columns:170px}
-.pl-list .gp-b{height:46px}
-.pl-list .pl-x{padding-top:12px}
-.pl-rl{display:flex;gap:6px}
-.pl-rl button{flex:1;min-width:0;height:38px;border-radius:19px;border:1px solid var(--line);background:transparent;color:var(--mu);font:600 14px 'Space Grotesk',sans-serif;cursor:pointer}
-.pl-rl button[aria-pressed="true"]{background:var(--ink);color:var(--frame);border-color:transparent}
 /* v3.1.15: player page = full-height page sheet. Patterns (Mobbin): card-stack sheet with a sliver of the screen behind (Mindtrip, Runbuds), hero collapsing into a compact title bar, tabs that stay put under it (FotMob, F1, theScore) */
 .fp-sheet.pl-sheet{top:max(12px,calc(env(safe-area-inset-top,0px) - 4px));bottom:0;height:auto;max-height:none !important;padding:0;overflow-y:auto;overscroll-behavior:contain;border-radius:28px 28px 0 0;background:var(--frame);box-shadow:0 -10px 40px rgba(4,3,12,0.35)}
 .pl-sheet>.g{position:sticky;top:8px;z-index:9;margin:8px auto -13px;background:rgba(255,255,255,0.45)}
@@ -830,7 +809,9 @@ a{color:#3D1BB8}a:hover{color:#12121C}
 
 .gp-alt{display:flex;justify-content:space-between;align-items:center;width:100%;margin-top:12px;padding:12px 2px 0;border:none;border-top:1px solid var(--line);background:none;color:var(--ink);font:600 15px 'FP Num','Inter',sans-serif;cursor:pointer}
 .gp-alt span{color:var(--mu);font-weight:400}
-.gp-cats{display:flex;gap:6px;padding:14px 16px 2px;overflow-x:auto;scrollbar-width:none}
+.gp-cats{display:flex;gap:6px;padding:14px 16px 2px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;scroll-padding:0 16px;overscroll-behavior-x:contain}
+.gp-cats::-webkit-scrollbar{display:none}
+.gp-cats:after{content:"";flex:none;width:10px}
 .gp-cats button{flex:none;height:34px;padding:0 14px;border-radius:17px;border:1px solid var(--line);background:transparent;color:var(--mu);font:600 13px 'FP Num','Inter',sans-serif;cursor:pointer}
 .gp-cats button[aria-selected="true"]{background:rgba(211,197,255,0.16);border-color:transparent;color:#D3C5FF}
 :root[data-theme="light"] .gp-cats button[aria-selected="true"]{background:rgba(61,27,184,0.08);color:#3D1BB8}
@@ -1080,7 +1061,7 @@ function go(name,opts){
 function menu(){
   const sc=document.createElement('div');sc.className='fp-scrim';const sh=document.createElement('div');sh.className='fp-sheet';sh.setAttribute('role','dialog');sh.setAttribute('aria-modal','true');
   const t=S.theme;
-  sh.innerHTML=`<span class="g"></span><h3>Settings</h3>${[['system','Match my device'],['dark','Dark'],['light','Light']].map(([v,n])=>`<button class="o" data-theme-v="${v}"><span>${n}</span>${t===v?'<b>✓</b>':''}</button>`).join('')}<button class="o" data-kal="1" role="switch" aria-checked="${KAL.on}"><span class="kl"><span>Live Kalshi data</span><small>Real NFL prices on Home and Games</small></span><i class="fp-sw${KAL.on?' on':''}" aria-hidden="true"></i></button><button class="o" data-tips="1"><span>Replay feature tips</span></button><button class="o" data-reset="1"><span>Reset demo</span></button><p>Clickable prototype with demo money. Placing an order takes cash and adds it to Portfolio; closing a trade gives the money back.<br><span style="opacity:.7">Prototype v3.1.26</span></p>`;
+  sh.innerHTML=`<span class="g"></span><h3>Settings</h3>${[['system','Match my device'],['dark','Dark'],['light','Light']].map(([v,n])=>`<button class="o" data-theme-v="${v}"><span>${n}</span>${t===v?'<b>✓</b>':''}</button>`).join('')}<button class="o" data-kal="1" role="switch" aria-checked="${KAL.on}"><span class="kl"><span>Live Kalshi data</span><small>Real NFL prices on Home and Games</small></span><i class="fp-sw${KAL.on?' on':''}" aria-hidden="true"></i></button><button class="o" data-tips="1"><span>Replay feature tips</span></button><button class="o" data-reset="1"><span>Reset demo</span></button><p>Clickable prototype with demo money. Placing an order takes cash and adds it to Portfolio; closing a trade gives the money back.<br><span style="opacity:.7">Prototype v3.1.27</span></p>`;
   const close=()=>{sc.remove();sh.remove();};sc.onclick=close;
   sh.onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.themeV){S.theme=b.dataset.themeV;try{localStorage.setItem('fpTheme2',S.theme)}catch(_){}applyTheme();close();render(true);}if(b.dataset.kal){const on=!KAL.on;kalSet(on);b.setAttribute('aria-checked',String(on));b.querySelector('.fp-sw').classList.toggle('on',on);setTimeout(()=>{close();render(true);toast(on?'Live prices on':'Live prices off');},260);return;}if(b.dataset.tips){try{localStorage.removeItem('fpTipNba')}catch(_){}close();toast('Tips will show again');return;}if(b.dataset.reset){S.picks=[];S.betAmt='';S.cash=2418.50;S.pos=BASE_POS();S.amt='50';close();S.screen='FHome';render();toast('Demo reset');}};
   vp.appendChild(sc);vp.appendChild(sh);}
@@ -2016,7 +1997,8 @@ function pbpAvatars(){if(S.screen!=='FGameLive')return;scroll.querySelectorAll('
   if(bar.dataset.av===w[0])return;bar.dataset.av=w[0];bar.classList.add('pbp-av');bar.innerHTML=avatar('nfl',w[0],w[1],34,S.gm&&S.gm.id);});}
 setInterval(pbpAvatars,700);
 // ---------- props ----------
-const PCATS={nfl:['All','Passing','Rushing','Receiving','Touchdowns'],nba:['All','Points','Rebounds','Assists']};
+const PCATS={nfl:['Popular','Passing','Rushing','Receiving','Touchdowns'],nba:['Popular','Points','Rebounds','Assists','Threes','Pts + Rebs + Asts']};
+const PXTRA={nba:{tpm:'Threes',pra:'Pts + Rebs + Asts'}};   // stat types with no posted line: cards come from each player's demo markets
 function propBtn(g,i,sd,lab,p,col){return `<button data-bezel="1" class="gp-b" data-pick="pr|${sd}|${i}|${g.id}" data-pc="${col}" data-ps="${g.props[i]?gcol(g.lg,g.props[i].c)[1]:''}"><span><b>${lab}</b><small>${p}%</small></span></button>`;}
 function propCard(g,pr,i,compact){const col=gcol(g.lg,pr.c)[0];const ln=pr.ln;const tn=g.a===pr.c?g.an:g.hn;
   const o=ln==null?['Yes',pr.po]:['Over '+ln,pr.po],u=ln==null?['No',pr.pu]:['Under '+ln,pr.pu];
@@ -2077,8 +2059,13 @@ function l5Flip(card,on){if(!card||card.dataset.busy)return;const fr=card.queryS
 })();
 
 function propsBlock(g){if(!g.props.length)return `<p class="gp-empty">No player lines are posted for this game yet.</p>`;
-  const cats=PCATS[g.lg].filter(c=>c==='All'||g.props.some(p=>p.cat===c));
-  return `<div class="gp-cats" role="tablist" aria-label="Prop type">${cats.map((c,k)=>`<button role="tab" aria-selected="${k===0}" data-pcat="${c}">${c}</button>`).join('')}</div>${g.props.map((p,i)=>propCard(g,p,i)).join('')}`;}
+  // v3.1.27: extra stat types (Threes, Pts + Rebs + Asts) for each player with a posted line; hidden until their tab is chosen
+  const xm=PXTRA[g.lg]||{};let extra='';const names=[...new Set(g.props.map(p=>p.nm))];
+  Object.keys(xm).forEach(k=>names.forEach(nm=>{const d=plData(g.id,nm);const m=d&&d.mk.find(x=>x.key===k&&!x.real&&x.ln!=null);if(!m)return;
+    extra+=`<div class="gp-card" data-cat="${xm[k]}" data-x="1" style="display:none"><div class="gp-fr"><div class="gp-hd" data-pl="${g.id}|${nm}" tabindex="0" role="link" aria-label="${nm} player page">${avatar(g.lg,nm,m.c,42)}<span><b>${nm}</b><small>${m.pos} · ${m.c} · ${m.mk}</small></span><span class="gp-l5" style="cursor:default">${m.avg}</span></div>
+      <div class="gp-ou">${plBtn(d,m,'O','Over '+m.ln,m.po)}${plBtn(d,m,'U','Under '+m.ln,m.pu)}</div></div></div>`;}));
+  const has=c=>c==='Popular'||g.props.some(p=>p.cat===c)||extra.includes(`data-cat="${c}"`);const cats=PCATS[g.lg].filter(has);
+  return `<div class="gp-cats" role="tablist" aria-label="Prop type">${cats.map((c,k)=>`<button role="tab" aria-selected="${k===0}" data-pcat="${c}">${c}</button>`).join('')}</div>${g.props.map((p,i)=>propCard(g,p,i)).join('')}${extra}`;}
 function propsFeed(lg){return Object.values(GD).filter(g=>g.lg===lg).map(g=>{if(!g.props.length)return '';const seen=new Set(),first=[];
   g.props.forEach((p,i)=>{if(!seen.has(p.cat)){seen.add(p.cat);first.push(i);}});const order=first.concat(g.props.map((p,i)=>i).filter(i=>!first.includes(i))).slice(0,6);
   const open=order.length<=2;
@@ -2419,7 +2406,8 @@ document.addEventListener('click',e=>{const t=e.target;if(t.closest('.fp-sheet:n
   {const av=t.closest('[data-pl]');if(av&&av!==t.closest('[data-gm]')&&av.closest('.fp-gs')){stop();const [pg,...pn]=av.dataset.pl.split('|');openPlayer(pg,pn.join('|'));return;}}
   let el=t.closest('[data-gm]');if(el){stop();const sh=el.closest('.fp-gs');if(sh&&sh._close)sh._close();openGame(el.dataset.gm,el.hasAttribute('data-gmp'));return;}
   el=t.closest('[data-pcat]');if(el){stop();const c=el.dataset.pcat;el.parentElement.querySelectorAll('[data-pcat]').forEach(b=>b.setAttribute('aria-selected',String(b===el)));
-    scroll.querySelectorAll('.gp-card[data-cat]').forEach(x=>x.style.display=(c==='All'||x.dataset.cat===c)?'':'none');return;}
+    scroll.querySelectorAll('.gp-card[data-cat]').forEach(x=>x.style.display=(c==='Popular'?!x.dataset.x:x.dataset.cat===c)?'':'none');
+    {const r=el.parentElement,x=el.offsetLeft-(r.clientWidth-el.offsetWidth)/2;r.scrollTo({left:Math.max(0,x),behavior:RM.matches?'auto':'smooth'});}pickPaint();return;}
   el=t.closest('[data-pfmore]');if(el){stop();el.closest('.gp-game').classList.add('open');pickPaint();return;}
   el=t.closest('[data-altp]');if(el){stop();altSheet('prop',+el.dataset.altp);return;}
   if(t.closest('.fp-gs'))return;
@@ -2648,18 +2636,11 @@ function rgbOf(h){h=h.replace('#','');const n=parseInt(h.length===3?h.split('').
 function plPage(){const P=S.pl;const d=P&&plData(P.gid,P.nm);if(!d)return '<p class="gp-empty">This player isn’t in today’s demo slate.</p>';
   const g=d.g,[f]=gcol(d.lg,d.p0.c),[h0,h1]=plHeroBg(f);const tn=g.a===d.p0.c?g.an:g.hn;const w=d.nm.split(' ');const first=w.length>1?w.slice(0,-1).join(' '):'',last=w[w.length-1];
   const live=g.live&&typeof liveTxt==='function';const opp=g.a===d.p0.c?'@ '+g.h:'vs '+g.a;
-  const tab=S.plTab||'lines';S.plOpen=S.plOpen||{};S.plLine=S.plLine||{};const openK=k=>!!S.plOpen[d.nm+'|'+k];
-  // v3.1.26: every market is one compact row (line, form, prices). Tapping the line opens that row: other lines to choose from, then the last 5 games.
-  const cl=v=>Math.round(Math.max(3,Math.min(97,v)));
-  const lines=`<div class="gp-card pl-list">${d.mk.map(m=>{const td=m.ln==null,o=openK(m.key);const step=td?0:m.ln>=150?25:m.ln>=40?10:m.ln>=12?3:1;
-    const opts=td?[]:[-2,-1,0,1,2].map(k=>m.ln+k*step).filter(v=>v>0);const cur=td?null:(opts.includes(S.plLine[d.nm+'|'+m.key])?S.plLine[d.nm+'|'+m.key]:m.ln);const alt=!td&&cur!==m.ln;
-    const mv=alt?Object.assign({},m,{ln:cur,_l5:null}):m;const [f,s2]=gcol(d.lg,m.c);
-    const pAlt=alt?cl(100/(1+Math.exp((cur-m.ln)/(step*0.9)))):0;
-    const btns=alt?`<div class="pl-ou one"><button data-bezel="1" class="gp-b" data-pick="${m.real?`prl|O|${m.i}|${d.g.id}|${cur+0.5}`:`pp|O|${m.nm}~${m.key}|${d.g.id}|${cur+0.5}`}" data-pc="${f}" data-ps="${s2}"><span><b>Over ${cur}</b><small>${pAlt}%</small></span></button></div>`
-      :`<div class="pl-ou">${plBtn(d,m,'O',td?'Yes':'Over',m.po)}${plBtn(d,m,'U',td?'No':'Under',m.pu)}</div>`;
-    const ruler=opts.length>1?`<div class="pl-rl" role="group" aria-label="${m.mk} line">${opts.map(v=>`<button type="button" data-plset="${m.key}|${v}" aria-pressed="${v===cur}">${v}</button>`).join('')}</div>`:'';
-    return `<section class="pl-mk${o?' open':''}" data-plmk="${m.key}"><div class="pl-r"><button class="pl-lb" data-pltog="${m.key}" aria-expanded="${o}" aria-label="${m.mk}, ${td?'anytime touchdown':'line '+cur}. Show ${td?'':'other lines and '}last 5 games"><span class="tx"><b${td?'':' class="dl"'}>${td?'1+':cur}</b><small>${td?'Touchdown':m.mk.replace('3-pointers made','Threes')}</small></span>${plSpark(d,mv)}<svg class="cv" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>${btns}</div>
-      <div class="pl-x"${o?'':' hidden'}>${ruler}${plChart(d,mv)}</div></section>`;}).join('')}</div>`;
+  const tab=S.plTab||'lines';S.plOpen=S.plOpen||{};const openK=k=>S.plOpen[d.nm+'|'+k]!==undefined?S.plOpen[d.nm+'|'+k]:k===d.mk[0].key;
+  const lines=d.mk.map(m=>{const td=m.ln==null,o=openK(m.key);
+    return `<section class="gp-card pl-mk${o?' open':''}" data-plmk="${m.key}"><button class="pl-mh" data-pltog="${m.key}" aria-expanded="${o}"><span class="t">${m.mk}</span>${plSpark(d,m)}<svg class="cv" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+      <div class="pl-row"><span class="pl-ln"><b>${td?'1+':m.ln}</b><small>${td?'touchdown':m.u}</small></span><div class="pl-ou">${plBtn(d,m,'O',td?'Yes':'Over',m.po)}${plBtn(d,m,'U',td?'No':'Under',m.pu)}</div></div>
+      <div class="pl-x"${o?'':' hidden'}>${plChart(d,m)}${m.real&&!td?`<button class="gp-alt" data-altp="${m.i}">Alternate lines<span>5 lines ›</span></button>`:''}</div></section>`;}).join('');
   return `<div class="pl">
    <header class="pl-hero" style="--h0:${h0};--h1:${h1}">
     <div class="pl-top"><button class="pl-back" data-plback aria-label="Back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
@@ -2690,7 +2671,6 @@ document.addEventListener('click',e=>{const t=e.target;
   if(S.screen==='FPlayer'||t.closest('.pl-sheet')){
     if(t.closest('[data-plback]')){e.preventDefault();e.stopImmediatePropagation();go(S.plBack&&S.plBack!=='FPlayer'?S.plBack:'FHome');return;}
     const tb=t.closest('[data-pltab]');if(tb){e.preventDefault();e.stopImmediatePropagation();S.plTab=tb.dataset.pltab;playerApply();return;}
-    const ps=t.closest('[data-plset]');if(ps){e.preventDefault();e.stopImmediatePropagation();const [k,v]=ps.dataset.plset.split('|');S.plLine=S.plLine||{};S.plLine[S.pl.nm+'|'+k]=+v;playerApply();return;}
     const tg=t.closest('[data-pltog]');if(tg){e.preventDefault();e.stopImmediatePropagation();const sec=tg.closest('.pl-mk'),k=tg.dataset.pltog,o=!sec.classList.contains('open');S.plOpen[S.pl.nm+'|'+k]=o;
       sec.classList.toggle('open',o);tg.setAttribute('aria-expanded',String(o));sec.querySelector('.pl-x').hidden=!o;return;}}
   const pl=t.closest('[data-pl]');if(pl&&!t.closest('button,[data-flip]')&&pl.closest('#scroll,.fp-gs')&&!pl.closest('.tp-hero,.pl-sheet')){e.preventDefault();e.stopImmediatePropagation();const [gid,...n]=pl.dataset.pl.split('|');openPlayer(gid,n.join('|'));}},true);
