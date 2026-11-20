@@ -510,7 +510,7 @@ a{color:#3D1BB8}a:hover{color:#12121C}
 /* The dark band behind the status bar (v3.0.1) is gone. The app now runs edge to edge and iOS picks the time and battery colour from what is underneath. */
 
 /* ---- v3.0.0: password splash ---- */
-#fp-gate{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;padding:env(safe-area-inset-top,0px) 24px env(safe-area-inset-bottom,0px);box-sizing:border-box;
+#fp-gate{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:flex-start;justify-content:center;padding:calc(env(safe-area-inset-top,0px) + 11vh) 24px env(safe-area-inset-bottom,0px);box-sizing:border-box;overflow-y:auto;
   background-color:#08071A;background-image:radial-gradient(130% 55% at 50% -6%,rgba(124,168,255,0.30) 0,rgba(124,168,255,0.12) 40%,rgba(124,168,255,0) 72%),linear-gradient(180deg,rgba(8,7,26,0) 0,rgba(8,7,26,0.55) 32%,#08071A 58%),linear-gradient(rgba(211,197,255,0.09) 1px,transparent 1px),linear-gradient(90deg,rgba(211,197,255,0.09) 1px,transparent 1px);
   background-size:auto,auto,22px 22px,22px 22px;color:#F4F4F8;font-family:'FP Num','Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;transition:opacity .35s ease,transform .35s cubic-bezier(.22,1,.36,1)}
 #fp-gate.out{opacity:0;transform:scale(1.03);pointer-events:none}
@@ -907,7 +907,7 @@ function go(name,opts){
 function menu(){
   const sc=document.createElement('div');sc.className='fp-scrim';const sh=document.createElement('div');sh.className='fp-sheet';sh.setAttribute('role','dialog');sh.setAttribute('aria-modal','true');
   const t=S.theme;
-  sh.innerHTML=`<span class="g"></span><h3>Settings</h3>${[['system','Match my device'],['dark','Dark'],['light','Light']].map(([v,n])=>`<button class="o" data-theme-v="${v}"><span>${n}</span>${t===v?'<b>✓</b>':''}</button>`).join('')}<button class="o" data-kal="1" role="switch" aria-checked="${KAL.on}"><span class="kl"><span>Live Kalshi data</span><small>Real NFL prices on Home and Games</small></span><i class="fp-sw${KAL.on?' on':''}" aria-hidden="true"></i></button><button class="o" data-reset="1"><span>Reset demo</span></button><p>Clickable prototype with demo money. Placing an order takes cash and adds it to Portfolio; closing a trade gives the money back.<br><span style="opacity:.7">Prototype v3.1.5</span></p>`;
+  sh.innerHTML=`<span class="g"></span><h3>Settings</h3>${[['system','Match my device'],['dark','Dark'],['light','Light']].map(([v,n])=>`<button class="o" data-theme-v="${v}"><span>${n}</span>${t===v?'<b>✓</b>':''}</button>`).join('')}<button class="o" data-kal="1" role="switch" aria-checked="${KAL.on}"><span class="kl"><span>Live Kalshi data</span><small>Real NFL prices on Home and Games</small></span><i class="fp-sw${KAL.on?' on':''}" aria-hidden="true"></i></button><button class="o" data-reset="1"><span>Reset demo</span></button><p>Clickable prototype with demo money. Placing an order takes cash and adds it to Portfolio; closing a trade gives the money back.<br><span style="opacity:.7">Prototype v3.1.6</span></p>`;
   const close=()=>{sc.remove();sh.remove();};sc.onclick=close;
   sh.onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.themeV){S.theme=b.dataset.themeV;try{localStorage.setItem('fpTheme2',S.theme)}catch(_){}applyTheme();close();render(true);}if(b.dataset.kal){const on=!KAL.on;kalSet(on);b.setAttribute('aria-checked',String(on));b.querySelector('.fp-sw').classList.toggle('on',on);setTimeout(()=>{close();render(true);toast(on?'Live prices on':'Live prices off');},260);return;}if(b.dataset.reset){S.picks=[];S.betAmt='';S.cash=2418.50;S.pos=BASE_POS();S.amt='50';close();S.screen='FHome';render();toast('Demo reset');}};
   vp.appendChild(sc);vp.appendChild(sh);}
@@ -2456,63 +2456,6 @@ applyTheme();fit();render();
 <script>
 // Offline + home-screen support. New versions load on the next open after a deploy.
 if(navigator.serviceWorker&&(location.protocol==='https:'||location.hostname==='localhost')){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}
-</script>
-<script>
-/* v3.1.4: put the installed app back to full height when iOS leaves its window short. iOS can shrink the window by the status bar height after the keyboard has been open (the password field does that) and keep it short until the app is force-quit. */
-(function(){
-  var sa=navigator.standalone===true||matchMedia('(display-mode: standalone)').matches;
-  if(!sa)return;
-  var H=window.__fpHeal={tries:0,last:'none',reloaded:false};
-  try{H.reloaded=sessionStorage.getItem('fpHealReload')==='1';}catch(_){}
-  function lvh(){var d=document.createElement('div');d.style.cssText='position:fixed;left:0;top:0;width:1px;height:100lvh;visibility:hidden;pointer-events:none';document.body.appendChild(d);var h=d.getBoundingClientRect().height;d.remove();return h;}
-  function typing(){var a=document.activeElement;return !!a&&(/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)||a.isContentEditable);}
-  function want(){var w=lvh();if(innerHeight>innerWidth)w=Math.max(w,Math.max(screen.width,screen.height));return w;}
-  function isShort(){var d=want()-innerHeight;return d>4&&d<120;}
-  function heal(){
-    if(typing()||!isShort()||H.tries>=3)return;
-    H.tries++;var before=innerHeight,b=document.body,sc=document.getElementById('scroll'),top=sc?sc.scrollTop:0;
-    b.style.display='none';void b.offsetHeight;b.style.display='';
-    if(sc)sc.scrollTop=top;
-    if(window.fit)window.fit();
-    setTimeout(function(){
-      if(window.fit)window.fit();
-      H.last='try '+H.tries+': '+before+' -> '+innerHeight;
-    },500);
-  }
-  setTimeout(heal,1200);setInterval(heal,2000);
-  document.addEventListener('focusout',function(){setTimeout(heal,250);},true);
-  document.addEventListener('visibilitychange',function(){if(!document.hidden)setTimeout(heal,300);});
-})();
-</script>
-<script>
-/* v3.1.3: TEMPORARY on-screen measurements to find the top/bottom edge problem in the installed app. Tap the green panel to hide it. Removed in the next version. */
-(function(){
-  var standalone=navigator.standalone===true||matchMedia('(display-mode: standalone)').matches;
-  if(!standalone&&location.hash!=='#debug')return;
-  var hidden=false,pre=document.createElement('pre');
-  pre.style.cssText='position:fixed;left:8px;right:8px;top:70px;z-index:2147483647;margin:0;padding:8px 10px;border-radius:10px;background:rgba(0,0,0,.86);color:#9CFFB0;font:11px/1.35 ui-monospace,Menlo,monospace;white-space:pre-wrap;word-break:break-all;-webkit-user-select:none;user-select:none';
-  pre.addEventListener('click',function(){hidden=true;pre.remove();});
-  function probe(css){var d=document.createElement('div');d.style.cssText='position:fixed;left:0;top:0;width:1px;visibility:hidden;pointer-events:none;'+css;document.body.appendChild(d);var h=d.getBoundingClientRect().height;d.remove();return Math.round(h*10)/10;}
-  function insets(){var d=document.createElement('div');d.style.cssText='position:fixed;left:0;top:0;visibility:hidden;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)';document.body.appendChild(d);var c=getComputedStyle(d),r=[c.paddingTop,c.paddingRight,c.paddingBottom,c.paddingLeft].map(function(x){return Math.round(parseFloat(x));});d.remove();return r.join('/');}
-  function R(e){if(!e)return '-';var r=e.getBoundingClientRect();return Math.round(r.top)+'..'+Math.round(r.bottom);}
-  function hit(y){var e=document.elementFromPoint(200,y);return e?(e.id||e.tagName.toLowerCase()):'none';}
-  function render(){if(hidden)return;var vv=window.visualViewport,q=function(s){return document.querySelector(s);};
-    pre.textContent=['FLIFF PRO DEBUG  v3.1.5  (tap to hide)',
-      'standalone nav/mq: '+(navigator.standalone===true)+' / '+matchMedia('(display-mode: standalone)').matches,
-      'inner '+innerWidth+'x'+innerHeight+'  outer '+outerWidth+'x'+outerHeight,
-      'screen '+screen.width+'x'+screen.height+'  avail '+screen.availWidth+'x'+screen.availHeight+'  dpr '+devicePixelRatio,
-      'visualViewport '+(vv?Math.round(vv.width)+'x'+Math.round(vv.height)+' top '+Math.round(vv.offsetTop)+' scale '+vv.scale:'-'),
-      'docEl.client '+document.documentElement.clientHeight+'  body.client '+document.body.clientHeight+'  scrollY '+Math.round(scrollY),
-      'css fixed: 100% '+probe('height:100%')+'  100vh '+probe('height:100vh')+'  100dvh '+probe('height:100dvh')+'  100svh '+probe('height:100svh')+'  100lvh '+probe('height:100lvh'),
-      'safe insets t/r/b/l: '+insets(),
-      'stage '+R(q('#stage'))+'  vp '+R(q('#vp'))+'  scroll '+R(q('#scroll'))+'  tabbar '+R(q('[data-tabbar]')),
-      'vp zoom '+(q('#vp')&&q('#vp').style.zoom)+'  vp h '+(q('#vp')&&q('#vp').style.height),
-      'hit-test x=200 at y 780/800/820/840/850: '+[780,800,820,840,850].map(hit).join(' | '),
-      'heal: '+(window.__fpHeal?('tries '+window.__fpHeal.tries+', '+window.__fpHeal.last+', reloaded '+window.__fpHeal.reloaded):'n/a')
-    ].join('\n');}
-  function start(){document.body.appendChild(pre);render();setInterval(render,1500);addEventListener('resize',render);}
-  if(document.body)setTimeout(start,1500);else addEventListener('DOMContentLoaded',function(){setTimeout(start,1500);});
-})();
 </script>
 </body>
 </html>

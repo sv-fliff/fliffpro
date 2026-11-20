@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Edge B">
+<meta name="robots" content="noindex, nofollow">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../icons/apple-touch-icon.png">
+<title>Edge test B</title>
+<style>
+/* Edge test B: status bar style "black". A blank page with markers on every edge. No Fliff Pro code. */
+html,body{margin:0;height:100%;background:#1b1b24;color:#fff;font:13px/1.4 ui-monospace,Menlo,monospace}
+.edge{position:fixed;left:0;right:0;height:44px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#000;letter-spacing:.04em}
+#top{top:0;background:#ff5252}
+#bot{bottom:0;background:#69f0ae}
+/* a frame the size of the large viewport, pinned to the top: its bottom edge shows how tall the screen really is */
+#lv{position:fixed;left:0;right:0;top:0;height:100lvh;box-sizing:border-box;border:4px solid #40c4ff;pointer-events:none}
+/* a frame that fills the window the browser reports */
+#fx{position:fixed;inset:0;box-sizing:border-box;border:4px dashed #ffd740;pointer-events:none}
+#info{position:fixed;left:12px;right:12px;top:calc(env(safe-area-inset-top,0px) + 56px);padding:10px;border-radius:10px;background:rgba(0,0,0,.65);white-space:pre-wrap}
+input{position:fixed;left:12px;right:12px;bottom:70px;height:44px;border-radius:10px;border:0;padding:0 12px;font-size:16px}
+</style>
+</head>
+<body>
+<div id="lv"></div><div id="fx"></div>
+<div class="edge" id="top">TOP EDGE</div>
+<div id="info">loading…</div>
+<input placeholder="Tap here to test the keyboard">
+<div class="edge" id="bot">BOTTOM EDGE</div>
+<script>
+function probe(css){var d=document.createElement('div');d.style.cssText='position:fixed;left:0;top:0;width:1px;visibility:hidden;'+css;document.body.appendChild(d);var h=d.getBoundingClientRect().height;d.remove();return Math.round(h);}
+function insets(){var d=document.createElement('div');d.style.cssText='position:fixed;visibility:hidden;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)';document.body.appendChild(d);var c=getComputedStyle(d),r=[c.paddingTop,c.paddingRight,c.paddingBottom,c.paddingLeft].map(function(x){return Math.round(parseFloat(x));});d.remove();return r.join('/');}
+function show(){var vv=window.visualViewport;
+  document.getElementById('info').textContent=['EDGE TEST B  (black status bar)',
+   'installed app: '+(navigator.standalone===true),
+   'window (innerHeight): '+innerHeight,
+   'screen height: '+screen.height,
+   '100lvh '+probe('height:100lvh')+'   100svh '+probe('height:100svh')+'   100dvh '+probe('height:100dvh'),
+   'safe insets t/r/b/l: '+insets(),
+   'visual viewport: '+(vv?Math.round(vv.height)+' (top '+Math.round(vv.offsetTop)+')':'-'),
+   '',
+   'Red = top edge of the window. Green = bottom edge.',
+   'Blue frame = full screen height. Yellow dashed = window.',
+   'Does green touch the bottom of the phone?'].join('\n');}
+show();addEventListener('resize',show);setInterval(show,1000);
+</script>
+</body>
+</html>
