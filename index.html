@@ -620,7 +620,7 @@ a{color:#3D1BB8}a:hover{color:#12121C}
 :root[data-theme="light"] .hx-ch{color:#0B9B68}:root[data-theme="light"] .hx-ch.dn{color:#D93B3B}
 .hx-mv svg.sp{color:#2EE59D}.hx-mv svg.sp.dn{color:#F87171}
 :root[data-theme="light"] .hx-mv svg.sp{color:#0B9B68}:root[data-theme="light"] .hx-mv svg.sp.dn{color:#D93B3B}
-.hx-fu{width:288px;display:flex;flex-direction:column;gap:10px;scroll-snap-align:start}
+.hx-fu{cursor:pointer;width:288px;display:flex;flex-direction:column;gap:10px;scroll-snap-align:start}
 .hx-fu .hd{display:flex;flex-direction:column;gap:2px}
 .hx-fu .hd b{font-size:17px;font-weight:600}
 .hx-fu .hd small,.hx-fu .ft{font-size:13px;color:var(--mu)}
@@ -701,10 +701,53 @@ a{color:#3D1BB8}a:hover{color:#12121C}
 @keyframes tkup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @keyframes tkring{from{opacity:.7;transform:scale(1)}to{opacity:0;transform:scale(2.3)}}
 @keyframes tkbit{0%{opacity:1;transform:rotate(var(--a)) translateY(0) scale(1)}100%{opacity:0;transform:rotate(var(--a)) translateY(calc(var(--d) * -1)) scale(.4)}}
-.cb-pg{position:absolute;inset:0;z-index:82;display:flex;align-items:flex-end;gap:6px;padding:0 14px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;pointer-events:none;overscroll-behavior:contain}
-.cb-pg::-webkit-scrollbar{display:none}
-.cb-pg.full,.cb-pg.drag{overflow-x:hidden}
-.cb-card{pointer-events:auto;flex:none;width:100%;height:var(--h);box-sizing:border-box;display:flex;flex-direction:column;scroll-snap-align:center;scroll-snap-stop:always;background:var(--sheet);color:var(--ink);border-radius:28px 28px 0 0;padding:10px 18px 0;transition:height .46s cubic-bezier(.32,.72,0,1);box-shadow:0 -10px 40px rgba(4,3,12,0.28)}
+.fu{padding:0 0 120px;color:var(--ink);font-family:'FP Num','Inter',sans-serif;font-variant-numeric:tabular-nums}
+.fu-hd{display:flex;align-items:center;gap:12px;padding:56px 16px 6px}
+.fu-back{flex:none;width:44px;height:44px;border-radius:22px;display:flex;align-items:center;justify-content:center;color:var(--ink);cursor:pointer;background:rgba(255,255,255,0.06);border:1px solid rgba(211,197,255,0.16);box-shadow:inset 0 1px 0 rgba(255,255,255,0.14)}
+:root[data-theme="light"] .fu-back{background:rgba(255,255,255,0.58);border-color:rgba(255,255,255,0.9);box-shadow:0 1px 1px rgba(18,18,28,0.03),inset 0 1px 0 #FFFFFF}
+.fu-tt{min-width:0;display:flex;flex-direction:column;gap:2px}
+.fu-t1{display:flex;align-items:baseline;gap:6px;font-size:15px;line-height:20px}
+.fu-t1 span{flex:none;font-weight:600;color:var(--mu)}
+.fu-t1 h1{margin:0;font-size:15px;line-height:20px;font-weight:600;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fu-tt small{font-size:13px;color:var(--mu)}
+.fu-ch{padding:14px 16px 10px}
+.fu-lg{display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:12px;font-size:13px;color:var(--mu)}
+.fu-lg span{display:flex;align-items:center;gap:6px;white-space:nowrap}
+.fu-lg i{width:8px;height:8px;border-radius:4px}
+.fu-lg b{font:700 13px 'Space Grotesk',sans-serif;color:var(--ink)}
+.fu-ax{display:flex;justify-content:space-between;margin-top:8px;font-size:12px;color:var(--mu)}
+.fu-lh{display:flex;justify-content:space-between;align-items:baseline;margin:24px 20px 0}
+.fu-lh h2{margin:0;font-size:20px;font-weight:700}
+.fu-lh small{font-size:13px;color:var(--mu)}
+.fu-list{padding:2px 14px}
+.fu-row{display:flex;align-items:center;gap:10px;padding:11px 0;border-top:1px solid var(--line)}
+.fu-row:first-child{border-top:0}
+.fu-row .rk{flex:none;width:18px;font:600 13px 'Space Grotesk',sans-serif;color:var(--mu);text-align:center}
+.fu-row>:nth-child(2){flex:none}
+.fu-row .nm{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.fu-row .nm b{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fu-row .nm small{font-size:13px;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fu-row .nm i{font-style:normal}
+.fu-row .nm i.up{color:#2EE59D}
+.fu-row .nm i.dn{color:#FF6B81}
+:root[data-theme="light"] .fu-row .nm i.up{color:#0B7A52}
+:root[data-theme="light"] .fu-row .nm i.dn{color:#C42B45}
+.fu-b{flex:none;width:76px;height:46px;border:0;border-radius:14px;background:var(--tc,#3D1BB8);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,0.18),inset 0 -2px 0 rgba(0,0,0,0.22);transition:opacity .2s}
+.fu-b b{font:700 16px 'Space Grotesk',sans-serif;line-height:19px}
+.fu-b small{font-size:12px;line-height:14px;opacity:.85}
+.fu-b.on{background:linear-gradient(135deg,#7B4BF0,#3D1BB8);outline:2px solid #D3C5FF;outline-offset:1px}
+.fu-b.dim{opacity:.45}
+.fu .fu-ix{display:flex;flex-direction:column;gap:10px;color:var(--ink) !important;text-decoration:none}
+.fu-ix .hd{display:flex;justify-content:space-between;align-items:center;gap:10px;color:var(--mu)}
+.fu-ix .hd span{display:flex;flex-direction:column;gap:2px;min-width:0}
+.fu-ix .hd b{font-size:17px;font-weight:600;color:var(--ink)}
+.fu-ix .hd small,.fu-ix .ft{font-size:13px;color:var(--mu)}
+.fu-ix .hx-fr{cursor:inherit}
+.cb-pg{position:absolute;inset:0;z-index:82;overflow:hidden;pointer-events:none}
+.cb-tr{height:100%;box-sizing:border-box;display:flex;align-items:flex-end;gap:6px;padding:0 14px;pointer-events:none;transition:transform .44s cubic-bezier(.32,.72,0,1);will-change:transform}
+.cb-pg.drag .cb-tr{transition:none}
+.cb-pg:not(.full) .cb-card{touch-action:none}
+.cb-card{pointer-events:auto;flex:none;width:100%;height:var(--h);box-sizing:border-box;display:flex;flex-direction:column;background:var(--sheet);color:var(--ink);border-radius:28px 28px 0 0;padding:10px 18px 0;transition:height .46s cubic-bezier(.32,.72,0,1);box-shadow:0 -10px 40px rgba(4,3,12,0.28)}
 .cb-pg.drag .cb-card{transition:none}
 .cb-card>.g{flex:none;display:block;width:40px;height:5px;border-radius:3px;background:var(--line);margin:0 auto;position:relative;cursor:grab}
 .cb-card>.g:before{content:"";position:absolute;inset:-12px -70px -14px}
@@ -1172,7 +1215,7 @@ function go(name,opts){
 function menu(){
   const sc=document.createElement('div');sc.className='fp-scrim';const sh=document.createElement('div');sh.className='fp-sheet';sh.setAttribute('role','dialog');sh.setAttribute('aria-modal','true');
   const t=S.theme;
-  sh.innerHTML=`<span class="g"></span><h3>Settings</h3>${[['system','Match my device'],['dark','Dark'],['light','Light']].map(([v,n])=>`<button class="o" data-theme-v="${v}"><span>${n}</span>${t===v?'<b>✓</b>':''}</button>`).join('')}<button class="o" data-kal="1" role="switch" aria-checked="${KAL.on}"><span class="kl"><span>Live Kalshi data</span><small>Real NFL prices on Home and Games</small></span><i class="fp-sw${KAL.on?' on':''}" aria-hidden="true"></i></button><button class="o" data-tips="1"><span>Replay feature tips</span></button><button class="o" data-reset="1"><span>Reset demo</span></button><p>Clickable prototype with demo money. Placing an order takes cash and adds it to Portfolio; closing a trade gives the money back.<br><span style="opacity:.7">Prototype v3.1.31</span></p>`;
+  sh.innerHTML=`<span class="g"></span><h3>Settings</h3>${[['system','Match my device'],['dark','Dark'],['light','Light']].map(([v,n])=>`<button class="o" data-theme-v="${v}"><span>${n}</span>${t===v?'<b>✓</b>':''}</button>`).join('')}<button class="o" data-kal="1" role="switch" aria-checked="${KAL.on}"><span class="kl"><span>Live Kalshi data</span><small>Real NFL prices on Home and Games</small></span><i class="fp-sw${KAL.on?' on':''}" aria-hidden="true"></i></button><button class="o" data-tips="1"><span>Replay feature tips</span></button><button class="o" data-reset="1"><span>Reset demo</span></button><p>Clickable prototype with demo money. Placing an order takes cash and adds it to Portfolio; closing a trade gives the money back.<br><span style="opacity:.7">Prototype v3.1.32</span></p>`;
   const close=()=>{sc.remove();sh.remove();};sc.onclick=close;
   sh.onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.themeV){S.theme=b.dataset.themeV;try{localStorage.setItem('fpTheme2',S.theme)}catch(_){}applyTheme();close();render(true);}if(b.dataset.kal){const on=!KAL.on;kalSet(on);b.setAttribute('aria-checked',String(on));b.querySelector('.fp-sw').classList.toggle('on',on);setTimeout(()=>{close();render(true);toast(on?'Live prices on':'Live prices off');},260);return;}if(b.dataset.tips){try{localStorage.removeItem('fpTipNba')}catch(_){}close();toast('Tips will show again');return;}if(b.dataset.reset){S.picks=[];S.betAmt='';S.cash=2418.50;S.pos=BASE_POS();S.amt='50';close();S.screen='FHome';render();toast('Demo reset');}};
   vp.appendChild(sc);vp.appendChild(sh);}
@@ -1855,7 +1898,7 @@ function scoreDim(){scroll.querySelectorAll('section').forEach(sec=>{const s=sec
   s[0].classList.toggle('trail',a<b);s[1].classList.toggle('trail',b<a);});}
 // ---------- picks: tap any price to select it; picks collect in one slim combo bar ----------
 S.picks=S.picks||[];
-const PICK_SCR=/^F(Home|List|ListNBA|ListCleared|Combo|Combo76|Game|GameLive|Props|Player)$/;
+const PICK_SCR=/^F(Home|List|ListNBA|ListCleared|Combo|Combo76|Game|GameLive|Props|Player|Future)$/;
 function ptxt(b){let t=b.textContent.replace(/\s/g,'');const r=b.querySelector('[role="img"][aria-label$="%"]');
   if(r){const lab=r.getAttribute('aria-label').replace(/\s/g,''),lead=(t.match(/^[A-Z]{2,4}/)||[''])[0];t=lab.startsWith(lead)?lab:lead+lab;}return t;}
 const isPrice=b=>/^\d{1,2}%$/.test(ptxt(b));
@@ -1891,6 +1934,7 @@ function pickToggle(btn){const k=pickInfo(btn);if(!k)return false;const n0=S.pic
   pickPaint(true);return had>=0?'removed':n0===0?'first':'added';}
 const CK='';
 function pickPaint(anim){
+  if(typeof futMark==='function')futMark();
   if(!PICK_SCR.test(S.screen)){slipBar();return;}
   const games=new Set(S.picks.map(x=>x.mk||x.game));
   [...scroll.querySelectorAll('[data-bezel]'),...ov.querySelectorAll('[data-pickbar] [data-bezel]'),...document.querySelectorAll('.fp-alt [data-bezel]')].forEach(b=>{
@@ -2339,19 +2383,20 @@ function comboSheet(lg,start){const sets=comboSets(lg||undefined);if(!sets.lengt
   const X='<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 2l10 10M12 2L2 12"/></svg>';
   const legsHtml=(legs,k)=>{let last=null;return legs.map((x,i)=>{const g=GD[x.gid];const hd=x.gid!==last?`<div class="cb-g"><b>${g.lg.toUpperCase()} · ${g.title}</b><span>${g.live?'Live':g.when}</span></div>`:'';last=x.gid;
     return `${hd}<div class="cb-leg" data-i="${i}">${x.av}<span class="t"><b>${x.a}</b><small>${x.b}</small></span><em>${x.p}%</em><button class="fp-sw on" role="switch" aria-checked="true" aria-label="Include ${x.txt}" data-leg="${k}|${i}"></button></div>`;}).join('');};
-  pg.innerHTML=sets.map((legs,k)=>`<section class="cb-card" data-k="${k}" role="dialog" aria-modal="true" aria-label="Combo ${k+1} of ${sets.length}">
+  pg.innerHTML='<div class="cb-tr">'+sets.map((legs,k)=>`<section class="cb-card" data-k="${k}" role="dialog" aria-modal="true" aria-label="Combo ${k+1} of ${sets.length}">
     <span class="g" data-grab="1" role="button" tabindex="0" aria-label="Show all picks"></span>
     <div class="cb-top"><span class="cb-n">${k+1} of ${sets.length}</span><button class="cb-x" data-close="1" aria-label="Close">${X}</button></div>
     <div class="cb-hd"><div class="cb-stack${legs.length>6?' many':''}" aria-hidden="true">${legs.map(x=>`<i>${x.big()}</i>`).join('')}</div><h3>Combo</h3><p class="cb-cnt"></p></div>
     <div class="cb-legs">${legsHtml(legs,k)}</div>
-    <div class="cb-ft"><div class="pay"><b class="m"></b><small></small></div><button class="cb-buy">Buy combo</button></div></section>`).join('');
-  const card=k=>pg.children[k];
+    <div class="cb-ft"><div class="pay"><b class="m"></b><small></small></div><button class="cb-buy">Buy combo</button></div></section>`).join('')+'</div>';
+  const tr=pg.firstElementChild,card=k=>tr.children[k];let ix=Math.max(0,Math.min(sets.length-1,start||0));
   const paint=k=>{const on=sets[k].filter((_,i)=>!off[k].has(i));const m=on.reduce((a,x)=>a*(100/Math.max(1,x.p)),1);const c=card(k);
     c.querySelector('.cb-cnt').textContent=on.length===1?'1 pick':on.length+' picks';c.querySelector('.pay .m').innerHTML=on.length?`${m.toFixed(2)}× <span>payout</span>`:'No picks';
     c.querySelector('.pay small').textContent=on.length?`$10 → ${money(10*m)}`:'Turn a pick back on';const b=c.querySelector('.cb-buy');b.disabled=!on.length;b.textContent=on.length===1?'Buy pick':'Buy combo';
     [...c.querySelectorAll('.cb-stack i')].forEach((el,i)=>el.classList.toggle('off',off[k].has(i)));};
   sets.forEach((_,k)=>paint(k));
-  const step=()=>{const a=card(0),b=card(1);return b?b.offsetLeft-a.offsetLeft:1;};const cur=()=>Math.max(0,Math.min(sets.length-1,Math.round(pg.scrollLeft/step())));
+  const step=()=>{const a=card(0),b=card(1);return b?b.offsetLeft-a.offsetLeft:1;};const cur=()=>ix;
+  const setIx=(i,x)=>{ix=Math.max(0,Math.min(sets.length-1,i));tr.style.transform=`translateX(${-ix*step()+(x||0)}px)`;[...tr.children].forEach((c,k)=>{c.classList.toggle('cur',k===ix);c.setAttribute('aria-hidden',String(k!==ix));});};
   const fin=()=>{sc.remove();pg.remove();};
   const close=(y0,then)=>{if(closing)return;closing=true;if(RM.matches){fin();if(then)then();return;}pg.getAnimations().forEach(x=>x.cancel());
     const an=pg.animate([{transform:`translateY(${y0||0}px)`},{transform:`translateY(${(full?FULL:PEEK)+30}px)`}],{duration:300,easing:EASE,fill:'forwards'});
@@ -2365,18 +2410,22 @@ function comboSheet(lg,start){const sets=comboSets(lg||undefined);if(!sets.lengt
       sw.classList.toggle('on',on);sw.setAttribute('aria-checked',String(on));sw.closest('.cb-leg').classList.toggle('off',!on);paint(k);return;}
     const buy=t.closest('.cb-buy');if(buy){const k=+buy.closest('.cb-card').dataset.k;const legs=sets[k].filter((_,i)=>!off[k].has(i)).map(x=>{const b=document.createElement('button');b.dataset.pick=x.pick;b.innerHTML=`<span><b>x</b><small>${x.p}%</small></span>`;return gmPick(b);}).filter(Boolean);
       if(!legs.length)return;S.picks=legs;pickPaint(true);close(0,()=>betSheet());return;}
-    const c=t.closest('.cb-card');if(c&&!full&&+c.dataset.k!==cur())c.scrollIntoView({behavior:RM.matches?'auto':'smooth',inline:'center',block:'nearest'});});
-  pg.addEventListener('keydown',e=>{if(e.key==='Escape')close();if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-grab]')){e.preventDefault();setFull(!full);}});
+    const c=t.closest('.cb-card');if(c&&+c.dataset.k!==ix)setIx(+c.dataset.k);});
+  pg.addEventListener('keydown',e=>{if(e.key==='Escape')close();if(e.key==='ArrowRight')setIx(ix+1);if(e.key==='ArrowLeft')setIx(ix-1);if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-grab]')){e.preventDefault();setFull(!full);}});
   // vertical drag: up grows the sheet to full height, down shrinks it, down again from part height dismisses
   let d=null;
-  const dStart=(x,y,t)=>{if(closing||t.closest('button'))return;const lg=t.closest('.cb-legs');d={x,y,ly:y,lt:performance.now(),v:0,on:false,h:0,ty:0,lock:full&&lg&&lg.scrollHeight>lg.clientHeight?lg:null};};
+  const dStart=(x,y,t)=>{if(closing||t.closest('button'))return;const lg=t.closest('.cb-legs');d={x,y,lx:x,ly:y,lt:performance.now(),v:0,vx:0,ax:'',dx:0,on:false,h:0,ty:0,lock:full&&lg&&lg.scrollHeight>lg.clientHeight?lg:null};};
   const dMove=(cx,cy)=>{if(!d)return false;const dy=(cy-d.y)/Z(),dx=(cx-d.x)/Z();
-    if(!d.on){if(Math.abs(dx)>6&&Math.abs(dx)>Math.abs(dy)){d=null;return false;}if(Math.abs(dy)<6)return false;
+    if(!d.on&&Math.abs(dx)>6&&Math.abs(dx)>Math.abs(dy)){d.on=true;d.ax='x';pg.classList.add('drag');}
+    if(d.ax==='x'){const now=performance.now(),dt=now-d.lt;if(dt>0){d.vx=((cx-d.lx)/Z())/dt;d.lx=cx;d.lt=now;}
+      const edge=(ix===0&&dx>0)||(ix===sets.length-1&&dx<0);d.dx=edge?Math.sign(dx)*Math.pow(Math.abs(dx),.72):dx;setIx(ix,d.dx);return true;}
+    if(!d.on){if(Math.abs(dy)<6)return false;
       if(d.lock&&(dy<0||d.lock.scrollTop>0)){d=null;return false;}d.on=true;pg.classList.add('drag');pg.getAnimations().forEach(x=>x.cancel());}
     const now=performance.now(),dt=now-d.lt;if(dt>0){d.v=((cy-d.ly)/Z())/dt;d.ly=cy;d.lt=now;}
     let h=(full?FULL:PEEK)-dy,ty=0;if(h>FULL)h=FULL+Math.pow(h-FULL,.6);if(h<PEEK){ty=PEEK-h;h=PEEK;}d.h=h;d.ty=ty;
     pg.style.setProperty('--h',h+'px');pg.style.transform=ty?`translateY(${ty}px)`:'';sc.style.opacity=String(Math.max(0,1-ty/(PEEK*0.9)));return true;};
-  const dEnd=()=>{if(!d)return;const dd=d;d=null;if(!dd.on)return;moved=true;setTimeout(()=>moved=false,60);pg.classList.remove('drag');pg.style.transform='';
+  const dEnd=()=>{if(!d)return;const dd=d;d=null;if(!dd.on)return;moved=true;setTimeout(()=>moved=false,60);pg.classList.remove('drag');
+    if(dd.ax==='x'){const st=step();setIx(ix+(dd.dx<-st*0.2||dd.vx<-0.35?1:dd.dx>st*0.2||dd.vx>0.35?-1:0));return;}pg.style.transform='';
     if(dd.ty>PEEK*0.22||(dd.ty>0&&dd.v>0.55)){pg.style.setProperty('--h',PEEK+'px');close(dd.ty);return;}
     if(dd.ty>0){sc.animate([{opacity:parseFloat(sc.style.opacity||'1')},{opacity:1}],{duration:260,easing:'ease-out'});if(!RM.matches)pg.animate([{transform:`translateY(${dd.ty}px)`},{transform:'translateY(0)'}],{duration:420,easing:'cubic-bezier(.2,1.25,.4,1)'});}
     sc.style.opacity='';setFull(dd.v<-0.4?true:dd.v>0.4?false:dd.h>(PEEK+FULL)/2);};
@@ -2386,7 +2435,7 @@ function comboSheet(lg,start){const sets=comboSets(lg||undefined);if(!sets.lengt
   pg.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button>0)return;dStart(e.clientX,e.clientY,e.target);});
   pg.addEventListener('pointermove',e=>{if(e.pointerType==='mouse'&&d)dMove(e.clientX,e.clientY);});
   window.addEventListener('pointerup',function up(e){if(!pg.isConnected){window.removeEventListener('pointerup',up);return;}if(e.pointerType==='mouse')dEnd();});
-  vp.appendChild(sc);vp.appendChild(pg);pg.scrollLeft=step()*Math.max(0,Math.min(sets.length-1,start||0));
+  vp.appendChild(sc);vp.appendChild(pg);pg.classList.add('drag');setIx(ix);void tr.offsetWidth;pg.classList.remove('drag');
   if(!RM.matches){sc.animate([{opacity:0},{opacity:1}],{duration:320,easing:'ease-out'});pg.animate([{transform:`translateY(${PEEK}px)`},{transform:'translateY(0)'}],{duration:460,easing:EASE});
     const c=card(cur());[...c.querySelectorAll('.cb-hd,.cb-g,.cb-leg,.cb-ft')].forEach((el,k)=>el.animate([{opacity:0,transform:'translateY(14px)'},{opacity:1,transform:'translateY(0)'}],{duration:440,delay:120+k*40,easing:EASE,fill:'backwards'}));}}
 
@@ -2424,9 +2473,9 @@ function homeExtras(){const root=scroll.firstElementChild;if(!root||root.querySe
       <span class="hx-ch${d<0?' dn':''}">${d>0?'▲':'▼'} ${Math.abs(d)} pts<span style="color:var(--mu);font-weight:500;font-family:inherit">· 1h</span></span></a>`;}).join('');
   // 2) futures: multi-outcome markets
   const fut=(lg,title,meta,pcts)=>{const codes=Object.keys(names[lg]).slice(0,pcts.length);if(codes.length<2)return '';
-    return `<div class="hx-card hx-fu"><div class="hd"><b>${title}</b><small>${meta}</small></div>${codes.map((c,k)=>`<button class="hx-fr" data-hxfut style="--tc:${gcol(lg,c)[0]}" aria-label="${names[lg][c]} ${pcts[k]}%">${tileSvg(lg,c,28)}<span class="nm"><span>${names[lg][c]}</span><i><u style="width:${Math.min(100,pcts[k]*3)}%"></u></i></span><em>${pcts[k]}%</em></button>`).join('')}<span class="ft">+ ${lg==='nfl'?28:26} more teams</span></div>`;};
+    return `<div class="hx-card hx-fu" data-fut="${lg==='nfl'?'sb':'nbac'}" role="link" tabindex="0" aria-label="${title}, open market"><div class="hd"><b>${title}</b><small>${meta}</small></div>${codes.map((c,k)=>`<button class="hx-fr" data-hxfut style="--tc:${gcol(lg,c)[0]}" aria-label="${names[lg][c]} ${pcts[k]}%">${tileSvg(lg,c,28)}<span class="nm"><span>${names[lg][c]}</span><i><u style="width:${Math.min(100,pcts[k]*3)}%"></u></i></span><em>${pcts[k]}%</em></button>`).join('')}<span class="ft">+ ${lg==='nfl'?28:26} more teams</span></div>`;};
   const pl=[];all.forEach(g=>(g.props||[]).forEach(p=>{if(g.lg==='nba'&&!pl.some(x=>x.p.nm===p.nm))pl.push({g,p});}));
-  const mvpP=[31,22,14,9];const mvp=pl.length>=3?`<div class="hx-card hx-fu"><div class="hd"><b>NBA MVP</b><small>$1.9M traded · Settles in June</small></div>${pl.slice(0,4).map((x,k)=>`<button class="hx-fr" data-hxfut style="--tc:${gcol('nba',x.p.c)[0]}" aria-label="${x.p.nm} ${mvpP[k]}%">${avatar('nba',x.p.nm,x.p.c,28)}<span class="nm"><span>${x.p.nm}</span><i><u style="width:${mvpP[k]*3}%"></u></i></span><em>${mvpP[k]}%</em></button>`).join('')}<span class="ft">+ 18 more players</span></div>`:'';
+  const mvpP=[31,22,14,9];const mvp=pl.length>=3?`<div class="hx-card hx-fu" data-fut="mvp" role="link" tabindex="0" aria-label="NBA MVP, open market"><div class="hd"><b>NBA MVP</b><small>$1.9M traded · Settles in June</small></div>${pl.slice(0,4).map((x,k)=>`<button class="hx-fr" data-hxfut style="--tc:${gcol('nba',x.p.c)[0]}" aria-label="${x.p.nm} ${mvpP[k]}%">${avatar('nba',x.p.nm,x.p.c,28)}<span class="nm"><span>${x.p.nm}</span><i><u style="width:${mvpP[k]*3}%"></u></i></span><em>${mvpP[k]}%</em></button>`).join('')}<span class="ft">+ 18 more players</span></div>`:'';
   const futures=fut('nfl','Super Bowl winner','$4.2M traded · Settles Feb 14',[19,14,11,9])+fut('nba','NBA champion','$6.8M traded · Settles in June',[24,17,12,8])+mvp;
   // 3) popular props (real cards: picks and player sheets work)
   const props=cpPool().slice(0,12).map(([g,i])=>cpCard(g,i)).join('');
@@ -2441,7 +2490,8 @@ function homeExtras(){const root=scroll.firstElementChild;if(!root||root.querySe
     ${soon?H('Starting soon')+`<div class="hx-card hx-list">${soon}</div>`:''}
     ${H('Most traded','Today')}<div class="hx-card hx-list">${top}</div>
     <p class="hx-note">Demo data. Prices, moves and volumes on this page are sample figures.</p></div>`);
-  root.querySelector('.hx').addEventListener('click',e=>{if(e.target.closest('[data-hxfut]')){e.preventDefault();e.stopPropagation();toast('Futures aren’t in this demo yet');}});}
+  root.querySelector('.hx').addEventListener('click',e=>{const f=e.target.closest('[data-fut]');if(f||e.target.closest('[data-hxfut]')){e.preventDefault();e.stopPropagation();openFut(f?f.dataset.fut:null);}});
+  root.querySelector('.hx').addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-fut]')){e.preventDefault();openFut(e.target.dataset.fut);}});}
 // ---------- v3.1.22: game pages show one compact line, "NBA · Knicks @ Timberwolves", instead of the sport label over a large title ----------
 function gmTitleRow(){if(!/^F(Game|GameLive|Props|AltSpread)$/.test(S.screen))return;const h=scroll.querySelector('h1');const lab=h&&h.previousElementSibling;const box=h&&h.parentElement;
   if(!h||!lab||lab.tagName!=='SPAN'||box.dataset.row)return;box.dataset.row='1';
@@ -2566,7 +2616,7 @@ function gmPost(){
   if(S.screen==='FGameLive'&&!scroll.querySelector('[data-gpprops]')){const sp=[...scroll.querySelectorAll('div')].find(d=>d.style.height==='120px'&&d.style.flex.startsWith('0'));const h=propsSection(GD['nfl-IND-HOU']);if(sp)sp.insertAdjacentHTML('beforebegin',h);}
   if(/^FList(NBA|Cleared)?$/.test(S.screen))listApply();
   if(S.screen==='FPortfolio'&&S.pfTab==='settled')settledApply();
-  pbpAvatars();gmLiveInit();chatApply();priceSync();comboApply();playerApply();}
+  pbpAvatars();gmLiveInit();chatApply();priceSync();comboApply();playerApply();futApply();}
 // ---------- v2.9.1: Players tab in the combo builder ----------
 S.ctab=S.ctab||'nfl';
 const CP_ICON={nfl:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><ellipse cx="12" cy="12" rx="9" ry="5.5" transform="rotate(-35 12 12)"/><path d="M9.5 14.5 L14.5 9.5"/></svg>',
@@ -2797,6 +2847,53 @@ function insetSet(z){const T=z?safeTop():-1;const on=T>=0;const tz=Math.max(T/z,
 {let lh=0,n=0;const tick=()=>{if(window.innerHeight!==lh){lh=window.innerHeight;fit();}if(++n<40)setTimeout(tick,n<20?100:500);};setTimeout(tick,50);
  if(window.visualViewport)window.visualViewport.addEventListener('resize',()=>{if(window.innerHeight!==lh){lh=window.innerHeight;fit();}});}
 window.addEventListener('resize',()=>{fit();});window.addEventListener('orientationchange',()=>setTimeout(fit,300));window.addEventListener('pageshow',()=>fit());setTimeout(fit,400);
+
+// ---------- v3.1.32: futures (season-long markets) — an index and one page per market ----------
+DARK.add('FFuture');
+SCR.FFuture='<div data-fit data-futroot style="width:390px;min-height:100%;box-sizing:border-box;background-color:#08071A"></div>';
+SCR.FLFuture='<div data-fit data-futroot style="width:390px;min-height:100%;box-sizing:border-box;background-color:#F6F6F9"></div>';
+function futAll(){const all=Object.values(GD).filter(g=>g&&g.title&&g.pa!=null);const names={nfl:{},nba:{}};all.forEach(g=>{if(names[g.lg]){names[g.lg][g.a]=g.an;names[g.lg][g.h]=g.hn;}});
+  const tail=(top,n)=>{const o=top.slice();while(o.length<n)o.push(Math.max(1,Math.round(o[o.length-1]*0.8)));return o.slice(0,n);};
+  const team=(id,lg,title,short,vol,settle,top,total)=>{const codes=Object.keys(names[lg]),p=tail(top,codes.length);
+    return {id,lg,title,short,vol,settle,total,unit:'teams',rows:codes.map((c,k)=>({key:c,nm:names[lg][c],c,p:p[k],fill:gcol(lg,c)[0],av:z=>tileSvg(lg,c,z)}))};};
+  const pl=[];all.forEach(g=>(g.props||[]).forEach(p=>{if(g.lg==='nba'&&!pl.some(x=>x.p.nm===p.nm))pl.push({g,p});}));const pp=tail([31,22,14,9],pl.length);
+  const mvp={id:'mvp',lg:'nba',title:'NBA MVP',short:'MVP',vol:'$1.9M',settle:'Settles in June',total:22,unit:'players',
+    rows:pl.map((x,k)=>({key:x.p.nm,nm:x.p.nm,c:x.p.c,p:pp[k],pl:1,sub:x.g.a===x.p.c?x.g.an:x.g.hn,fill:gcol('nba',x.p.c)[0],av:z=>avatar('nba',x.p.nm,x.p.c,z)}))};
+  return [team('sb','nfl','Super Bowl winner','the Super Bowl','$4.2M','Settles Feb 14',[19,14,11,9],32),team('nbac','nba','NBA champion','the NBA title','$6.8M','Settles in June',[24,17,12,8],30),mvp].filter(m=>m.rows.length>=2);}
+function futPick(m,r){return {id:'fut|'+m.id+'|'+r.key,mk:'fut|'+m.id,game:'fut-'+m.id,label:m.title,code:r.c,pl:r.pl?r.nm:undefined,name:r.nm,t:`${r.nm} to win ${m.short}`,p:r.p,fill:r.fill};}
+function openFut(id){const here=S.screen==='FFuture';S.futIdx=here&&!S.fut&&!!id;if(!here)S.futBack=S.screen;S.fut=id||null;if(here){render();}else go('FFuture');}
+const FU_BACK='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5 L8 12 L15 19"/></svg>';
+function futChart(m){const r=l5Seed('fut-'+m.id),top=m.rows.slice(0,3),N=26,W=326,H=112;const col=['#B79CFF','#2EE59D','#9E9BBD'];
+  const ser=top.map(x=>{const a=[x.p];for(let k=1;k<N;k++)a.unshift(Math.max(1,a[0]+(r()-0.54)*3.2));return a;});
+  const lo=Math.min(...ser.flat())-1,hi=Math.max(...ser.flat())+1,Y=v=>(H-6-(v-lo)/(hi-lo)*(H-14)).toFixed(1),X=k=>(k/(N-1)*W).toFixed(1);
+  const grid=[0.25,0.5,0.75].map(f=>`<line x1="0" x2="${W}" y1="${(H*f).toFixed(0)}" y2="${(H*f).toFixed(0)}" stroke="var(--line)" stroke-width="1"/>`).join('');
+  return `<section class="gp-card fu-ch"><div class="fu-lg">${top.map((x,k)=>`<span><i style="background:${col[k]}"></i>${x.nm.split(' ').pop()} <b>${x.p}%</b></span>`).join('')}</div>
+    <svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" role="img" aria-label="Price over the last 30 days for ${top.map(x=>x.nm).join(', ')}" style="display:block;overflow:visible">${grid}
+    ${ser.map((a,k)=>`<polyline fill="none" stroke="${col[k]}" stroke-width="${k?1.8:2.4}" stroke-linecap="round" stroke-linejoin="round" points="${a.map((v,i)=>X(i)+','+Y(v)).join(' ')}"/><circle cx="${W}" cy="${Y(a[N-1])}" r="${k?3:4}" fill="${col[k]}"/>`).join('')}</svg>
+    <div class="fu-ax"><span>30 days ago</span><span>Today</span></div></section>`;}
+function futPage(){const ms=futAll();const m=S.fut&&ms.find(x=>x.id===S.fut);
+  const head=(lab,title,sub)=>`<header class="fu-hd"><button class="fu-back" data-futback aria-label="Back">${FU_BACK}</button><div class="fu-tt"><div class="fu-t1">${lab?`<span>${lab}</span><span aria-hidden="true">·</span>`:''}<h1>${title}</h1></div><small>${sub}</small></div></header>`;
+  if(!m)return `<div class="fu">${head('','Futures','Season-long markets · Sports only')}
+    ${ms.map(x=>`<a href="#" class="gp-card fu-ix" data-fut="${x.id}" aria-label="${x.title}, open market"><div class="hd"><span><b>${x.title}</b><small>${x.lg.toUpperCase()} · ${x.vol} traded · ${x.settle}</small></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></div>
+      ${x.rows.slice(0,3).map(r=>`<div class="hx-fr" style="--tc:${r.fill}">${r.av(28)}<span class="nm"><span>${r.nm}</span><i><u style="width:${Math.min(100,r.p*3)}%"></u></i></span><em>${r.p}%</em></div>`).join('')}
+      <span class="ft">+ ${x.total-3} more ${x.unit}</span></a>`).join('')}
+    <p class="gp-note">Demo data. Futures prices and volumes are sample figures.</p></div>`;
+  const r=l5Seed('futd-'+m.id);
+  return `<div class="fu">${head(m.lg.toUpperCase(),m.title,`${m.vol} traded · ${m.settle}`)}
+    ${futChart(m)}
+    <div class="fu-lh"><h2>All ${m.unit}</h2><small>Chance to win</small></div>
+    <section class="gp-card fu-list">${m.rows.map((x,k)=>{let d=Math.round((r()-0.45)*6);if(x.p<=2)d=0;
+      return `<div class="fu-row" data-futrow="${x.key}"><span class="rk">${k+1}</span>${x.av(32)}<span class="nm"><b>${x.nm}</b><small>${x.sub?x.sub+' · ':''}<i class="${d>0?'up':d<0?'dn':''}">${d>0?'▲ '+d:d<0?'▼ '+(-d):'No change'}</i>${d&&!x.sub?' this week':''}</small></span>
+        <button class="fu-b" data-futpick="${x.key}" style="--tc:${x.fill}" aria-pressed="false" aria-label="${x.nm} to win ${m.short}, ${x.p}%"><b>${x.p}%</b><small>Yes</small></button></div>`;}).join('')}</section>
+    <p class="gp-note">${m.total-m.rows.length>0?`${m.total-m.rows.length} more ${m.unit} trade in the full market. `:''}Demo data: prices, moves and volume are sample figures. A pick pays out if it wins when the market settles.</p></div>`;}
+function futApply(){if(S.screen!=='FFuture')return;const root=scroll.querySelector('[data-futroot]');if(!root)return;root.innerHTML=futPage();futMark();
+  if(!RM.matches)[...root.querySelectorAll('.fu>*')].forEach((x,k)=>x.animate([{opacity:0,transform:'translateY(12px)'},{opacity:1,transform:'none'}],{duration:380,delay:Math.min(k,6)*45,easing:'cubic-bezier(.32,.72,0,1)',fill:'backwards'}));}
+function futMark(){if(S.screen!=='FFuture'||!S.fut)return;const mk='fut|'+S.fut,has=S.picks.some(x=>x.mk===mk);
+  scroll.querySelectorAll('[data-futpick]').forEach(b=>{const on=S.picks.some(x=>x.id===mk+'|'+b.dataset.futpick);b.classList.toggle('on',on);b.classList.toggle('dim',has&&!on);b.setAttribute('aria-pressed',String(on));b.querySelector('small').textContent=on?'Picked':'Yes';});}
+document.addEventListener('click',e=>{if(S.screen!=='FFuture')return;const t=e.target;const stop=()=>{e.preventDefault();e.stopImmediatePropagation();};
+  if(t.closest('[data-futback]')){stop();if(S.fut&&S.futIdx){S.fut=null;S.futIdx=false;render();}else go(S.futBack&&S.futBack!=='FFuture'?S.futBack:'FHome');return;}
+  const b=t.closest('[data-futpick]');if(b){stop();const m=futAll().find(x=>x.id===S.fut),r=m&&m.rows.find(x=>x.key===b.dataset.futpick);if(r){pickAdd(futPick(m,r));if(!RM.matches)b.animate([{transform:'scale(.94)'},{transform:'scale(1.04)'},{transform:'scale(1)'}],{duration:260,easing:'cubic-bezier(.22,1,.36,1)'});}return;}
+  const f=t.closest('#scroll [data-fut]');if(f){stop();openFut(f.dataset.fut);}},true);
 
 // ---------- v3.1.0: player page (tap a player on any prop card) ----------
 DARK.add('FPlayer');
