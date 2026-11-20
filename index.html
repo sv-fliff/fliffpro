@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#08071A">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Fliff Pro">
 <meta name="robots" content="noindex, nofollow">
 <link rel="manifest" href="manifest.webmanifest">
@@ -37,12 +37,18 @@ html,body{height:100%;margin:0;background:var(--frame);font-family:'FP Num','Int
    The min() cap keeps this a no-op with an opaque status bar; outside an installed app the rule never applies. */
 @media (display-mode: standalone){html{min-height:min(100lvh,calc(100% + env(safe-area-inset-top,0px)))}}
 html.fp-sa{min-height:min(100lvh,calc(100% + env(safe-area-inset-top,0px)))}
-/* v3.1.23: installed iPhone app only. A small fixed strip exactly covers the status bar zone with the page colour and nothing else. iOS 26 skips its
-   edge blur only when the box at the top edge is a compact fixed bar with a plain colour; a screen-sized fixed container does not count.
-   Nothing scrolls under this zone any more, so the strip hides no content. It dims with the scrim so sheets still darken the whole screen. */
-#fp-topcap{display:none;position:fixed;left:0;right:0;top:0;height:var(--capH,env(safe-area-inset-top,0px));z-index:2147482000;background-color:#08071A;transition:background-color .3s ease-out}
+/* v3.1.24: installed app. iOS 26 lays a blur over the top of a home-screen web app, and under a translucent status bar nothing a page does turns it off.
+   The app now installs with the standard (opaque) status bar. There, iOS skips the blur when a fixed, full-width band over 10px tall with a plain
+   background colour sits at the top edge, and it uses that colour for the status bar. This band is that element: background-clip:text means it
+   paints nothing, so the page looks unchanged while WebKit still reads its colour. It tracks the scrim so the status bar dims with sheets. */
+#fp-topcap{display:none;position:fixed;left:0;right:0;top:0;height:12px;z-index:2147483600;pointer-events:none;background-color:#08071A;-webkit-background-clip:text;background-clip:text;transition:background-color .3s ease-out}
 :root[data-theme="light"] #fp-topcap{background-color:#F6F6F9}
-html.fp-cap #fp-topcap{display:block}
+@media (display-mode: standalone){#fp-topcap{display:block}}
+html.fp-sa #fp-topcap{display:block}
+/* icons added before v3.1.24 still run under the translucent status bar: there the strip stays a painted, opaque cover for the status bar zone */
+html.fp-cap #fp-topcap{display:block;height:var(--capH,env(safe-area-inset-top,0px));-webkit-background-clip:border-box;background-clip:border-box;pointer-events:auto;z-index:2147482000}
+#fp-topcap.dim{background-color:#060514}
+:root[data-theme="light"] #fp-topcap.dim{background-color:#909095}
 /* the page backdrop (glows) fades in below the strip, so the strip's flat colour meets it without a visible edge */
 #vp.fp-inset #bg{-webkit-mask-image:linear-gradient(transparent var(--st),#000 calc(var(--st) + 110px));mask-image:linear-gradient(transparent var(--st),#000 calc(var(--st) + 110px))}
 #fp-topcap.dim{background-color:#060514}
@@ -1000,7 +1006,7 @@ const unmf=h=>h.replace(/<span data-mw(?:="")?>((?:[^<]|<span data-m(?:="")? [^>
 const scroll=document.getElementById('scroll'),ov=document.getElementById('ov'),vp=document.getElementById('vp');
 let toastEl=null,toastT=null;
 function isLight(){return document.documentElement.getAttribute('data-theme')==='light';}
-const INS={st:0,D:0};   // installed-app top inset in app px: st = status bar zone, D = st minus the 44px the screens were drawn for
+const INS={st:0,D:0,on:false};   // installed-app top inset in app px: st = status bar zone, D = st minus the 44px the screens were drawn for
 function render(keep){
   gmSync();let key=isLight()?lightName(S.screen):S.screen;if(S.gm&&(S.screen==='FGame'||S.screen==='FProps')&&SCR[key+'T'])key+='T';
   let html=SCR[key];
@@ -1053,7 +1059,7 @@ function go(name,opts){
 function menu(){
   const sc=document.createElement('div');sc.className='fp-scrim';const sh=document.createElement('div');sh.className='fp-sheet';sh.setAttribute('role','dialog');sh.setAttribute('aria-modal','true');
   const t=S.theme;
-  sh.innerHTML=`<span class="g"></span><h3>Settings</h3>${[['system','Match my device'],['dark','Dark'],['light','Light']].map(([v,n])=>`<button class="o" data-theme-v="${v}"><span>${n}</span>${t===v?'<b>✓</b>':''}</button>`).join('')}<button class="o" data-kal="1" role="switch" aria-checked="${KAL.on}"><span class="kl"><span>Live Kalshi data</span><small>Real NFL prices on Home and Games</small></span><i class="fp-sw${KAL.on?' on':''}" aria-hidden="true"></i></button><button class="o" data-tips="1"><span>Replay feature tips</span></button><button class="o" data-reset="1"><span>Reset demo</span></button><p>Clickable prototype with demo money. Placing an order takes cash and adds it to Portfolio; closing a trade gives the money back.<br><span style="opacity:.7">Prototype v3.1.23</span></p>`;
+  sh.innerHTML=`<span class="g"></span><h3>Settings</h3>${[['system','Match my device'],['dark','Dark'],['light','Light']].map(([v,n])=>`<button class="o" data-theme-v="${v}"><span>${n}</span>${t===v?'<b>✓</b>':''}</button>`).join('')}<button class="o" data-kal="1" role="switch" aria-checked="${KAL.on}"><span class="kl"><span>Live Kalshi data</span><small>Real NFL prices on Home and Games</small></span><i class="fp-sw${KAL.on?' on':''}" aria-hidden="true"></i></button><button class="o" data-tips="1"><span>Replay feature tips</span></button><button class="o" data-reset="1"><span>Reset demo</span></button><p>Clickable prototype with demo money. Placing an order takes cash and adds it to Portfolio; closing a trade gives the money back.<br><span style="opacity:.7">Prototype v3.1.24</span></p>`;
   const close=()=>{sc.remove();sh.remove();};sc.onclick=close;
   sh.onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.themeV){S.theme=b.dataset.themeV;try{localStorage.setItem('fpTheme2',S.theme)}catch(_){}applyTheme();close();render(true);}if(b.dataset.kal){const on=!KAL.on;kalSet(on);b.setAttribute('aria-checked',String(on));b.querySelector('.fp-sw').classList.toggle('on',on);setTimeout(()=>{close();render(true);toast(on?'Live prices on':'Live prices off');},260);return;}if(b.dataset.tips){try{localStorage.removeItem('fpTipNba')}catch(_){}close();toast('Tips will show again');return;}if(b.dataset.reset){S.picks=[];S.betAmt='';S.cash=2418.50;S.pos=BASE_POS();S.amt='50';close();S.screen='FHome';render();toast('Demo reset');}};
   vp.appendChild(sc);vp.appendChild(sh);}
@@ -2522,10 +2528,11 @@ function fit(){const w=window.innerWidth,st=vp.parentElement;
 new MutationObserver(()=>{const tc=document.getElementById('fp-topcap');if(tc)tc.classList.toggle('dim',!!vp.querySelector(':scope > .fp-scrim'));}).observe(vp,{childList:true});
 function safeTop(){const t=/[#&]inset=(\d+)/.exec(location.hash);if(t)return +t[1];   // #inset=59 lets the layout be checked in a desktop browser
   let sa=false;try{sa=navigator.standalone===true||matchMedia('(display-mode: standalone)').matches;}catch(_){}
-  if(!sa)return 0;const d=document.createElement('div');d.style.cssText='position:fixed;left:0;top:0;width:1px;visibility:hidden;padding-top:env(safe-area-inset-top,0px)';
+  if(!sa)return -1;const d=document.createElement('div');d.style.cssText='position:fixed;left:0;top:0;width:1px;visibility:hidden;padding-top:env(safe-area-inset-top,0px)';
   document.body.appendChild(d);const v=parseFloat(getComputedStyle(d).paddingTop)||0;d.remove();return v;}
-function insetSet(z){const T=z?safeTop():0;const on=T>=20;const st=on?Math.round(T/z*100)/100:0,D=on?Math.max(0,Math.round((T/z-44)*100)/100):0;
-  if(st===INS.st&&D===INS.D)return;INS.st=st;INS.D=D;vp.classList.toggle('fp-inset',on);document.documentElement.classList.toggle('fp-cap',on);
+function insetSet(z){const T=z?safeTop():-1;const on=T>=0;const tz=Math.max(T/z,6);   // with the opaque status bar the inset is 0: keep 6px of air under it
+  const st=on?Math.round(tz*100)/100:0,D=on?Math.round((tz-44)*100)/100:0;
+  if(st===INS.st&&D===INS.D&&on===INS.on)return;INS.on=on;INS.st=st;INS.D=D;vp.classList.toggle('fp-inset',on);document.documentElement.classList.toggle('fp-cap',on&&T>=20);if(on)document.documentElement.classList.add('fp-sa');
   {const tc=document.getElementById('fp-topcap');if(tc){if(/[#&]inset=/.test(location.hash))tc.style.setProperty('--capH',T+'px');else tc.style.removeProperty('--capH');}}vp.style.setProperty('--st',st+'px');vp.style.setProperty('--sx',D+'px');
   if(scroll.firstElementChild)render(true);}
 // iOS can grow the window a moment after launch without firing resize: re-check for the first seconds and whenever the window size changes
