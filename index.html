@@ -1023,7 +1023,7 @@ function render(keep){
   if(keep)scroll.scrollTop=st;else{scroll.scrollTop=0;
     if(root){const sh=[...root.querySelectorAll('div')].find(el=>el.style.position==='absolute'&&el.style.bottom==='0px'&&(!el.style.top||el.style.top==='auto')&&el.offsetHeight>vp.clientHeight*0.5);
       if(sh)scroll.scrollTop=Math.max(0,sh.offsetTop-24);}}
-  if(S.screen==='FHome'){homeExtras();liveApply();}tagBars();dockFab();if(S.screen==='FGameLive'){GP.shown=-1;applyGame(false);}if(S.screen==='FGame'){chartInit();gmChart();}gmPost();stickyBuild();acApply();pnlApply();kalEnter();pickPaint();drawerize();if(toastEl)ov.appendChild(toastEl);
+  if(S.screen==='FHome'){homeExtras();liveApply();}tagBars();dockFab();if(S.screen==='FGameLive'){GP.shown=-1;applyGame(false);}if(S.screen==='FGame'){chartInit();gmChart();}gmPost();gmTitleRow();stickyBuild();acApply();pnlApply();kalEnter();pickPaint();drawerize();if(toastEl)ov.appendChild(toastEl);
 }
 FN.notBuilt=()=>toast('This game’s page isn’t built in the prototype');
 // one live game, one clock: every Colts–Texans and Knicks–Wolves mention outside its own page follows the play engine
@@ -1043,7 +1043,7 @@ function go(name,opts){
 function menu(){
   const sc=document.createElement('div');sc.className='fp-scrim';const sh=document.createElement('div');sh.className='fp-sheet';sh.setAttribute('role','dialog');sh.setAttribute('aria-modal','true');
   const t=S.theme;
-  sh.innerHTML=`<span class="g"></span><h3>Settings</h3>${[['system','Match my device'],['dark','Dark'],['light','Light']].map(([v,n])=>`<button class="o" data-theme-v="${v}"><span>${n}</span>${t===v?'<b>✓</b>':''}</button>`).join('')}<button class="o" data-kal="1" role="switch" aria-checked="${KAL.on}"><span class="kl"><span>Live Kalshi data</span><small>Real NFL prices on Home and Games</small></span><i class="fp-sw${KAL.on?' on':''}" aria-hidden="true"></i></button><button class="o" data-tips="1"><span>Replay feature tips</span></button><button class="o" data-reset="1"><span>Reset demo</span></button><p>Clickable prototype with demo money. Placing an order takes cash and adds it to Portfolio; closing a trade gives the money back.<br><span style="opacity:.7">Prototype v3.1.21</span></p>`;
+  sh.innerHTML=`<span class="g"></span><h3>Settings</h3>${[['system','Match my device'],['dark','Dark'],['light','Light']].map(([v,n])=>`<button class="o" data-theme-v="${v}"><span>${n}</span>${t===v?'<b>✓</b>':''}</button>`).join('')}<button class="o" data-kal="1" role="switch" aria-checked="${KAL.on}"><span class="kl"><span>Live Kalshi data</span><small>Real NFL prices on Home and Games</small></span><i class="fp-sw${KAL.on?' on':''}" aria-hidden="true"></i></button><button class="o" data-tips="1"><span>Replay feature tips</span></button><button class="o" data-reset="1"><span>Reset demo</span></button><p>Clickable prototype with demo money. Placing an order takes cash and adds it to Portfolio; closing a trade gives the money back.<br><span style="opacity:.7">Prototype v3.1.22</span></p>`;
   const close=()=>{sc.remove();sh.remove();};sc.onclick=close;
   sh.onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.themeV){S.theme=b.dataset.themeV;try{localStorage.setItem('fpTheme2',S.theme)}catch(_){}applyTheme();close();render(true);}if(b.dataset.kal){const on=!KAL.on;kalSet(on);b.setAttribute('aria-checked',String(on));b.querySelector('.fp-sw').classList.toggle('on',on);setTimeout(()=>{close();render(true);toast(on?'Live prices on':'Live prices off');},260);return;}if(b.dataset.tips){try{localStorage.removeItem('fpTipNba')}catch(_){}close();toast('Tips will show again');return;}if(b.dataset.reset){S.picks=[];S.betAmt='';S.cash=2418.50;S.pos=BASE_POS();S.amt='50';close();S.screen='FHome';render();toast('Demo reset');}};
   vp.appendChild(sc);vp.appendChild(sh);}
@@ -2170,6 +2170,14 @@ function homeExtras(){const root=scroll.firstElementChild;if(!root||root.querySe
     ${H('Most traded','Today')}<div class="hx-card hx-list">${top}</div>
     <p class="hx-note">Demo data. Prices, moves and volumes on this page are sample figures.</p></div>`);
   root.querySelector('.hx').addEventListener('click',e=>{if(e.target.closest('[data-hxfut]')){e.preventDefault();e.stopPropagation();toast('Futures aren’t in this demo yet');}});}
+// ---------- v3.1.22: game pages show one compact line, "NBA · Knicks @ Timberwolves", instead of the sport label over a large title ----------
+function gmTitleRow(){if(!/^F(Game|GameLive|Props|AltSpread)$/.test(S.screen))return;const h=scroll.querySelector('h1');const lab=h&&h.previousElementSibling;const box=h&&h.parentElement;
+  if(!h||!lab||lab.tagName!=='SPAN'||box.dataset.row)return;box.dataset.row='1';
+  const lg=/NBA/.test(lab.textContent)?'NBA':/NFL/.test(lab.textContent)?'NFL':lab.textContent.split('·').pop().trim();
+  lab.textContent=lg;lab.style.flex='none';lab.style.fontWeight='600';
+  const dot=document.createElement('span');dot.textContent='·';dot.setAttribute('aria-hidden','true');dot.style.cssText='flex:none;font-size:13px;color:'+lab.style.color;box.insertBefore(dot,h);
+  box.style.flexDirection='row';box.style.alignItems='baseline';box.style.gap='6px';
+  h.style.fontSize='15px';h.style.lineHeight='20px';h.style.fontWeight='600';h.style.letterSpacing='0';h.style.minWidth='0';h.style.whiteSpace='nowrap';h.style.overflow='hidden';h.style.textOverflow='ellipsis';}
 function altBtn(pick,lab,p,col){return `<button data-bezel="1" class="gp-b" data-pick="${pick}" data-pc="${col}"><span><b>${lab}</b><small>${p}%</small></span></button>`;}
 function altSheet(kind,pi){const g=S.gm;if(!g)return;const ca=gcol(g.lg,g.a)[0],chh=gcol(g.lg,g.h)[0];let rows='',title,sub=g.title;const cl=v=>Math.round(Math.max(3,Math.min(97,v)));
   if(kind==='sp'){title='Alternate spreads';const b0=num(g.sa);const st=g.lg==='nba'?3:4;
