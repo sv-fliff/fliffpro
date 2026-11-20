@@ -991,7 +991,7 @@ function go(name,opts){
 function menu(){
   const sc=document.createElement('div');sc.className='fp-scrim';const sh=document.createElement('div');sh.className='fp-sheet';sh.setAttribute('role','dialog');sh.setAttribute('aria-modal','true');
   const t=S.theme;
-  sh.innerHTML=`<span class="g"></span><h3>Settings</h3>${[['system','Match my device'],['dark','Dark'],['light','Light']].map(([v,n])=>`<button class="o" data-theme-v="${v}"><span>${n}</span>${t===v?'<b>✓</b>':''}</button>`).join('')}<button class="o" data-kal="1" role="switch" aria-checked="${KAL.on}"><span class="kl"><span>Live Kalshi data</span><small>Real NFL prices on Home and Games</small></span><i class="fp-sw${KAL.on?' on':''}" aria-hidden="true"></i></button><button class="o" data-tips="1"><span>Replay feature tips</span></button><button class="o" data-reset="1"><span>Reset demo</span></button><p>Clickable prototype with demo money. Placing an order takes cash and adds it to Portfolio; closing a trade gives the money back.<br><span style="opacity:.7">Prototype v3.1.17</span></p>`;
+  sh.innerHTML=`<span class="g"></span><h3>Settings</h3>${[['system','Match my device'],['dark','Dark'],['light','Light']].map(([v,n])=>`<button class="o" data-theme-v="${v}"><span>${n}</span>${t===v?'<b>✓</b>':''}</button>`).join('')}<button class="o" data-kal="1" role="switch" aria-checked="${KAL.on}"><span class="kl"><span>Live Kalshi data</span><small>Real NFL prices on Home and Games</small></span><i class="fp-sw${KAL.on?' on':''}" aria-hidden="true"></i></button><button class="o" data-tips="1"><span>Replay feature tips</span></button><button class="o" data-reset="1"><span>Reset demo</span></button><p>Clickable prototype with demo money. Placing an order takes cash and adds it to Portfolio; closing a trade gives the money back.<br><span style="opacity:.7">Prototype v3.1.18</span></p>`;
   const close=()=>{sc.remove();sh.remove();};sc.onclick=close;
   sh.onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.themeV){S.theme=b.dataset.themeV;try{localStorage.setItem('fpTheme2',S.theme)}catch(_){}applyTheme();close();render(true);}if(b.dataset.kal){const on=!KAL.on;kalSet(on);b.setAttribute('aria-checked',String(on));b.querySelector('.fp-sw').classList.toggle('on',on);setTimeout(()=>{close();render(true);toast(on?'Live prices on':'Live prices off');},260);return;}if(b.dataset.tips){try{localStorage.removeItem('fpTipNba')}catch(_){}close();toast('Tips will show again');return;}if(b.dataset.reset){S.picks=[];S.betAmt='';S.cash=2418.50;S.pos=BASE_POS();S.amt='50';close();S.screen='FHome';render();toast('Demo reset');}};
   vp.appendChild(sc);vp.appendChild(sh);}
@@ -1409,16 +1409,17 @@ function stickyBuild(){STK=null;const scr=S.screen;if(scr!=='FGame'&&scr!=='FGam
       <span data-stk="s1" style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;font-variant-numeric:tabular-nums;line-height:1">${p.sc[1]}</span>${tileHtml('HOU',22)}</span>`
     :`<span style="display:flex;align-items:center;gap:8px">${tileHtml(S.gm?S.gm.a:'ARI',22)}<span style="display:flex;flex-direction:column;align-items:center;line-height:1.15"><b style="font-size:15px">${S.gm?S.gm.title:'Cardinals @ Chiefs'}</b><span style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:${S.gm&&S.gm.live?red:mu}">${S.gm?(S.gm.live?'● LIVE':S.gm.when.toUpperCase()):'SUN 1:00 PM'}</span></span>${tileHtml(S.gm?S.gm.h:'KC',22)}</span>`;
   const el=document.createElement('div');el.className='fp-stk';el.setAttribute('aria-hidden','true');
-  el.style.cssText=`position:absolute;left:0;right:0;top:0;z-index:40;padding:44px 0 8px;background:${L?'rgba(246,246,249,0.86)':'rgba(8,7,26,0.84)'};backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);border-bottom:1px solid ${line};color:${ink}`;
+  el.style.cssText=`position:absolute;left:0;right:0;top:0;z-index:40;padding:44px 0 8px;color:${ink}`;
+  const sbg=document.createElement('div');sbg.setAttribute('aria-hidden','true');sbg.style.cssText=`position:absolute;left:0;right:0;top:0;z-index:39;pointer-events:none;box-sizing:border-box;opacity:0;border-bottom:1px solid ${line}`;
   el.innerHTML=`<div style="display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:0 12px 8px">${games.map(chip).join('')}</div>
     <div style="display:flex;align-items:center;gap:8px;padding:0 12px"><a href="${back}" aria-label="Back" style="flex:none;width:34px;height:34px;border-radius:17px;display:flex;align-items:center;justify-content:center;background:${chipBg};border:1px solid ${line}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="${ink}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5 L8 12 L15 19"/></svg></a>
     <div style="flex:1;display:flex;justify-content:center">${mid}</div><span style="flex:none;width:34px"></span></div>`;
   el.addEventListener('click',e=>{const c=e.target.closest('[data-stk-chip]');if(c){e.preventDefault();e.stopPropagation();if(c.dataset.stkChip==='me')scroll.scrollTo({top:0,behavior:RM.matches?'auto':'smooth'});else if(c.dataset.stkChip.startsWith('gm:'))openGame(c.dataset.stkChip.slice(3));else if(c.dataset.stkChip!=='x')go(c.dataset.stkChip);else FN.notBuilt();}},true);
-  ov.appendChild(el);const h1=scroll.querySelector('h1');
+  ov.appendChild(sbg);ov.appendChild(el);sbg.style.height=el.offsetHeight+'px';const h1=scroll.querySelector('h1');
   const root=scroll.firstElementChild;const topRow=root&&root.firstElementChild;const tabs=topRow&&topRow.nextElementSibling;
   const board=scroll.querySelector('[data-sb="D"]')||(h1&&h1.parentElement&&h1.parentElement.nextElementSibling);
   el.style.transition='none';el.style.opacity='0';
-  STK={el,game:1,rows:[...el.children],topRow,tabs,h1,board,start:h1?h1.offsetTop-175:60,end:h1?h1.offsetTop+h1.offsetHeight+(board?board.offsetHeight*0.6:0)-110:220,on:false,raf:0};
+  STK={el,sbg,game:1,rows:[...el.children],topRow,tabs,h1,board,start:h1?h1.offsetTop-175:60,end:h1?h1.offsetTop+h1.offsetHeight+(board?board.offsetHeight*0.6:0)-110:220,on:false,raf:0};
   [topRow,tabs,h1,board].forEach(x=>{if(x){x.style.transformOrigin='50% 0';x.style.willChange='transform,opacity';}});stickyScroll();}
 function stickyScroll(){if(!STK||!STK.el.isConnected)return;
   if(STK.game){if(STK.raf)return;STK.raf=requestAnimationFrame(()=>{STK.raf=0;stickyLink();});return;}const on=scroll.scrollTop>STK.at;if(on===STK.on)return;STK.on=on;STK.el.classList.toggle('on',on);STK.el.setAttribute('aria-hidden',on?'false':'true');}
@@ -1566,22 +1567,26 @@ function appStickyBuild(){if(!APPHDR.test(S.screen))return;const hd=scroll.query
 let HDR=null;
 function appHeaderPin(){HDR=null;if(!APPHDR.test(S.screen))return;const hd=scroll.querySelector('header');if(!hd)return;
   const L=isLight();const h=hd.offsetHeight;const ph=document.createElement('div');ph.style.height=h+'px';ph.setAttribute('aria-hidden','true');
-  hd.parentNode.insertBefore(ph,hd);ov.appendChild(hd);
+  hd.parentNode.insertBefore(ph,hd);
+  // v3.1.18: the frosted surface is a separate layer below the header. WebKit can draw a blurred parent's transformed children underneath its own blur, which smeared the logo and balance.
+  const bg=document.createElement('div');bg.setAttribute('aria-hidden','true');bg.style.cssText='position:absolute;left:0;right:0;top:0;z-index:39;pointer-events:none;box-sizing:border-box';ov.appendChild(bg);ov.appendChild(hd);
   hd.style.position='absolute';hd.style.left='0';hd.style.right='0';hd.style.top='0';hd.style.zIndex='40';hd.style.boxSizing='border-box';
   hd.style.color=L?'#12121C':'#F4F4F8';hd.classList.add('fp-hdr');
   const kids=[...hd.children];const menu=kids[0],logo=kids[1],pill=kids[kids.length-1];
   if(menu)menu.style.transformOrigin='left center';if(logo)logo.style.transformOrigin='left center';if(pill)pill.style.transformOrigin='right center';
-  HDR={hd,menu,logo,pill,L,raf:0};hdrUpdate();}
-function hdrUpdate(){if(!HDR||!HDR.hd.isConnected)return;const {hd,menu,logo,pill,L}=HDR;
+  hd.style.background='transparent';hd.style.backdropFilter='none';hd.style.webkitBackdropFilter='none';hd.style.borderBottom='none';
+  HDR={hd,bg,menu,logo,pill,L,raf:0};hdrUpdate();}
+function hdrUpdate(){if(!HDR||!HDR.hd.isConnected)return;const {hd,bg,menu,logo,pill,L}=HDR;
   const t=Math.min(1,Math.max(0,scroll.scrollTop/90));const e=t*t*(3-2*t); // smoothstep, follows the finger
   hd.style.paddingTop=(52-12*e)+'px';hd.style.paddingBottom=(10-6*e)+'px';
   const bgA=(L?0.74:0.68)*e,lnA=(L?0.10:0.10)*e;
-  hd.style.background=L?`rgba(246,246,249,${bgA})`:`rgba(8,7,26,${bgA})`;
-  const blur=`blur(${(24*e).toFixed(1)}px) saturate(${100+70*e}%)`;hd.style.backdropFilter=blur;hd.style.webkitBackdropFilter=blur;
-  hd.style.borderBottom=`0.5px solid ${L?`rgba(18,18,28,${lnA})`:`rgba(255,255,255,${lnA})`}`;
-  if(menu)menu.style.transform=`scale(${1-0.28*e})`;
-  if(logo)logo.style.transform=`translateX(${-6*e}px) scale(${1-0.3*e})`;
-  if(pill)pill.style.transform=`scale(${1-0.26*e})`;
+  bg.style.height=hd.offsetHeight+'px';bg.style.background=L?`rgba(246,246,249,${bgA})`:`rgba(8,7,26,${bgA})`;
+  const blur=e<0.02?'none':`blur(${(24*e).toFixed(1)}px) saturate(${100+70*e}%)`;bg.style.backdropFilter=blur;bg.style.webkitBackdropFilter=blur;
+  bg.style.borderBottom=`0.5px solid ${L?`rgba(18,18,28,${lnA})`:`rgba(255,255,255,${lnA})`}`;
+  const rest=e<0.002;
+  if(menu)menu.style.transform=rest?'':`scale(${1-0.28*e})`;
+  if(logo)logo.style.transform=rest?'':`translateX(${-6*e}px) scale(${1-0.3*e})`;
+  if(pill)pill.style.transform=rest?'':`scale(${1-0.26*e})`;
   hd.style.marginBottom=0;}
 scroll.addEventListener('scroll',()=>{if(!HDR||HDR.raf)return;HDR.raf=requestAnimationFrame(()=>{HDR.raf=0;hdrUpdate();});},{passive:true});
 
@@ -1605,12 +1610,12 @@ const sstep=(a,b,x)=>{const t=Math.min(1,Math.max(0,(x-a)/(b-a)));return t*t*(3-
 function stickyLink(){if(!STK||!STK.game||!STK.el.isConnected)return;const y=scroll.scrollTop;
   const p=sstep(STK.start,STK.end,y);                       // 0 = page header in charge, 1 = compact bar in charge
   const q=sstep(0,STK.start+60,y);                            // the other-games cards fold away first
-  const L=isLight();const {el,rows,topRow,tabs,h1,board}=STK;
+  const L=isLight();const {el,sbg,rows,topRow,tabs,h1,board}=STK;
   // compact bar arrives: surface fades in, chips drop into place, then the score line rises in
   el.style.opacity=String(Math.min(1,p*1.6));
-  el.style.background=L?`rgba(246,246,249,${0.86*p})`:`rgba(8,7,26,${0.84*p})`;
-  const bl=`blur(${(20*p).toFixed(1)}px) saturate(${100+40*p}%)`;el.style.backdropFilter=bl;el.style.webkitBackdropFilter=bl;
-  el.style.borderBottomColor=L?`rgba(18,18,28,${0.08*p})`:`rgba(255,255,255,${0.08*p})`;
+  sbg.style.opacity=p<0.01?'0':'1';sbg.style.height=el.offsetHeight+'px';sbg.style.background=L?`rgba(246,246,249,${0.86*p})`:`rgba(8,7,26,${0.84*p})`;
+  const bl=p<0.02?'none':`blur(${(20*p).toFixed(1)}px) saturate(${100+40*p}%)`;sbg.style.backdropFilter=bl;sbg.style.webkitBackdropFilter=bl;
+  sbg.style.borderBottomColor=L?`rgba(18,18,28,${0.08*p})`:`rgba(255,255,255,${0.08*p})`;
   const pc=sstep(0,0.7,p),ps=sstep(0.25,1,p);
   if(rows[0]){rows[0].style.transform=`translateY(${(-10*(1-pc)).toFixed(2)}px) scale(${(0.94+0.06*pc).toFixed(4)})`;rows[0].style.opacity=String(pc);rows[0].style.transformOrigin='50% 0';}
   if(rows[1]){rows[1].style.transform=`translateY(${(12*(1-ps)).toFixed(2)}px)`;rows[1].style.opacity=String(ps);}
