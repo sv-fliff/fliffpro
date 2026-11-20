@@ -565,14 +565,25 @@ a{color:#3D1BB8}a:hover{color:#12121C}
 .fp-cash .place{font-family:'Space Grotesk',sans-serif !important}
 
 
-/* v3.1.14: player page as a tall bottom sheet */
-.fp-sheet.pl-sheet{padding:0;height:calc(100% - 30px);max-height:none;overflow-y:auto;overscroll-behavior:contain;border-radius:28px 28px 0 0;background:var(--frame)}
-.pl-sheet>.g{position:sticky;top:8px;z-index:7;margin:8px auto -13px;background:rgba(255,255,255,0.4)}
+/* v3.1.15: player page = full-height page sheet. Patterns (Mobbin): card-stack sheet with a sliver of the screen behind (Mindtrip, Runbuds), hero collapsing into a compact title bar, tabs that stay put under it (FotMob, F1, theScore) */
+.fp-sheet.pl-sheet{top:max(12px,calc(env(safe-area-inset-top,0px) - 4px));bottom:0;height:auto;max-height:none !important;padding:0;overflow-y:auto;overscroll-behavior:contain;border-radius:28px 28px 0 0;background:var(--frame);box-shadow:0 -10px 40px rgba(4,3,12,0.35)}
+.pl-sheet>.g{position:sticky;top:8px;z-index:9;margin:8px auto -13px;background:rgba(255,255,255,0.45)}
 .pl-sheet .pl{padding-bottom:calc(36px + env(safe-area-inset-bottom))}
-.pl-sheet .pl-hero{padding-top:36px;border-radius:0 0 28px 28px}
+.pl-sheet .pl-hero{padding-top:34px;border-radius:0 0 28px 28px}
 .pl-sheet .pl-top{justify-content:flex-end}
 .pl-sheet .pl-bal{display:none}
 .pl-sheet .pl-back{width:36px;height:36px;border-radius:18px}
+.pl-mini{position:sticky;top:0;z-index:8;height:60px;margin-bottom:-60px;display:flex;align-items:center;gap:10px;padding:14px 14px 0 16px;box-sizing:border-box;color:#fff;border-radius:28px 28px 0 0;
+  background:linear-gradient(135deg,var(--h0),var(--h1));-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%);box-shadow:0 8px 24px -10px rgba(4,3,12,0.6);
+  opacity:0;transform:translateY(-12px);pointer-events:none;transition:opacity .2s ease-out,transform .34s cubic-bezier(.32,.72,0,1)}
+.pl-mini.on{opacity:1;transform:none;pointer-events:auto}
+.pl-mini .av{flex:none;display:flex;margin-top:6px}
+.pl-mini .tx{display:flex;flex-direction:column;min-width:0;flex:1;margin-top:6px}
+.pl-mini .tx b{font-size:16px;line-height:20px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pl-mini .tx small{font-size:12px;line-height:15px;opacity:.82;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pl-mini .x{flex:none;width:32px;height:32px;margin-top:6px;border-radius:16px;border:1px solid rgba(255,255,255,0.22);background:rgba(255,255,255,0.12);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.pl-sheet .pl-tabw{position:sticky;top:60px;z-index:6;padding:0 0 8px;background:linear-gradient(var(--frame) 78%,transparent)}
+.pl-sheet .pl-tabs{margin-top:12px;margin-bottom:0}
 /* v3.1.13: sheet motion lives in gSheet (Web Animations); touch drag from the grabber or a static sheet */
 .fp-sheet.fp-gs,.fp-scrim.fp-gs{animation:none !important}
 .fp-sheet.fp-gs>.g{position:relative;touch-action:none}
@@ -973,7 +984,7 @@ function go(name,opts){
 function menu(){
   const sc=document.createElement('div');sc.className='fp-scrim';const sh=document.createElement('div');sh.className='fp-sheet';sh.setAttribute('role','dialog');sh.setAttribute('aria-modal','true');
   const t=S.theme;
-  sh.innerHTML=`<span class="g"></span><h3>Settings</h3>${[['system','Match my device'],['dark','Dark'],['light','Light']].map(([v,n])=>`<button class="o" data-theme-v="${v}"><span>${n}</span>${t===v?'<b>✓</b>':''}</button>`).join('')}<button class="o" data-kal="1" role="switch" aria-checked="${KAL.on}"><span class="kl"><span>Live Kalshi data</span><small>Real NFL prices on Home and Games</small></span><i class="fp-sw${KAL.on?' on':''}" aria-hidden="true"></i></button><button class="o" data-tips="1"><span>Replay feature tips</span></button><button class="o" data-reset="1"><span>Reset demo</span></button><p>Clickable prototype with demo money. Placing an order takes cash and adds it to Portfolio; closing a trade gives the money back.<br><span style="opacity:.7">Prototype v3.1.14</span></p>`;
+  sh.innerHTML=`<span class="g"></span><h3>Settings</h3>${[['system','Match my device'],['dark','Dark'],['light','Light']].map(([v,n])=>`<button class="o" data-theme-v="${v}"><span>${n}</span>${t===v?'<b>✓</b>':''}</button>`).join('')}<button class="o" data-kal="1" role="switch" aria-checked="${KAL.on}"><span class="kl"><span>Live Kalshi data</span><small>Real NFL prices on Home and Games</small></span><i class="fp-sw${KAL.on?' on':''}" aria-hidden="true"></i></button><button class="o" data-tips="1"><span>Replay feature tips</span></button><button class="o" data-reset="1"><span>Reset demo</span></button><p>Clickable prototype with demo money. Placing an order takes cash and adds it to Portfolio; closing a trade gives the money back.<br><span style="opacity:.7">Prototype v3.1.15</span></p>`;
   const close=()=>{sc.remove();sh.remove();};sc.onclick=close;
   sh.onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.themeV){S.theme=b.dataset.themeV;try{localStorage.setItem('fpTheme2',S.theme)}catch(_){}applyTheme();close();render(true);}if(b.dataset.kal){const on=!KAL.on;kalSet(on);b.setAttribute('aria-checked',String(on));b.querySelector('.fp-sw').classList.toggle('on',on);setTimeout(()=>{close();render(true);toast(on?'Live prices on':'Live prices off');},260);return;}if(b.dataset.tips){try{localStorage.removeItem('fpTipNba')}catch(_){}close();toast('Tips will show again');return;}if(b.dataset.reset){S.picks=[];S.betAmt='';S.cash=2418.50;S.pos=BASE_POS();S.amt='50';close();S.screen='FHome';render();toast('Demo reset');}};
   vp.appendChild(sc);vp.appendChild(sh);}
@@ -2018,11 +2029,12 @@ function gSheet(html,cls,label){const swap=!!document.querySelector('.fp-sheet.f
   sh.addEventListener('pointermove',e=>{if(e.pointerType==='mouse'&&d)dMove(e.clientY);});
   sh.addEventListener('pointerup',e=>{if(e.pointerType==='mouse')dEnd();});
   sh.addEventListener('click',e=>{if(moved){e.stopImmediatePropagation();e.preventDefault();}},true);
+  if(/\bpl-sheet\b/.test(sh.className))sh.dataset.drawer='1';   // full-height sheet manages its own size
   vp.appendChild(sc);vp.appendChild(sh);
   if(!RM.matches){   // arrival: scrim fades, sheet rises on an iOS-style curve, content settles in a beat later
     if(!swap)sc.animate([{opacity:0},{opacity:1}],{duration:320,easing:'ease-out'});
     sh.animate([{transform:'translateY(100%)'},{transform:'translateY(0)'}],{duration:460,easing:EASE});
-    const kids=[];[...sh.children].forEach(c=>{if(c.classList.contains('g')||c.classList.contains('tp-x'))return;if(c.classList.contains('tp-list'))kids.push(...c.children);else kids.push(c);});
+    const kids=[];[...sh.children].forEach(c=>{if(c.classList.contains('g')||c.classList.contains('tp-x')||c.classList.contains('pl-mini'))return;if(c.classList.contains('tp-list'))kids.push(...c.children);else kids.push(c);});
     kids.forEach((c,k)=>c.animate([{opacity:0,transform:'translateY(16px)'},{opacity:1,transform:'translateY(0)'}],{duration:480,delay:150+k*55,easing:EASE,fill:'backwards'}));}
   return sh;}
 
@@ -2475,9 +2487,18 @@ function plPage(){const P=S.pl;const d=P&&plData(P.gid,P.nm);if(!d)return '<p cl
    <p class="gp-note pl-demo">Season stats, extra lines and game logs are demo data based on ${d.nm.split(' ').pop()}’s posted line for this game.</p></div>`;}
 function playerApply(){const sr=document.querySelector('.pl-sheet [data-plroot]');if(sr){const sh=sr.closest('.pl-sheet'),y=sh.scrollTop;sr.innerHTML=plSheetHtml();sh.scrollTop=y;pickPaint();return;}
   if(S.screen!=='FPlayer')return;const root=scroll.querySelector('[data-plroot]');if(!root)return;root.innerHTML=plPage();pickPaint();}
-function plSheetHtml(){return plPage().replace('data-plback aria-label="Back"','data-close="1" aria-label="Close"').replace('<path d="M15 6l-6 6 6 6"/>','<path d="M6 6l12 12M18 6L6 18"/>');}
-function openPlayer(gid,nm){if(!plData(gid,nm))return;S.pl={gid,nm};S.plTab='lines';
-  const sh=gSheet(`<div class="fp-alt" data-plroot>${plSheetHtml()}</div>`,'pl-sheet',nm+' player page');pickPaint();return sh;}
+function plSheetHtml(){return plPage().replace(/(<div class="pl-tabs"[^>]*>[\s\S]*?<\/div>)/,'<div class="pl-tabw">$1</div>').replace('data-plback aria-label="Back"','data-close="1" aria-label="Close"').replace('<path d="M15 6l-6 6 6 6"/>','<path d="M6 6l12 12M18 6L6 18"/>');}
+function openPlayer(gid,nm){const d=plData(gid,nm);if(!d)return;S.pl={gid,nm};S.plTab='lines';
+  const g=d.g,[f]=gcol(d.lg,d.p0.c),[h0,h1]=plHeroBg(f),tn=g.a===d.p0.c?g.an:g.hn;
+  const sub=`${tn} · ${d.p0.pos}${d.num!=null&&d.num!==''?' · #'+d.num:''}`;
+  const mini=`<div class="pl-mini" style="--h0:${h0};--h1:${h1}" aria-hidden="true"><span class="av">${avatar(d.lg,nm,d.p0.c,34)}</span><span class="tx"><b>${nm}</b><small>${sub}</small></span><button class="x" data-close="1" tabindex="-1" aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>`;
+  const sh=gSheet(`${mini}<div class="fp-alt" data-plroot>${plSheetHtml()}</div>`,'pl-sheet',nm+' player page');pickPaint();
+  // collapse the big hero into the compact header once the name has scrolled away
+  const mn=sh.querySelector('.pl-mini');let th=null,raf=0,on=false;
+  const calc=()=>{const nmEl=sh.querySelector('.pl-nm');if(!nmEl)return 140;return nmEl.getBoundingClientRect().bottom-sh.getBoundingClientRect().top+sh.scrollTop-62;};
+  const upd=()=>{raf=0;if(th===null||sh.scrollTop<4)th=calc();const y=sh.scrollTop,now=y>th;if(now!==on){on=now;mn.classList.toggle('on',on);mn.setAttribute('aria-hidden',String(!on));mn.querySelector('.x').tabIndex=on?0:-1;}sh.classList.toggle('scrolled',y>8);};
+  sh.addEventListener('scroll',()=>{if(!raf)raf=requestAnimationFrame(upd);},{passive:true});
+  return sh;}
 document.addEventListener('click',e=>{const t=e.target;
   if(S.screen==='FPlayer'||t.closest('.pl-sheet')){
     if(t.closest('[data-plback]')){e.preventDefault();e.stopImmediatePropagation();go(S.plBack&&S.plBack!=='FPlayer'?S.plBack:'FHome');return;}
