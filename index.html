@@ -37,6 +37,15 @@ html,body{height:100%;margin:0;background:var(--frame);font-family:'FP Num','Int
    The min() cap keeps this a no-op with an opaque status bar; outside an installed app the rule never applies. */
 @media (display-mode: standalone){html{min-height:min(100lvh,calc(100% + env(safe-area-inset-top,0px)))}}
 html.fp-sa{min-height:min(100lvh,calc(100% + env(safe-area-inset-top,0px)))}
+/* v3.1.20: installed iPhone app only (class set in fit()). No native scroll area may sit under the status bar: iOS 26 draws its soft edge blur over
+   any scroller that does. The page scroller now starts at the bottom of the status bar zone; the fixed #bg layer still paints behind it, so the
+   backdrop is unbroken. Screens were drawn for a 44px status bar, so content is pulled up by 44px and the overlay moves down by the difference. */
+#vp.fp-inset #scroll{top:var(--st)}
+#vp.fp-inset #scroll>div{position:relative;margin-top:-44px;min-height:calc(100% + 44px)}
+#vp.fp-inset #ov{top:var(--sx)}
+#vp.fp-inset .fp-sheet{max-height:calc(100% - var(--st) - 8px)}
+#vp.fp-inset .fp-sheet.pl-sheet{top:calc(var(--st) + 6px)}
+#vp.fp-inset .fp-sheet.fp-bet{height:calc(100% - var(--st) - 8px) !important}
 /* v3.1.19: iOS 26 lays a soft blur (scroll edge effect) over the top of an installed web app. There is no switch for it; WebKit only skips it when a
    fixed, full-width box with an opaque background covers the top edge. The stage is that box, so it must paint a solid colour. */
 #stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--frame)}
@@ -572,6 +581,44 @@ a{color:#3D1BB8}a:hover{color:#12121C}
 .fp-cash .place{font-family:'Space Grotesk',sans-serif !important}
 
 
+/* v3.1.20: Home, extra demo sections (movers, futures, popular props, starting soon, most traded) */
+.hx-h{display:flex;justify-content:space-between;align-items:baseline;margin:26px 20px 10px}
+.hx-h h2{margin:0;font-size:20px;font-weight:700}
+.hx-h small{font-size:13px;color:var(--mu)}
+.hx-h a{font-size:13px;font-weight:600;color:#D3C5FF;text-decoration:none}
+:root[data-theme="light"] .hx-h a{color:#4B25C9}
+.hx-row{display:flex;gap:10px;padding:0 16px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.hx-row::-webkit-scrollbar{display:none}
+.hx-card{flex:none;box-sizing:border-box;border-radius:18px;padding:12px 14px;color:var(--ink);text-decoration:none;background:rgba(28,25,41,0.70);-webkit-backdrop-filter:blur(26px) saturate(160%);backdrop-filter:blur(26px) saturate(160%);border:0.5px solid rgba(255,255,255,0.12);box-shadow:inset 0 1px 0 rgba(255,255,255,0.07)}
+:root[data-theme="light"] .hx-card{background:rgba(255,255,255,0.58);border-color:rgba(255,255,255,0.85);box-shadow:inset 0 1px 0 #FFFFFF,0 1px 2px rgba(18,18,28,0.04)}
+.hx-mv{width:164px;display:flex;flex-direction:column;gap:8px}
+.hx-mv .t{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--mu);white-space:nowrap}
+.hx-mv .t svg+svg{margin-left:-10px}
+.hx-mv .n{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hx-mv .p{display:flex;align-items:flex-end;justify-content:space-between;gap:8px}
+.hx-mv .p b{font:700 24px/26px 'Space Grotesk',sans-serif}
+.hx-ch{display:inline-flex;align-items:center;gap:3px;font:600 13px 'Space Grotesk',sans-serif;color:#2EE59D}
+.hx-ch.dn{color:#F87171}
+:root[data-theme="light"] .hx-ch{color:#0B9B68}:root[data-theme="light"] .hx-ch.dn{color:#D93B3B}
+.hx-mv svg.sp{color:#2EE59D}.hx-mv svg.sp.dn{color:#F87171}
+:root[data-theme="light"] .hx-mv svg.sp{color:#0B9B68}:root[data-theme="light"] .hx-mv svg.sp.dn{color:#D93B3B}
+.hx-fu{width:288px;display:flex;flex-direction:column;gap:10px;scroll-snap-align:start}
+.hx-fu .hd{display:flex;flex-direction:column;gap:2px}
+.hx-fu .hd b{font-size:17px;font-weight:600}
+.hx-fu .hd small,.hx-fu .ft{font-size:13px;color:var(--mu)}
+.hx-fr{display:flex;align-items:center;gap:10px;width:100%;padding:0;border:none;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.hx-fr .nm{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
+.hx-fr .nm span{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hx-fr .nm i{display:block;height:4px;border-radius:2px;background:var(--line);overflow:hidden}
+.hx-fr .nm i u{display:block;height:100%;border-radius:2px;background:var(--tc,#7B4BF0)}
+.hx-fr em{font:700 17px 'Space Grotesk',sans-serif;font-style:normal;min-width:44px;text-align:right}
+.hx-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:0 16px}
+.hx-list{margin:0 16px;padding:2px 14px;border-radius:22px}
+.hx-list .gs-row:last-child{border-bottom:none}
+.hx-list .rk{flex:none;width:18px;font:700 15px 'Space Grotesk',sans-serif;color:var(--mu);text-align:center}
+.hx-list .gs-row em b{display:block;font:700 15px 'Space Grotesk',sans-serif;color:var(--ink);text-align:right}
+.hx-list .gs-row em{text-align:right}
+.hx-note{margin:14px 20px 0;font-size:12px;line-height:1.4;color:var(--mu)}
 /* v3.1.15: player page = full-height page sheet. Patterns (Mobbin): card-stack sheet with a sliver of the screen behind (Mindtrip, Runbuds), hero collapsing into a compact title bar, tabs that stay put under it (FotMob, F1, theScore) */
 .fp-sheet.pl-sheet{top:max(12px,calc(env(safe-area-inset-top,0px) - 4px));bottom:0;height:auto;max-height:none !important;padding:0;overflow-y:auto;overscroll-behavior:contain;border-radius:28px 28px 0 0;background:var(--frame);box-shadow:0 -10px 40px rgba(4,3,12,0.35)}
 .pl-sheet>.g{position:sticky;top:8px;z-index:9;margin:8px auto -13px;background:rgba(255,255,255,0.45)}
@@ -941,6 +988,7 @@ const unmf=h=>h.replace(/<span data-mw(?:="")?>((?:[^<]|<span data-m(?:="")? [^>
 const scroll=document.getElementById('scroll'),ov=document.getElementById('ov'),vp=document.getElementById('vp');
 let toastEl=null,toastT=null;
 function isLight(){return document.documentElement.getAttribute('data-theme')==='light';}
+const INS={st:0,D:0};   // installed-app top inset in app px: st = status bar zone, D = st minus the 44px the screens were drawn for
 function render(keep){
   gmSync();let key=isLight()?lightName(S.screen):S.screen;if(S.gm&&(S.screen==='FGame'||S.screen==='FProps')&&SCR[key+'T'])key+='T';
   let html=SCR[key];
@@ -969,11 +1017,11 @@ function render(keep){
       ov.appendChild(el);});
     let need=0;[...ov.children].forEach(el=>{const b=parseFloat(el.style.bottom)||0;need=Math.max(need,b+el.offsetHeight);});
     if(need&&need<vp.clientHeight*0.6)root.style.paddingBottom=(need+12)+'px';}
-  if(root&&root.hasAttribute('data-fit')){root.style.minHeight='0';root.style.paddingBottom='0';root.style.height=vp.clientHeight+'px';}
+  if(root&&root.hasAttribute('data-fit')){root.style.minHeight='0';root.style.paddingBottom='0';root.style.height=(vp.clientHeight-INS.D)+'px';}
   if(keep)scroll.scrollTop=st;else{scroll.scrollTop=0;
     if(root){const sh=[...root.querySelectorAll('div')].find(el=>el.style.position==='absolute'&&el.style.bottom==='0px'&&(!el.style.top||el.style.top==='auto')&&el.offsetHeight>vp.clientHeight*0.5);
       if(sh)scroll.scrollTop=Math.max(0,sh.offsetTop-24);}}
-  if(S.screen==='FHome')liveApply();tagBars();dockFab();if(S.screen==='FGameLive'){GP.shown=-1;applyGame(false);}if(S.screen==='FGame'){chartInit();gmChart();}gmPost();stickyBuild();acApply();pnlApply();kalEnter();pickPaint();drawerize();if(toastEl)ov.appendChild(toastEl);
+  if(S.screen==='FHome'){homeExtras();liveApply();}tagBars();dockFab();if(S.screen==='FGameLive'){GP.shown=-1;applyGame(false);}if(S.screen==='FGame'){chartInit();gmChart();}gmPost();stickyBuild();acApply();pnlApply();kalEnter();pickPaint();drawerize();if(toastEl)ov.appendChild(toastEl);
 }
 FN.notBuilt=()=>toast('This game’s page isn’t built in the prototype');
 // one live game, one clock: every Colts–Texans and Knicks–Wolves mention outside its own page follows the play engine
@@ -993,7 +1041,7 @@ function go(name,opts){
 function menu(){
   const sc=document.createElement('div');sc.className='fp-scrim';const sh=document.createElement('div');sh.className='fp-sheet';sh.setAttribute('role','dialog');sh.setAttribute('aria-modal','true');
   const t=S.theme;
-  sh.innerHTML=`<span class="g"></span><h3>Settings</h3>${[['system','Match my device'],['dark','Dark'],['light','Light']].map(([v,n])=>`<button class="o" data-theme-v="${v}"><span>${n}</span>${t===v?'<b>✓</b>':''}</button>`).join('')}<button class="o" data-kal="1" role="switch" aria-checked="${KAL.on}"><span class="kl"><span>Live Kalshi data</span><small>Real NFL prices on Home and Games</small></span><i class="fp-sw${KAL.on?' on':''}" aria-hidden="true"></i></button><button class="o" data-tips="1"><span>Replay feature tips</span></button><button class="o" data-reset="1"><span>Reset demo</span></button><p>Clickable prototype with demo money. Placing an order takes cash and adds it to Portfolio; closing a trade gives the money back.<br><span style="opacity:.7">Prototype v3.1.19</span></p>`;
+  sh.innerHTML=`<span class="g"></span><h3>Settings</h3>${[['system','Match my device'],['dark','Dark'],['light','Light']].map(([v,n])=>`<button class="o" data-theme-v="${v}"><span>${n}</span>${t===v?'<b>✓</b>':''}</button>`).join('')}<button class="o" data-kal="1" role="switch" aria-checked="${KAL.on}"><span class="kl"><span>Live Kalshi data</span><small>Real NFL prices on Home and Games</small></span><i class="fp-sw${KAL.on?' on':''}" aria-hidden="true"></i></button><button class="o" data-tips="1"><span>Replay feature tips</span></button><button class="o" data-reset="1"><span>Reset demo</span></button><p>Clickable prototype with demo money. Placing an order takes cash and adds it to Portfolio; closing a trade gives the money back.<br><span style="opacity:.7">Prototype v3.1.20</span></p>`;
   const close=()=>{sc.remove();sh.remove();};sc.onclick=close;
   sh.onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.themeV){S.theme=b.dataset.themeV;try{localStorage.setItem('fpTheme2',S.theme)}catch(_){}applyTheme();close();render(true);}if(b.dataset.kal){const on=!KAL.on;kalSet(on);b.setAttribute('aria-checked',String(on));b.querySelector('.fp-sw').classList.toggle('on',on);setTimeout(()=>{close();render(true);toast(on?'Live prices on':'Live prices off');},260);return;}if(b.dataset.tips){try{localStorage.removeItem('fpTipNba')}catch(_){}close();toast('Tips will show again');return;}if(b.dataset.reset){S.picks=[];S.betAmt='';S.cash=2418.50;S.pos=BASE_POS();S.amt='50';close();S.screen='FHome';render();toast('Demo reset');}};
   vp.appendChild(sc);vp.appendChild(sh);}
@@ -1417,7 +1465,7 @@ function stickyBuild(){STK=null;const scr=S.screen;if(scr!=='FGame'&&scr!=='FGam
     <div style="display:flex;align-items:center;gap:8px;padding:0 12px"><a href="${back}" aria-label="Back" style="flex:none;width:34px;height:34px;border-radius:17px;display:flex;align-items:center;justify-content:center;background:${chipBg};border:1px solid ${line}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="${ink}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5 L8 12 L15 19"/></svg></a>
     <div style="flex:1;display:flex;justify-content:center">${mid}</div><span style="flex:none;width:34px"></span></div>`;
   el.addEventListener('click',e=>{const c=e.target.closest('[data-stk-chip]');if(c){e.preventDefault();e.stopPropagation();if(c.dataset.stkChip==='me')scroll.scrollTo({top:0,behavior:RM.matches?'auto':'smooth'});else if(c.dataset.stkChip.startsWith('gm:'))openGame(c.dataset.stkChip.slice(3));else if(c.dataset.stkChip!=='x')go(c.dataset.stkChip);else FN.notBuilt();}},true);
-  ov.appendChild(sbg);ov.appendChild(el);sbg.style.height=el.offsetHeight+'px';const h1=scroll.querySelector('h1');
+  ov.appendChild(sbg);ov.appendChild(el);sbg.style.top=(-INS.D)+'px';sbg.style.height=(el.offsetHeight+INS.D)+'px';const h1=scroll.querySelector('h1');
   const root=scroll.firstElementChild;const topRow=root&&root.firstElementChild;const tabs=topRow&&topRow.nextElementSibling;
   const board=scroll.querySelector('[data-sb="D"]')||(h1&&h1.parentElement&&h1.parentElement.nextElementSibling);
   el.style.transition='none';el.style.opacity='0';
@@ -1495,7 +1543,7 @@ function pnlApply(){if(S.screen!=='FPortfolio')return;
     if(ttl&&a&&acOn(a)&&!ttl.querySelector('[data-acb]')){const b=document.createElement('span');b.setAttribute('data-acb','');b.className='fp-acb';b.textContent=a.tpOn?('SELL '+a.tp+'%'):('STOP '+a.sl+'%');b.title=acText(a);b.setAttribute('aria-label','Open order: '+acText(a));ttl.insertBefore(b,ttl.firstChild);}});}
 // ---------- drawers: always inside the viewport, swipe up for full view, swipe down to dismiss ----------
 const DRAWERS=/^F(Pos76|PosCombo|PosCPI|Sell76|SellCombo|SellCPI|Share|TicketPicks|AltSpread)$/;
-function attachDrawer(sheet,o){const vh=vp.clientHeight;const full=vh-8;
+function attachDrawer(sheet,o){const vh=vp.clientHeight;const full=vh-Math.max(8,INS.st+8);
   const content=()=>sheet.scrollHeight;
   sheet.style.boxSizing='border-box';let base=Math.min(o.base,full);sheet.style.maxHeight=base+'px';sheet.style.overflowY='auto';sheet.style.overscrollBehavior='contain';
   sheet.style.touchAction='pan-y';sheet.classList.add('fp-drawer');
@@ -1539,7 +1587,7 @@ function drawerize(){if(!DRAWERS.test(S.screen))return;const root=scroll.firstEl
   const vh=vp.clientHeight;const share=/Share$/.test(S.screen);const designTop=parseFloat(sheet.style.top)||0;
   const close=root.querySelector('a[aria-label="Close"],a[aria-label="Close picks"]')||sheet.querySelector('a[aria-label="Close"]')||[...sheet.querySelectorAll('a')].find(a=>/Keep trade/.test(a.textContent));
   const closeHref=close?close.getAttribute('href'):null;
-  if(!share){root.style.height=vh+'px';root.style.minHeight='0';root.style.paddingBottom='0';root.style.overflow='hidden';scroll.scrollTop=0;}
+  if(!share){root.style.height=(vh-INS.D)+'px';root.style.minHeight='0';root.style.paddingBottom='0';root.style.overflow='hidden';scroll.scrollTop=0;}
   root.querySelectorAll('[style*="z-index"]').forEach(el=>{if(+el.style.zIndex>=30)el.style.zIndex='29';});
   {const cs=getComputedStyle(sheet);sheet.style.color=cs.color;sheet.style.fontFamily=cs.fontFamily;sheet.style.fontVariantNumeric=cs.fontVariantNumeric;}
   ov.appendChild(sheet);sheet.style.top='auto';sheet.style.height='auto';sheet.style.bottom='0';sheet.style.zIndex='60';sheet.style.pointerEvents='auto';
@@ -1582,7 +1630,7 @@ function hdrUpdate(){if(!HDR||!HDR.hd.isConnected)return;const {hd,bg,menu,logo,
   const t=Math.min(1,Math.max(0,scroll.scrollTop/90));const e=t*t*(3-2*t); // smoothstep, follows the finger
   hd.style.paddingTop=(52-12*e)+'px';hd.style.paddingBottom=(10-6*e)+'px';
   const bgA=(L?0.74:0.68)*e,lnA=(L?0.10:0.10)*e;
-  bg.style.height=hd.offsetHeight+'px';bg.style.background=L?`rgba(246,246,249,${bgA})`:`rgba(8,7,26,${bgA})`;
+  bg.style.top=(-INS.D)+'px';bg.style.height=(hd.offsetHeight+INS.D)+'px';bg.style.background=L?`rgba(246,246,249,${bgA})`:`rgba(8,7,26,${bgA})`;
   const blur=e<0.02?'none':`blur(${(24*e).toFixed(1)}px) saturate(${100+70*e}%)`;bg.style.backdropFilter=blur;bg.style.webkitBackdropFilter=blur;
   bg.style.borderBottom=`0.5px solid ${L?`rgba(18,18,28,${lnA})`:`rgba(255,255,255,${lnA})`}`;
   const rest=e<0.002;
@@ -1615,7 +1663,7 @@ function stickyLink(){if(!STK||!STK.game||!STK.el.isConnected)return;const y=scr
   const L=isLight();const {el,sbg,rows,topRow,tabs,h1,board}=STK;
   // compact bar arrives: surface fades in, chips drop into place, then the score line rises in
   el.style.opacity=String(Math.min(1,p*1.6));
-  sbg.style.opacity=p<0.01?'0':'1';sbg.style.height=el.offsetHeight+'px';sbg.style.background=L?`rgba(246,246,249,${0.86*p})`:`rgba(8,7,26,${0.84*p})`;
+  sbg.style.opacity=p<0.01?'0':'1';sbg.style.top=(-INS.D)+'px';sbg.style.height=(el.offsetHeight+INS.D)+'px';sbg.style.background=L?`rgba(246,246,249,${0.86*p})`:`rgba(8,7,26,${0.84*p})`;
   const bl=p<0.02?'none':`blur(${(20*p).toFixed(1)}px) saturate(${100+40*p}%)`;sbg.style.backdropFilter=bl;sbg.style.webkitBackdropFilter=bl;
   sbg.style.borderBottomColor=L?`rgba(18,18,28,${0.08*p})`:`rgba(255,255,255,${0.08*p})`;
   const pc=sstep(0,0.7,p),ps=sstep(0.25,1,p);
@@ -2079,6 +2127,40 @@ function nbaTip(){
         if(b)b.animate([{transform:'scale(1)'},{transform:'scale(1.18)',offset:.35},{transform:'scale(1)'}],{duration:700,delay:120,easing:'ease-in-out'});},520);},170);}});
   document.querySelector('.fp-scrim.fp-gs').addEventListener('click',done);
 }
+// ---------- v3.1.20: Home, extra demo sections so the page has a real scroll (sports only; ideas from Kalshi and Polymarket sports hubs) ----------
+function homeExtras(){const root=scroll.firstElementChild;if(!root||root.querySelector('.hx'))return;
+  const all=Object.values(GD).filter(g=>g&&g.title&&g.pa!=null);if(!all.length)return;
+  const names={nfl:{},nba:{}};all.forEach(g=>{if(names[g.lg]){names[g.lg][g.a]=g.an;names[g.lg][g.h]=g.hn;}});
+  const r=l5Seed('home-demo');const tiles=g=>tileSvg(g.lg,g.a,22)+tileSvg(g.lg,g.h,22);
+  const H=(t,sub,link)=>`<div class="hx-h"><span style="display:flex;align-items:baseline;gap:8px"><h2>${t}</h2>${sub?`<small>${sub}</small>`:''}</span>${link||''}</div>`;
+  // 1) biggest movers: the favourite's price and how far it moved in the last hour
+  const mix=[];{const a=all.filter(g=>g.lg==='nba'),b=all.filter(g=>g.lg==='nfl');for(let k=0;k<4;k++){if(a[k])mix.push(a[k]);if(b[k])mix.push(b[k]);}}
+  const movers=mix.slice(0,6).map(g=>{const fav=g.pa>=g.ph;const pct=fav?g.pa:g.ph;let d=Math.round(3+r()*8);if(r()<0.38)d=-d;
+    const pts=[];let v=pct-d;for(let k=0;k<8;k++){pts.push(v);v+=d/8+(r()-0.5)*3;}pts.push(pct);
+    const lo=Math.min(...pts),hi=Math.max(...pts),sp=pts.map((y,k)=>`${(k*8).toFixed(0)},${(20-(y-lo)/(hi-lo||1)*18).toFixed(1)}`).join(' ');
+    return `<a href="#" class="hx-card hx-mv" data-gm="${g.id}" aria-label="${g.title}: ${fav?g.an:g.hn} ${pct}%, ${d>0?'up':'down'} ${Math.abs(d)} in the last hour">
+      <span class="t">${tiles(g)}<span style="margin-left:4px">${g.a} @ ${g.h}</span></span><span class="n">${fav?g.an:g.hn}</span>
+      <span class="p"><b>${pct}%</b><svg class="sp${d<0?' dn':''}" width="64" height="22" viewBox="0 0 64 22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="${sp}"/></svg></span>
+      <span class="hx-ch${d<0?' dn':''}">${d>0?'▲':'▼'} ${Math.abs(d)} pts<span style="color:var(--mu);font-weight:500;font-family:inherit">· 1h</span></span></a>`;}).join('');
+  // 2) futures: multi-outcome markets
+  const fut=(lg,title,meta,pcts)=>{const codes=Object.keys(names[lg]).slice(0,pcts.length);if(codes.length<2)return '';
+    return `<div class="hx-card hx-fu"><div class="hd"><b>${title}</b><small>${meta}</small></div>${codes.map((c,k)=>`<button class="hx-fr" data-hxfut style="--tc:${gcol(lg,c)[0]}" aria-label="${names[lg][c]} ${pcts[k]}%">${tileSvg(lg,c,28)}<span class="nm"><span>${names[lg][c]}</span><i><u style="width:${Math.min(100,pcts[k]*3)}%"></u></i></span><em>${pcts[k]}%</em></button>`).join('')}<span class="ft">+ ${lg==='nfl'?28:26} more teams</span></div>`;};
+  const pl=[];all.forEach(g=>(g.props||[]).forEach(p=>{if(g.lg==='nba'&&!pl.some(x=>x.p.nm===p.nm))pl.push({g,p});}));
+  const mvpP=[31,22,14,9];const mvp=pl.length>=3?`<div class="hx-card hx-fu"><div class="hd"><b>NBA MVP</b><small>$1.9M traded · Settles in June</small></div>${pl.slice(0,4).map((x,k)=>`<button class="hx-fr" data-hxfut style="--tc:${gcol('nba',x.p.c)[0]}" aria-label="${x.p.nm} ${mvpP[k]}%">${avatar('nba',x.p.nm,x.p.c,28)}<span class="nm"><span>${x.p.nm}</span><i><u style="width:${mvpP[k]*3}%"></u></i></span><em>${mvpP[k]}%</em></button>`).join('')}<span class="ft">+ 18 more players</span></div>`:'';
+  const futures=fut('nfl','Super Bowl winner','$4.2M traded · Settles Feb 14',[19,14,11,9])+fut('nba','NBA champion','$6.8M traded · Settles in June',[24,17,12,8])+mvp;
+  // 3) popular props (real cards: picks and player sheets work)
+  const props=cpPool().slice(0,4).map(([g,i])=>cpCard(g,i)).join('');
+  // 4) starting soon and 5) most traded today
+  const soon=all.filter(g=>!g.live).slice(0,5).map(g=>`<a href="#" class="gs-row" data-gm="${g.id}"><span class="tt">${tileSvg(g.lg,g.a,26)}${tileSvg(g.lg,g.h,26)}</span><span class="nm"><b>${g.title}</b><small>${g.lg.toUpperCase()} · ${g.when}</small></span><em>${g.pa}% · ${g.ph}%</em></a>`).join('');
+  const vol=[2.4,1.8,1.3,0.9,0.7];const top=all.slice().sort((a,b)=>(b.live?1:0)-(a.live?1:0)).slice(0,5).map((g,k)=>`<a href="#" class="gs-row" data-gm="${g.id}"><span class="rk">${k+1}</span><span class="tt">${tileSvg(g.lg,g.a,26)}${tileSvg(g.lg,g.h,26)}</span><span class="nm"><b>${g.title}</b><small>${g.lg.toUpperCase()} · ${g.live?'Live':g.when}</small></span><em><b>$${vol[k].toFixed(1)}M</b>${Math.round(vol[k]*3.1*10)/10}k traders</em></a>`).join('');
+  root.insertAdjacentHTML('beforeend',`<div class="hx">
+    ${H('Biggest movers','Last hour')}<div class="hx-row">${movers}</div>
+    ${futures?H('Futures','',`<a href="#" data-hxfut>See all ›</a>`)+`<div class="hx-row" style="scroll-snap-type:x mandatory;scroll-padding:0 16px">${futures}</div>`:''}
+    ${props?H('Popular props','Today')+`<div class="hx-grid">${props}</div>`:''}
+    ${soon?H('Starting soon')+`<div class="hx-card hx-list">${soon}</div>`:''}
+    ${H('Most traded','Today')}<div class="hx-card hx-list">${top}</div>
+    <p class="hx-note">Demo data. Prices, moves and volumes on this page are sample figures.</p></div>`);
+  root.querySelector('.hx').addEventListener('click',e=>{if(e.target.closest('[data-hxfut]')){e.preventDefault();e.stopPropagation();toast('Futures aren’t in this demo yet');}});}
 function altBtn(pick,lab,p,col){return `<button data-bezel="1" class="gp-b" data-pick="${pick}" data-pc="${col}"><span><b>${lab}</b><small>${p}%</small></span></button>`;}
 function altSheet(kind,pi){const g=S.gm;if(!g)return;const ca=gcol(g.lg,g.a)[0],chh=gcol(g.lg,g.h)[0];let rows='',title,sub=g.title;const cl=v=>Math.round(Math.max(3,Math.min(97,v)));
   if(kind==='sp'){title='Alternate spreads';const b0=num(g.sa);const st=g.lg==='nba'?3:4;
@@ -2408,8 +2490,15 @@ function fit(){const w=window.innerWidth,st=vp.parentElement;
   if(w<520){const z=w/390;const h=window.innerHeight;
     // Size the app to the window the browser reports and pin it to the top edge. (The installed-app short window is fixed in CSS, see v3.1.16.)
     st.style.height=h+'px';st.style.alignItems='flex-start';
-    vp.style.zoom=z;vp.style.height=(h/z)+'px';}
-  else{st.style.height='';st.style.alignItems='';vp.style.zoom='';vp.style.height='';}}
+    vp.style.zoom=z;vp.style.height=(h/z)+'px';insetSet(z);}
+  else{st.style.height='';st.style.alignItems='';vp.style.zoom='';vp.style.height='';insetSet(0);}}
+function safeTop(){const t=/[#&]inset=(\d+)/.exec(location.hash);if(t)return +t[1];   // #inset=59 lets the layout be checked in a desktop browser
+  let sa=false;try{sa=navigator.standalone===true||matchMedia('(display-mode: standalone)').matches;}catch(_){}
+  if(!sa)return 0;const d=document.createElement('div');d.style.cssText='position:fixed;left:0;top:0;width:1px;visibility:hidden;padding-top:env(safe-area-inset-top,0px)';
+  document.body.appendChild(d);const v=parseFloat(getComputedStyle(d).paddingTop)||0;d.remove();return v;}
+function insetSet(z){const T=z?safeTop():0;const on=T>=20;const st=on?Math.round(T/z*100)/100:0,D=on?Math.max(0,Math.round((T/z-44)*100)/100):0;
+  if(st===INS.st&&D===INS.D)return;INS.st=st;INS.D=D;vp.classList.toggle('fp-inset',on);vp.style.setProperty('--st',st+'px');vp.style.setProperty('--sx',D+'px');
+  if(scroll.firstElementChild)render(true);}
 // iOS can grow the window a moment after launch without firing resize: re-check for the first seconds and whenever the window size changes
 {let lh=0,n=0;const tick=()=>{if(window.innerHeight!==lh){lh=window.innerHeight;fit();}if(++n<40)setTimeout(tick,n<20?100:500);};setTimeout(tick,50);
  if(window.visualViewport)window.visualViewport.addEventListener('resize',()=>{if(window.innerHeight!==lh){lh=window.innerHeight;fit();}});}
