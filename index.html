@@ -637,6 +637,27 @@ a{color:#3D1BB8}a:hover{color:#12121C}
 .hx-list .gs-row em b{display:block;font:700 15px 'Space Grotesk',sans-serif;color:var(--ink);text-align:right}
 .hx-list .gs-row em{text-align:right}
 .hx-note{margin:14px 20px 0;font-size:12px;line-height:1.4;color:var(--mu)}
+/* v3.1.26: player markets as compact rows in one card; a row opens to its line choices and last 5 games */
+.pl-list{padding:2px 14px;display:flex;flex-direction:column}
+.pl-list .pl-mk{gap:0;padding:12px 0;border-bottom:1px solid var(--line)}
+.pl-list .pl-mk:last-child{border-bottom:none}
+.pl-r{display:flex;align-items:center;gap:10px}
+.pl-lb{flex:1;min-width:0;min-height:46px;display:flex;align-items:center;gap:8px;padding:0;border:none;background:none;color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.pl-lb .tx{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1}
+.pl-lb .tx b{font:700 20px/24px 'Space Grotesk',sans-serif;align-self:flex-start}
+.pl-lb .tx b.dl{text-decoration:underline dotted;text-decoration-thickness:2px;text-underline-offset:4px;text-decoration-color:#B79CFF}
+:root[data-theme="light"] .pl-lb .tx b.dl{text-decoration-color:#5B33D6}
+.pl-lb .tx small{font-size:13px;line-height:18px;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pl-lb .cv{flex:none;color:var(--mu);transition:transform .2s}
+.pl-mk.open .pl-lb .cv{transform:rotate(180deg)}
+.pl-lb:focus-visible{outline:2px solid #D3C5FF;outline-offset:3px;border-radius:10px}
+.pl-list .pl-ou{flex:none;grid-template-columns:repeat(2,82px);gap:6px}
+.pl-list .pl-ou.one{grid-template-columns:170px}
+.pl-list .gp-b{height:46px}
+.pl-list .pl-x{padding-top:12px}
+.pl-rl{display:flex;gap:6px}
+.pl-rl button{flex:1;min-width:0;height:38px;border-radius:19px;border:1px solid var(--line);background:transparent;color:var(--mu);font:600 14px 'Space Grotesk',sans-serif;cursor:pointer}
+.pl-rl button[aria-pressed="true"]{background:var(--ink);color:var(--frame);border-color:transparent}
 /* v3.1.15: player page = full-height page sheet. Patterns (Mobbin): card-stack sheet with a sliver of the screen behind (Mindtrip, Runbuds), hero collapsing into a compact title bar, tabs that stay put under it (FotMob, F1, theScore) */
 .fp-sheet.pl-sheet{top:max(12px,calc(env(safe-area-inset-top,0px) - 4px));bottom:0;height:auto;max-height:none !important;padding:0;overflow-y:auto;overscroll-behavior:contain;border-radius:28px 28px 0 0;background:var(--frame);box-shadow:0 -10px 40px rgba(4,3,12,0.35)}
 .pl-sheet>.g{position:sticky;top:8px;z-index:9;margin:8px auto -13px;background:rgba(255,255,255,0.45)}
@@ -1059,7 +1080,7 @@ function go(name,opts){
 function menu(){
   const sc=document.createElement('div');sc.className='fp-scrim';const sh=document.createElement('div');sh.className='fp-sheet';sh.setAttribute('role','dialog');sh.setAttribute('aria-modal','true');
   const t=S.theme;
-  sh.innerHTML=`<span class="g"></span><h3>Settings</h3>${[['system','Match my device'],['dark','Dark'],['light','Light']].map(([v,n])=>`<button class="o" data-theme-v="${v}"><span>${n}</span>${t===v?'<b>✓</b>':''}</button>`).join('')}<button class="o" data-kal="1" role="switch" aria-checked="${KAL.on}"><span class="kl"><span>Live Kalshi data</span><small>Real NFL prices on Home and Games</small></span><i class="fp-sw${KAL.on?' on':''}" aria-hidden="true"></i></button><button class="o" data-tips="1"><span>Replay feature tips</span></button><button class="o" data-reset="1"><span>Reset demo</span></button><p>Clickable prototype with demo money. Placing an order takes cash and adds it to Portfolio; closing a trade gives the money back.<br><span style="opacity:.7">Prototype v3.1.25</span></p>`;
+  sh.innerHTML=`<span class="g"></span><h3>Settings</h3>${[['system','Match my device'],['dark','Dark'],['light','Light']].map(([v,n])=>`<button class="o" data-theme-v="${v}"><span>${n}</span>${t===v?'<b>✓</b>':''}</button>`).join('')}<button class="o" data-kal="1" role="switch" aria-checked="${KAL.on}"><span class="kl"><span>Live Kalshi data</span><small>Real NFL prices on Home and Games</small></span><i class="fp-sw${KAL.on?' on':''}" aria-hidden="true"></i></button><button class="o" data-tips="1"><span>Replay feature tips</span></button><button class="o" data-reset="1"><span>Reset demo</span></button><p>Clickable prototype with demo money. Placing an order takes cash and adds it to Portfolio; closing a trade gives the money back.<br><span style="opacity:.7">Prototype v3.1.26</span></p>`;
   const close=()=>{sc.remove();sh.remove();};sc.onclick=close;
   sh.onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.themeV){S.theme=b.dataset.themeV;try{localStorage.setItem('fpTheme2',S.theme)}catch(_){}applyTheme();close();render(true);}if(b.dataset.kal){const on=!KAL.on;kalSet(on);b.setAttribute('aria-checked',String(on));b.querySelector('.fp-sw').classList.toggle('on',on);setTimeout(()=>{close();render(true);toast(on?'Live prices on':'Live prices off');},260);return;}if(b.dataset.tips){try{localStorage.removeItem('fpTipNba')}catch(_){}close();toast('Tips will show again');return;}if(b.dataset.reset){S.picks=[];S.betAmt='';S.cash=2418.50;S.pos=BASE_POS();S.amt='50';close();S.screen='FHome';render();toast('Demo reset');}};
   vp.appendChild(sc);vp.appendChild(sh);}
@@ -2073,8 +2094,8 @@ function gmPick(btn){const [m,sd,arg,gid,thr]=btn.dataset.pick.split('|');const 
     const t=m==='prl'?`${pr.nm} ${thr}+ ${pr.u}`:pr.ln==null?`${pr.nm} ${sd==='O'?'anytime TD':'no TD'}`:`${pr.nm} ${sd==='O'?'over':'under'} ${pr.ln} ${pr.u}`;
     return Object.assign(base,{id:game+'|pr|'+arg+'|'+sd+'|'+(thr||''),mk:game+'|pr|'+arg,code:pr.c,pl:pr.nm,name:t,t,fill:fc(pr.c)});}
   if(m==='pp'){const [pn,pk]=arg.split('~');const pr=plMarket(g,pn,pk);if(!pr)return null;
-    const t=pr.ln==null?`${pr.nm} ${sd==='O'?'anytime TD':'no TD'}`:`${pr.nm} ${sd==='O'?'over':'under'} ${pr.ln} ${pr.u}`;
-    return Object.assign(base,{id:game+'|pp|'+arg+'|'+sd,mk:game+'|pp|'+arg,code:pr.c,pl:pr.nm,name:t,t,fill:fc(pr.c)});}
+    const t=thr?`${pr.nm} ${thr}+ ${pr.u}`:pr.ln==null?`${pr.nm} ${sd==='O'?'anytime TD':'no TD'}`:`${pr.nm} ${sd==='O'?'over':'under'} ${pr.ln} ${pr.u}`;
+    return Object.assign(base,{id:game+'|pp|'+arg+'|'+sd+'|'+(thr||''),mk:game+'|pp|'+arg,code:pr.c,pl:pr.nm,name:t,t,fill:fc(pr.c)});}
   return null;}
 function pickAdd(k){const n0=S.picks.length;const had=S.picks.findIndex(x=>x.id===k.id);if(had>=0)S.picks.splice(had,1);else{S.picks=S.picks.filter(x=>(x.mk||x.game)!==(k.mk||k.game));S.picks.push(k);}
   pickPaint(true);if(had<0&&n0===0&&!/^FCombo/.test(S.screen))setTimeout(betSheet,160);}
@@ -2098,7 +2119,7 @@ function gSheet(html,cls,label){const swap=!!document.querySelector('.fp-sheet.f
   sc.addEventListener('click',()=>close());sh.addEventListener('click',e=>{if(e.target.closest('[data-close]'))close();});sh._close=()=>close();
   // drag to dismiss: from the grabber, or by pulling down from the top of the content (touch) / any static spot (mouse)
   let d=null;
-  const dStart=(y,id,t)=>{if(closing)return;const ok=t.closest('.g')||(!t.closest('button,a,input,textarea,select,.gs-list,.pl-ou')&&sh.scrollTop<=0);if(!ok)return;
+  const dStart=(y,id,t)=>{if(closing)return;const ok=t.closest('.g')||(!t.closest('button,a,input,textarea,select,.gs-list,.pl-ou,.pl-rl')&&sh.scrollTop<=0);if(!ok)return;
     d={id,y,ly:y,lt:performance.now(),v:0,dy:0,on:false};};
   const dMove=(cy)=>{if(!d)return false;const dy=(cy-d.y)/Z();
     if(!d.on){if(dy<-4&&sh.scrollTop>0){d=null;return false;}if(dy<-4){d=null;return false;}if(Math.abs(dy)<6)return false;if(sh.scrollTop>0){d=null;return false;}d.on=true;sh.getAnimations().forEach(x=>x.cancel());}
@@ -2627,11 +2648,18 @@ function rgbOf(h){h=h.replace('#','');const n=parseInt(h.length===3?h.split('').
 function plPage(){const P=S.pl;const d=P&&plData(P.gid,P.nm);if(!d)return '<p class="gp-empty">This player isn’t in today’s demo slate.</p>';
   const g=d.g,[f]=gcol(d.lg,d.p0.c),[h0,h1]=plHeroBg(f);const tn=g.a===d.p0.c?g.an:g.hn;const w=d.nm.split(' ');const first=w.length>1?w.slice(0,-1).join(' '):'',last=w[w.length-1];
   const live=g.live&&typeof liveTxt==='function';const opp=g.a===d.p0.c?'@ '+g.h:'vs '+g.a;
-  const tab=S.plTab||'lines';S.plOpen=S.plOpen||{};const openK=k=>S.plOpen[d.nm+'|'+k]!==undefined?S.plOpen[d.nm+'|'+k]:k===d.mk[0].key;
-  const lines=d.mk.map(m=>{const td=m.ln==null,o=openK(m.key);
-    return `<section class="gp-card pl-mk${o?' open':''}" data-plmk="${m.key}"><button class="pl-mh" data-pltog="${m.key}" aria-expanded="${o}"><span class="t">${m.mk}</span>${plSpark(d,m)}<svg class="cv" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
-      <div class="pl-row"><span class="pl-ln"><b>${td?'1+':m.ln}</b><small>${td?'touchdown':m.u}</small></span><div class="pl-ou">${plBtn(d,m,'O',td?'Yes':'Over',m.po)}${plBtn(d,m,'U',td?'No':'Under',m.pu)}</div></div>
-      <div class="pl-x"${o?'':' hidden'}>${plChart(d,m)}${m.real&&!td?`<button class="gp-alt" data-altp="${m.i}">Alternate lines<span>5 lines ›</span></button>`:''}</div></section>`;}).join('');
+  const tab=S.plTab||'lines';S.plOpen=S.plOpen||{};S.plLine=S.plLine||{};const openK=k=>!!S.plOpen[d.nm+'|'+k];
+  // v3.1.26: every market is one compact row (line, form, prices). Tapping the line opens that row: other lines to choose from, then the last 5 games.
+  const cl=v=>Math.round(Math.max(3,Math.min(97,v)));
+  const lines=`<div class="gp-card pl-list">${d.mk.map(m=>{const td=m.ln==null,o=openK(m.key);const step=td?0:m.ln>=150?25:m.ln>=40?10:m.ln>=12?3:1;
+    const opts=td?[]:[-2,-1,0,1,2].map(k=>m.ln+k*step).filter(v=>v>0);const cur=td?null:(opts.includes(S.plLine[d.nm+'|'+m.key])?S.plLine[d.nm+'|'+m.key]:m.ln);const alt=!td&&cur!==m.ln;
+    const mv=alt?Object.assign({},m,{ln:cur,_l5:null}):m;const [f,s2]=gcol(d.lg,m.c);
+    const pAlt=alt?cl(100/(1+Math.exp((cur-m.ln)/(step*0.9)))):0;
+    const btns=alt?`<div class="pl-ou one"><button data-bezel="1" class="gp-b" data-pick="${m.real?`prl|O|${m.i}|${d.g.id}|${cur+0.5}`:`pp|O|${m.nm}~${m.key}|${d.g.id}|${cur+0.5}`}" data-pc="${f}" data-ps="${s2}"><span><b>Over ${cur}</b><small>${pAlt}%</small></span></button></div>`
+      :`<div class="pl-ou">${plBtn(d,m,'O',td?'Yes':'Over',m.po)}${plBtn(d,m,'U',td?'No':'Under',m.pu)}</div>`;
+    const ruler=opts.length>1?`<div class="pl-rl" role="group" aria-label="${m.mk} line">${opts.map(v=>`<button type="button" data-plset="${m.key}|${v}" aria-pressed="${v===cur}">${v}</button>`).join('')}</div>`:'';
+    return `<section class="pl-mk${o?' open':''}" data-plmk="${m.key}"><div class="pl-r"><button class="pl-lb" data-pltog="${m.key}" aria-expanded="${o}" aria-label="${m.mk}, ${td?'anytime touchdown':'line '+cur}. Show ${td?'':'other lines and '}last 5 games"><span class="tx"><b${td?'':' class="dl"'}>${td?'1+':cur}</b><small>${td?'Touchdown':m.mk.replace('3-pointers made','Threes')}</small></span>${plSpark(d,mv)}<svg class="cv" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>${btns}</div>
+      <div class="pl-x"${o?'':' hidden'}>${ruler}${plChart(d,mv)}</div></section>`;}).join('')}</div>`;
   return `<div class="pl">
    <header class="pl-hero" style="--h0:${h0};--h1:${h1}">
     <div class="pl-top"><button class="pl-back" data-plback aria-label="Back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
@@ -2662,6 +2690,7 @@ document.addEventListener('click',e=>{const t=e.target;
   if(S.screen==='FPlayer'||t.closest('.pl-sheet')){
     if(t.closest('[data-plback]')){e.preventDefault();e.stopImmediatePropagation();go(S.plBack&&S.plBack!=='FPlayer'?S.plBack:'FHome');return;}
     const tb=t.closest('[data-pltab]');if(tb){e.preventDefault();e.stopImmediatePropagation();S.plTab=tb.dataset.pltab;playerApply();return;}
+    const ps=t.closest('[data-plset]');if(ps){e.preventDefault();e.stopImmediatePropagation();const [k,v]=ps.dataset.plset.split('|');S.plLine=S.plLine||{};S.plLine[S.pl.nm+'|'+k]=+v;playerApply();return;}
     const tg=t.closest('[data-pltog]');if(tg){e.preventDefault();e.stopImmediatePropagation();const sec=tg.closest('.pl-mk'),k=tg.dataset.pltog,o=!sec.classList.contains('open');S.plOpen[S.pl.nm+'|'+k]=o;
       sec.classList.toggle('open',o);tg.setAttribute('aria-expanded',String(o));sec.querySelector('.pl-x').hidden=!o;return;}}
   const pl=t.closest('[data-pl]');if(pl&&!t.closest('button,[data-flip]')&&pl.closest('#scroll,.fp-gs')&&!pl.closest('.tp-hero,.pl-sheet')){e.preventDefault();e.stopImmediatePropagation();const [gid,...n]=pl.dataset.pl.split('|');openPlayer(gid,n.join('|'));}},true);
