@@ -492,6 +492,13 @@ a{color:#3D1BB8}a:hover{color:#12121C}
 .gb.st i.on{animation:none}
 @media (prefers-reduced-motion:reduce){.gb i.on{animation:none}}
 .gb-x{flex:none;font:500 11px 'Space Grotesk','FP Num',sans-serif;color:var(--mu);font-variant-numeric:tabular-nums;margin-right:-4px}
+.gp-ou.gp-ou3{grid-template-columns:1.05fr 1fr 1fr}
+.gp-ln{height:56px;border:1px solid var(--line);border-radius:15px;background:transparent;color:var(--ink);padding:0 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;font-family:'FP Num','Inter',sans-serif;cursor:pointer;min-width:0}
+.gp-ln.fix{cursor:default;border-color:transparent}
+.gp-ln b{display:flex;align-items:center;gap:4px;font:600 18px 'Space Grotesk','FP Num',sans-serif;line-height:22px}
+.gp-ln b u{text-decoration:underline dotted;text-decoration-thickness:1.5px;text-underline-offset:3px;text-decoration-color:var(--mu)}
+.gp-ln b svg{color:var(--mu)}
+.gp-ln small{margin-top:3px;font-size:12.5px;font-weight:500;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .fp-slip .tl{gap:0 !important}
 .fp-slip .tl i{box-shadow:0 0 0 2px #4A26C2,inset 0 0 0 1px rgba(255,255,255,0.25) !important}
 .fp-slip .tl i+i{margin-left:-4px}
@@ -1250,7 +1257,7 @@ function go(name,opts){
 function menu(){
   const sc=document.createElement('div');sc.className='fp-scrim';const sh=document.createElement('div');sh.className='fp-sheet';sh.setAttribute('role','dialog');sh.setAttribute('aria-modal','true');
   const t=S.theme;
-  sh.innerHTML=`<span class="g"></span><h3>Settings</h3>${[['system','Match my device'],['dark','Dark'],['light','Light']].map(([v,n])=>`<button class="o" data-theme-v="${v}"><span>${n}</span>${t===v?'<b>✓</b>':''}</button>`).join('')}<button class="o" data-kal="1" role="switch" aria-checked="${KAL.on}"><span class="kl"><span>Live Kalshi data</span><small>Real NFL prices on Home and Games</small></span><i class="fp-sw${KAL.on?' on':''}" aria-hidden="true"></i></button><button class="o" data-tips="1"><span>Replay feature tips</span></button><button class="o" data-reset="1"><span>Reset demo</span></button><p>Clickable prototype with demo money. Placing an order takes cash and adds it to Portfolio; closing a trade gives the money back.<br><span style="opacity:.7">Prototype v3.1.38</span></p>`;
+  sh.innerHTML=`<span class="g"></span><h3>Settings</h3>${[['system','Match my device'],['dark','Dark'],['light','Light']].map(([v,n])=>`<button class="o" data-theme-v="${v}"><span>${n}</span>${t===v?'<b>✓</b>':''}</button>`).join('')}<button class="o" data-kal="1" role="switch" aria-checked="${KAL.on}"><span class="kl"><span>Live Kalshi data</span><small>Real NFL prices on Home and Games</small></span><i class="fp-sw${KAL.on?' on':''}" aria-hidden="true"></i></button><button class="o" data-tips="1"><span>Replay feature tips</span></button><button class="o" data-reset="1"><span>Reset demo</span></button><p>Clickable prototype with demo money. Placing an order takes cash and adds it to Portfolio; closing a trade gives the money back.<br><span style="opacity:.7">Prototype v3.1.39</span></p>`;
   const close=()=>{sc.remove();sh.remove();};sc.onclick=close;
   sh.onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.themeV){S.theme=b.dataset.themeV;try{localStorage.setItem('fpTheme2',S.theme)}catch(_){}applyTheme();close();render(true);}if(b.dataset.kal){const on=!KAL.on;kalSet(on);b.setAttribute('aria-checked',String(on));b.querySelector('.fp-sw').classList.toggle('on',on);setTimeout(()=>{close();render(true);toast(on?'Live prices on':'Live prices off');},260);return;}if(b.dataset.tips){try{localStorage.removeItem('fpTipNba')}catch(_){}close();toast('Tips will show again');return;}if(b.dataset.reset){S.picks=[];S.betAmt='';S.cash=2418.50;S.pos=BASE_POS();S.amt='50';close();S.screen='FHome';render();toast('Demo reset');}};
   vp.appendChild(sc);vp.appendChild(sh);}
@@ -2240,7 +2247,7 @@ function propBtn(g,i,sd,lab,p,col){return `<button data-bezel="1" class="gp-b" d
 function propCard(g,pr,i,compact){const col=gcol(g.lg,pr.c)[0];const ln=pr.ln;const tn=g.a===pr.c?g.an:g.hn;
   const o=ln==null?['Yes',pr.po]:['Over '+ln,pr.po],u=ln==null?['No',pr.pu]:['Under '+ln,pr.pu];
   return `<div class="gp-card" data-cat="${pr.cat}" data-gid="${g.id}" data-pi="${i}"><div class="gp-fr"><div class="gp-hd" data-pl="${g.id}|${pr.nm}" tabindex="0" role="link" aria-label="${pr.nm} player page">${avatar(g.lg,pr.nm,pr.c,42)}<span><b>${pr.nm}</b><small>${pr.pos} · ${pr.c} · ${pr.mk}</small></span><button class="gp-l5" data-flip aria-label="${pr.avg}. Show ${pr.nm}'s last 5 games">${pr.avg}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 20V12M10 20V8M15 20V13M20 20V5"/></svg></button></div>
-    <div class="gp-ou">${propBtn(g,i,'O',o[0],o[1],col)}${propBtn(g,i,'U',u[0],u[1],col)}</div>${ln!=null&&!compact?`<button class="gp-alt" data-altp="${i}">Alternate lines<span>5 lines ›</span></button>`:''}</div></div>`;}
+    <div class="gp-ou gp-ou3">${(()=>{const [tl,tu]=cpLine(pr);return ln!=null&&!compact?`<button class="gp-ln" data-altp="${i}" aria-label="${tl} ${tu}. Change line"><b><u>${tl}</u><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg></b><small>${tu}</small></button>`:`<span class="gp-ln fix"><b>${tl}</b><small>${tu}</small></span>`;})()}${propBtn(g,i,'O','Yes',pr.po,col)}${propBtn(g,i,'U','No',pr.pu,col)}</div></div></div>`;}
 // ---------- v2.9.4: swipe a player prop card left to flip it and see the last 5 games ----------
 // Demo game logs: seeded from the player's season average so every card has stable, plausible numbers.
 function l5Seed(str){let h=2166136261;for(const c of str){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return ()=>{h^=h<<13;h^=h>>>17;h^=h<<5;return ((h>>>0)%10000)/10000;};}
