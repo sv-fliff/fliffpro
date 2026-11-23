@@ -1335,6 +1335,11 @@ const norm=h=>{h=h.replace(/^.*\//,'').replace('.dc.html','');if(DARK.has(h))ret
 // ---------- state ----------
 const BASE_POS=()=>[{id:'p76',t:'76',A:50,base:1},{id:'pc',t:'combo',A:50,base:1},{id:'pe',t:'eagles'}];
 const S={screen:'FHome',theme:'system',cash:2418.50,pos:BASE_POS(),pid:null,amt:'50',track:{},n:0,flow:null};
+// progress (balance, open orders, settled orders) is kept on this device until Reset demo
+const SAVE_K='fpSave1',dayKey=()=>{const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();};
+(()=>{try{const j=JSON.parse(localStorage.getItem(SAVE_K)||'null');if(j&&typeof j.cash==='number'&&Array.isArray(j.pos)){S.cash=j.cash;S.pos=j.pos;S.done=Array.isArray(j.done)?j.done:[];S.n=j.n||0;}}catch(_){}})();
+function saveState(){try{const t=JSON.stringify({cash:S.cash,pos:S.pos,done:(S.done||[]).slice(0,80),n:S.n});if(t!==saveState.t){saveState.t=t;localStorage.setItem(SAVE_K,t);}}catch(_){}}
+setInterval(saveState,1500);window.addEventListener('pagehide',saveState);document.addEventListener('visibilitychange',()=>{if(document.hidden)saveState();});
 try{const t=localStorage.getItem('fpTheme2');if(t)S.theme=t;}catch(e){}
 // ---------- money ----------
 const fmt=n=>Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -1484,9 +1489,9 @@ function go(name,opts){
 function menu(){
   const sc=document.createElement('div');sc.className='fp-scrim';const sh=document.createElement('div');sh.className='fp-sheet';sh.setAttribute('role','dialog');sh.setAttribute('aria-modal','true');
   const t=S.theme;
-  sh.innerHTML=`<span class="g"></span><h3>Settings</h3>${[['system','Match my device'],['dark','Dark'],['light','Light']].map(([v,n])=>`<button class="o" data-theme-v="${v}"><span>${n}</span>${t===v?'<b>✓</b>':''}</button>`).join('')}<button class="o" data-simsw="1" role="switch" aria-checked="${SIM.on}"><span class="kl"><span>Simulator</span><small>Replays Sun, Nov 22 on your clock with real Kalshi data</small></span><i class="fp-sw${SIM.on?' on':''}" aria-hidden="true"></i></button><button class="o" data-tips="1"><span>Replay feature tips</span></button><button class="o" data-reset="1"><span>Reset demo</span></button><p>Clickable prototype with demo money. Placing an order takes cash and adds it to Portfolio; closing a trade gives the money back.</p><div class="o ver" data-ver="1">${verHtml()}</div>`;verCheck();
+  sh.innerHTML=`<span class="g"></span><h3>Settings</h3>${[['system','Match my device'],['dark','Dark'],['light','Light']].map(([v,n])=>`<button class="o" data-theme-v="${v}"><span>${n}</span>${t===v?'<b>✓</b>':''}</button>`).join('')}<button class="o" data-simsw="1" role="switch" aria-checked="${SIM.on}"><span class="kl"><span>Simulator</span><small>Replays Sun, Nov 22 on your clock with real Kalshi data</small></span><i class="fp-sw${SIM.on?' on':''}" aria-hidden="true"></i></button><button class="o" data-tips="1"><span>Replay feature tips</span></button><button class="o" data-reset="1"><span>Reset balance and orders</span></button><p>Your balance and orders are saved on this device until you reset. Clickable prototype with demo money. Placing an order takes cash and adds it to Portfolio; closing a trade gives the money back.</p><div class="o ver" data-ver="1">${verHtml()}</div>`;verCheck();
   const close=()=>{sc.remove();sh.remove();};sc.onclick=close;
-  sh.onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.themeV){S.theme=b.dataset.themeV;try{localStorage.setItem('fpTheme2',S.theme)}catch(_){}applyTheme();close();render(true);}if(b.dataset.simsw){const on=!SIM.on;try{localStorage.setItem('fpSim',on?'1':'0')}catch(_){}b.setAttribute('aria-checked',String(on));b.querySelector('.fp-sw').classList.toggle('on',on);toast(on?'Simulator on':'Simulator off');setTimeout(()=>location.reload(),350);return;}if(b.dataset.kal){const on=!KAL.on;kalSet(on);b.setAttribute('aria-checked',String(on));b.querySelector('.fp-sw').classList.toggle('on',on);setTimeout(()=>{close();render(true);toast(on?'Live prices on':'Live prices off');},260);return;}if(b.dataset.tips){try{localStorage.removeItem('fpTipNba')}catch(_){}close();toast('Tips will show again');return;}if(b.dataset.reset){S.picks=[];S.betAmt='';S.cash=2418.50;S.pos=BASE_POS();S.amt='50';close();S.screen='FHome';render();toast('Demo reset');}};
+  sh.onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.themeV){S.theme=b.dataset.themeV;try{localStorage.setItem('fpTheme2',S.theme)}catch(_){}applyTheme();close();render(true);}if(b.dataset.simsw){const on=!SIM.on;try{localStorage.setItem('fpSim',on?'1':'0')}catch(_){}b.setAttribute('aria-checked',String(on));b.querySelector('.fp-sw').classList.toggle('on',on);toast(on?'Simulator on':'Simulator off');setTimeout(()=>location.reload(),350);return;}if(b.dataset.kal){const on=!KAL.on;kalSet(on);b.setAttribute('aria-checked',String(on));b.querySelector('.fp-sw').classList.toggle('on',on);setTimeout(()=>{close();render(true);toast(on?'Live prices on':'Live prices off');},260);return;}if(b.dataset.tips){try{localStorage.removeItem('fpTipNba')}catch(_){}close();toast('Tips will show again');return;}if(b.dataset.reset){S.picks=[];S.betAmt='';S.cash=2418.50;S.pos=BASE_POS();S.done=[];S.n=0;S.amt='50';try{localStorage.removeItem(SAVE_K)}catch(_){}saveState.t='';close();S.screen='FHome';render();toast('Balance and orders reset');}};
   vp.appendChild(sc);vp.appendChild(sh);}
 
 // ---------- player props drawer (Home hero stat taps) ----------
@@ -2322,7 +2327,7 @@ function pkRow(p){const L=isLight();const line=L?'rgba(18,18,28,0.08)':'rgba(255
   return `<div style="position:relative;display:flex;align-items:center;gap:12px;padding:14px;border-radius:20px;background:${L?'#F0F0F5':'rgba(28,25,41,0.94)'};border:1px solid ${L?'rgba(61,27,184,0.10)':line}">
   <span style="width:4px;align-self:stretch;border-radius:2px;background:${one?l0.fill:'#7B4BF0'};flex:none"></span><span style="display:flex;gap:3px">${tiles}</span>
   <div style="display:flex;flex-direction:column;gap:3px;flex-grow:1;min-width:0"><span style="font-size:15px;font-weight:600">${one?PT(l0):p.legs.length+'-pick combo'}</span><span style="font-size:13px;color:${mu};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${one?l0.label+' · '+l0.p+'%':p.legs.map(x=>x.name).join(' · ')}</span>${pkPips(p)}</div>
-  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">${p.res?`<span style="font-size:15px;font-weight:600;color:${p.res==='won'?(L?'#0E8F88':'#3FB4AE'):(L?'#D93B3B':'#F87171')}">${p.res==='won'?'Won '+money(p.pay):'Lost'}</span><span style="white-space:nowrap;font-size:13px;font-weight:600;color:${mu}">Cost ${money(p.A)}</span>`:`<span style="font-size:15px;font-weight:600">${money(p.A)}</span><span style="white-space:nowrap;font-size:13px;font-weight:600;color:${mu}">Max ${money(p.pay)}</span>`}</div></div>`;}
+  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">${p.res?`<span style="font-size:15px;font-weight:600;color:${p.res==='won'?(L?'#0E8F88':'#3FB4AE'):p.res==='push'?mu:(L?'#D93B3B':'#F87171')}">${p.res==='won'?'Won '+money(p.pay):p.res==='push'?'Refunded':'Lost'}</span><span style="white-space:nowrap;font-size:13px;font-weight:600;color:${mu}">Cost ${money(p.A)}</span>`:`<span style="font-size:15px;font-weight:600">${money(p.A)}</span><span style="white-space:nowrap;font-size:13px;font-weight:600;color:${mu}">Max ${money(p.pay)}</span>`}</div></div>`;}
 function betSheet(){
   if(!S.picks.length)return;
   const sc=document.createElement('div');sc.className='fp-scrim';const sh=document.createElement('div');sh.className='fp-sheet fp-slipsheet fp-bet';sh.setAttribute('role','dialog');sh.setAttribute('aria-modal','true');sh.setAttribute('aria-label','Order');
@@ -2381,7 +2386,7 @@ function betSheet(){
     const q=t.closest('[data-q]');if(q){const v=q.dataset.q;amt=v==='max'?String(Math.floor(S.cash)):String(+((parseFloat(amt)||0)+(+v)).toFixed(2));S.betAmt=amt;paint();return;}
   };
   const place=()=>{const A=parseFloat(amt)||0;if(!A||A>S.cash)return;const m=mult();
-      const legs=S.picks.map(x=>Object.assign({},x));S.cash-=A;const id='n'+(++S.n);S.pos.unshift({id,t:'pk',A,legs,pay:+(A*m).toFixed(2)});
+      const legs=S.picks.map(x=>Object.assign({},x));S.cash-=A;const id='n'+(++S.n);S.pos.unshift({id,t:'pk',A,legs,pay:+(A*m).toFixed(2),day:dayKey()});
       done={n:legs.length,A,pay:A*m,name:legs[0].name,t:PT(legs[0])};S.picks=[];S.betAmt='';pickPaint();render(true);sc.remove();sh.remove();ticketDone({A,m,pay:A*m,legs});};
   paint();vp.appendChild(sc);vp.appendChild(sh);}
 // order placed: a short confirmation animation, then the ticket as a shareable card
@@ -3444,7 +3449,7 @@ function propWheel(){
 setInterval(()=>{if(!document.hidden)propWheel();},600);
 
 // version check: compare this build with the one on the server and offer a one-tap update
-const APP_V='3.1.58';const VER={latest:null,st:'idle'};
+const APP_V='3.1.59';const VER={latest:null,st:'idle'};
 function verNewer(a,b){const x=String(a).split('.').map(Number),y=String(b).split('.').map(Number);for(let k=0;k<Math.max(x.length,y.length);k++){const d=(x[k]||0)-(y[k]||0);if(d)return d>0;}return false;}
 function verCheck(){VER.st='checking';verPaint();return fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject()).then(j=>{VER.latest=j.v;VER.st=verNewer(j.v,APP_V)?'old':'ok';}).catch(()=>{VER.st='err';}).then(()=>{verPaint();return VER.st;});}
 function verHtml(){const st=VER.st;return `<span class="kl"><span>Version ${APP_V}</span><small>${st==='old'?'Version '+VER.latest+' is available':st==='ok'?'You’re on the latest version':st==='err'?'Couldn’t check. Are you online?':'Checking for updates…'}</small></span>${st==='old'?'<button class="vb" data-verup="1">Update</button>':st==='ok'?'<b aria-hidden="true">✓</b>':st==='err'?'<button class="vb ghost" data-verchk="1">Retry</button>':''}`;}
@@ -3575,18 +3580,19 @@ async function simEspn(id,j){if(j.src==='espn'||!j.espn)return j;const B='https:
     const e=SIMX.espnParse(id,sum);if(e.plays.length>20)Object.assign(j,{plays:e.plays,players:e.players,ev:e.ev,fix:e.fix,inj:e.inj,score:e.score,src:'espn'});}catch(_){}
   return j;}
 // a pick's state right now: over-style legs win the moment they are reached; everything else waits for the final whistle
-function simLeg(x,T){const g=GD[x.gid];if(!g||!g.sim||!x.pk)return null;const fin=(g.simS||{}).status==='final',[m,sd,arg,,thr]=x.pk.split('|'),a=g.sc[0],h=g.sc[1],r=(won,lost)=>won?'won':lost?'lost':'open';
+function simLeg(x,T,ov){const g=GD[x.gid];if(!g||!g.sim||!x.pk)return null;const s=ov||g.simS||{},fin=s.status==='final',[m,sd,arg,,thr]=x.pk.split('|'),a=ov?ov.a:g.sc[0],h=ov?ov.h:g.sc[1],r=(won,lost)=>won?'won':lost?'lost':'open';
   if(m==='mx'){const kp=arg.split(':');if(kp[0]==='tt'){const over=(kp[1]==='X'?a:h)>+kp[2];return sd==='O'?r(over,fin&&!over):r(fin&&!over,over);}
-    const pl=(g.simS||{}).plays||[],half=fin||pl.some(p=>p[1]>=3),lp=pl.filter(p=>p[1]<=2).pop();if(!half||!lp)return 'open';const ha=lp[3],hh=lp[4];
+    const pl=s.plays||[],half=fin||pl.some(p=>p[1]>=3),lp=pl.filter(p=>p[1]<=2).pop();if(!half||!lp)return 'open';const ha=lp[3],hh=lp[4];
     if(kp[0]==='hml')return (sd==='X'?ha>hh:hh>ha)?'won':'lost';if(kp[0]==='hsp')return (sd==='X'?ha-hh:hh-ha)+num(kp[1])>0?'won':'lost';if(kp[0]==='htot')return (sd==='O')===(ha+hh>+kp[1])?'won':'lost';return null;}
   if(m==='ml')return fin?((sd==='X'?a>h:h>a)?'won':'lost'):'open';
   if(m==='sp'||m==='asp'){const d=(sd==='X'?a-h:h-a)+num(x.ln);return fin?(d>0?'won':'lost'):'open';}
   if(m==='tot'||m==='atot'){const over=a+h>num(x.ln);return sd==='O'?r(over,fin&&!over):r(fin&&!over,over);}
   if(m==='pr'||m==='prl'){const v=simStat(g.id,x.pl,x.k,T);if(v==null)return 'open';const need=m==='prl'?+thr:x.ln==null?1:Math.ceil(x.ln),hit=v>=need;return sd==='O'?r(hit,fin&&!hit):r(fin&&!hit,hit);}
   return null;}
-function simSettle(T){let ch=false;S.done=S.done||[];S.pos.slice().forEach(p=>{if(p.t!=='pk'||!p.legs)return;const st=p.legs.map(x=>simLeg(x,T));if(st.every(x=>x==null))return;
-    if(String(p.simSt)!==String(st)){p.simSt=st;ch=true;}const lost=st.includes('lost'),won=st.every(x=>x==='won');if(!lost&&!won)return;
-    p.res=won?'won':'lost';S.pos=S.pos.filter(x=>x!==p);S.done.unshift(p);if(won)S.cash+=p.pay;ch=true;const nm=p.legs.length>1?p.legs.length+'-pick combo':p.legs[0].name;toast(won?`Won ${money(p.pay)} · ${nm}`:`Lost · ${nm}`);});
+function simSettle(T){let ch=false;S.done=S.done||[];const TE=SIM_T0+86400+3600,today=dayKey();S.pos.slice().forEach(p=>{if(p.t!=='pk'||!p.legs)return;const old=!!p.day&&p.day!==today;   // placed on an earlier day: settle on that day's finished games
+    const st=p.legs.map(x=>{if(!old)return simLeg(x,T);const g=GD[x.gid];if(!g||!g.sim)return null;return SIM.d[x.gid]?simLeg(x,TE,simState(x.gid,TE)):'wait';});if(st.every(x=>x==null))return;if(st.includes('wait'))return;
+    if(String(p.simSt)!==String(st)){p.simSt=st;ch=true;}const lost=st.includes('lost'),won=st.every(x=>x==='won'),stuck=old&&!lost&&!won;if(!lost&&!won&&!stuck)return;
+    p.res=won?'won':lost?'lost':'push';S.pos=S.pos.filter(x=>x!==p);S.done.unshift(p);if(won)S.cash+=p.pay;if(stuck)S.cash+=p.A;ch=true;const nm=p.legs.length>1?p.legs.length+'-pick combo':p.legs[0].name;toast(won?`Won ${money(p.pay)} · ${nm}`:lost?`Lost · ${nm}`:`Refunded ${money(p.A)} · ${nm}`);});saveState();
   if(ch&&S.screen==='FPortfolio'&&!document.querySelector('.fp-sheet,.fp-gs,.tk'))render(true);}
 // a player's real earlier games this season (ESPN), for the last-5 chart and the game log
 const SIMGL={py:['passingYards'],ptd:['passingTouchdowns'],ry:['rushingYards'],cy:['receivingYards'],td:['rushingTouchdowns','receivingTouchdowns'],pts:['points'],reb:['totalRebounds'],ast:['assists']};
