@@ -86,7 +86,7 @@ module.exports = async (req, res) => {
     ]);
     const out = reduce(id, s, candles, stats);
     res.statusCode = 200; res.setHeader('content-type', 'application/json');
-    res.setHeader('Cache-Control', out.px.length ? 'public, s-maxage=604800, stale-while-revalidate=2592000' : 'no-store');
+    res.setHeader('Cache-Control', out.px.length ? 'public, max-age=0, s-maxage=604800, stale-while-revalidate=2592000' : 'no-store');
     res.end(JSON.stringify(out));
   } catch (e) {
     res.statusCode = 502; res.setHeader('content-type', 'application/json'); res.setHeader('Cache-Control', 'no-store');
