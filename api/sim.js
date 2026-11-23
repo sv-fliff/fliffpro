@@ -214,12 +214,26 @@ async function props(id) {
       const lad = ms.map(m => { const row = [m[0], []]; pick.push([m[1], row]); return row; });
       out.pl.push({ nm: p.nm, tm: p.tm, num: p.num, k: code, vol: Math.round(p.vol), lad });
     }); });
+  // first-half lines and team totals
+  const capN = (ms, n) => { if (ms.length <= n) return ms; let bi = 0; ms.forEach((m, i) => { if (m.v > ms[bi].v) bi = i; }); const lo = Math.max(0, Math.min(ms.length - n, bi - (n >> 1))); return ms.slice(lo, lo + n); };
+  const xev = {};
+  for (const [x, k] of [['1HSPREAD', 'hsp'], ['1HTOTAL', 'htot'], ['1H', 'hml'], ['TEAMTOTAL', 'tt']]) { xev[k] = await j(`/events/${pre + x}-${evt}?with_nested_markets=true`).then(r => (r.event && r.event.markets) || []).catch(e => { dbg.push(String(e.message)); return []; }); }
+  const tailOf = m => m.ticker.split('-').pop(), sideOf = t => t.indexOf(hK) === 0 ? 'h' : t.indexOf(aK) === 0 ? 'a' : '';
+  out.hsp = []; out.htot = []; out.hml = {}; out.tt = { a: [], h: [] };
+  capN(xev.hsp.map(m => ({ m, x: +m.floor_strike, sd: sideOf(tailOf(m)), v: vol(m) })).filter(o => isFinite(o.x) && o.sd).map(o => Object.assign(o, { hl: o.sd === 'h' ? -o.x : o.x })).sort((p, q) => p.hl - q.hl), 9)
+    .forEach(o => { const row = [o.hl, [], o.sd === 'h' ? 0 : 1]; out.hsp.push(row); pick.push([o.m.ticker, row]); });
+  capN(xev.htot.map(m => ({ m, x: +m.floor_strike, v: vol(m) })).filter(o => isFinite(o.x)).sort((p, q) => p.x - q.x), 9).forEach(o => { const row = [o.x, []]; out.htot.push(row); pick.push([o.m.ticker, row]); });
+  xev.hml.forEach(m => { const sd = sideOf(tailOf(m)); if (!sd || out.hml[sd]) return; const row = [0, []]; out.hml[sd] = row; pick.push([m.ticker, row]); });
+  ['a', 'h'].forEach(sd => capN(xev.tt.map(m => ({ m, x: +m.floor_strike, sd: sideOf(tailOf(m)), v: vol(m) })).filter(o => isFinite(o.x) && o.sd === sd).sort((p, q) => p.x - q.x), 7).forEach(o => { const row = [o.x, []]; out.tt[sd].push(row); pick.push([o.m.ticker, row]); }));
+  out.xs = Object.keys(xev).map(k => k + ':' + xev[k].length + ':' + xev[k].slice(0, 2).map(tailOf).join('/')).join(' ');
   const a = s - 1800, b = s + (nfl ? 4 * 3600 : 3.25 * 3600), per = Math.max(8, Math.floor(9500 / ((b - a) / 60 + 2)));
   for (let i = 0; i < pick.length; i += per) { const part = pick.slice(i, i + per), got = await batch(part.map(p => p[0]), a, b, dbg);
     part.forEach(([tk, row]) => { let sr = series(got[tk], s); if (row.length === 3 && row[2]) sr = sr.map(x => [x[0], 100 - x[1]]); row[1] = sr; }); }
   out.sp = out.sp.map(r => [r[0], r[1]]).filter(r => r[1].length).sort((x, y) => x[0] - y[0]);
   out.tot = out.tot.filter(r => r[1].length).sort((x, y) => x[0] - y[0]);
   out.pl.forEach(p => { p.lad = p.lad.filter(r => r[1].length); }); out.pl = out.pl.filter(p => p.lad.length);
+  out.hsp = out.hsp.map(r => [r[0], r[1]]).filter(r => r[1].length); out.htot = out.htot.filter(r => r[1].length);
+  ['a', 'h'].forEach(sd => { out.tt[sd] = out.tt[sd].filter(r => r[1].length); if (out.hml[sd]) out.hml[sd] = out.hml[sd][1]; });
   out.n = pick.length; if (dbg.length) out.dbg = dbg.slice(0, 6);
   return out;
 }
