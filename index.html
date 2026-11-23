@@ -541,12 +541,12 @@ a{color:#3D1BB8}a:hover{color:#12121C}
 .nh-dr i{width:3px;height:11px;border-radius:1.5px;margin-left:6px}
 .gp-ou.gp-ou3:has(.gp-wh){grid-template-columns:1.55fr 1fr 1fr}
 .gp-wh{position:relative;height:56px;box-sizing:border-box;border:1px solid var(--line);border-radius:15px;overflow:hidden;display:flex;flex-direction:column;justify-content:center;min-width:0;outline-offset:2px}
-.gp-wh .tr{display:flex;align-items:baseline;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none;padding:0 calc(50% - 22px);-webkit-mask-image:linear-gradient(90deg,transparent 2%,rgba(0,0,0,.5) 22%,#000 38%,#000 62%,rgba(0,0,0,.5) 78%,transparent 98%);mask-image:linear-gradient(90deg,transparent 2%,rgba(0,0,0,.5) 22%,#000 38%,#000 62%,rgba(0,0,0,.5) 78%,transparent 98%)}
+.gp-wh .tr{display:flex;align-items:baseline;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none;padding:0 calc(50% - 27px);-webkit-mask-image:linear-gradient(90deg,transparent 2%,rgba(0,0,0,.5) 22%,#000 38%,#000 62%,rgba(0,0,0,.5) 78%,transparent 98%);mask-image:linear-gradient(90deg,transparent 2%,rgba(0,0,0,.5) 22%,#000 38%,#000 62%,rgba(0,0,0,.5) 78%,transparent 98%)}
 .gp-wh .tr::-webkit-scrollbar{display:none}
 .gp-wh .tr{flex:none;height:24px}
 .gp-wh small{flex:none;line-height:16px}
 .gp-wh{overflow:clip;padding:0 !important}
-.gp-wh .it{flex:none;width:44px;white-space:nowrap;scroll-snap-align:center;scroll-snap-stop:always;text-align:center;font:500 13px 'Space Grotesk','FP Num',sans-serif;line-height:24px;color:var(--mu);opacity:.75;transition:font-size .16s cubic-bezier(.22,1,.36,1),color .16s,opacity .16s;cursor:pointer;font-variant-numeric:tabular-nums}
+.gp-wh .it{flex:none;width:54px;white-space:nowrap;scroll-snap-align:center;scroll-snap-stop:always;text-align:center;font:500 13px 'Space Grotesk','FP Num',sans-serif;line-height:24px;color:var(--mu);opacity:.75;transition:font-size .16s cubic-bezier(.22,1,.36,1),color .16s,opacity .16s;cursor:pointer;font-variant-numeric:tabular-nums}
 .gp-wh .it.on{opacity:1;font-size:18px;font-weight:600;color:var(--ink);text-decoration:underline dotted;text-decoration-thickness:1.5px;text-underline-offset:4px;text-decoration-color:var(--mu)}
 .gp-wh small{margin-top:2px;text-align:center;font-size:12.5px;font-weight:500;color:var(--mu);white-space:nowrap;pointer-events:none}
 .gp-wh::before,.gp-wh::after{content:"";position:absolute;left:50%;width:14px;height:2px;margin-left:-7px;border-radius:1px;background:#7B4BF0;opacity:.85}
@@ -603,6 +603,8 @@ a{color:#3D1BB8}a:hover{color:#12121C}
 .sm-lp{margin:-2px 14px 8px;font-size:12.5px;line-height:17px;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .gp-l5.sm-now{cursor:default;display:inline-flex;align-items:center;gap:6px}
 .gp-l5.sm-now i{width:6px;height:6px;border-radius:50%;background:#3FB4AE;flex:none}
+.gh>*{position:relative;z-index:1}
+.gh .gh-bg{position:absolute;left:-16px;right:-16px;top:-40px;height:260px;z-index:0;pointer-events:none;background:linear-gradient(100deg,var(--ca) 0%,transparent 52%),linear-gradient(260deg,var(--ch) 0%,transparent 52%);opacity:.5;-webkit-mask-image:linear-gradient(transparent,#000 22%,#000 46%,transparent);mask-image:linear-gradient(transparent,#000 22%,#000 46%,transparent)}
 .sm-f .nh-lp{display:flex;gap:10px;align-items:flex-start;padding:10px 2px 2px}
 .sm-f .nh-lp>span{display:flex;flex-direction:column;gap:2px;min-width:0;font-size:13.5px;line-height:18px;color:var(--mu)}
 .sm-f .nh-lp b{font-size:15px;font-weight:600;color:var(--ink)}
@@ -2438,10 +2440,10 @@ function gmPick(btn){const [m,sd,arg,gid,thr]=btn.dataset.pick.split('|');const 
   if(m==='sp'||m==='asp'){const ln=m==='sp'?(sd==='X'?g.sa:g.sh):arg;const t=nm(side)+' '+ln;return Object.assign(base,{id:game+'|sp|'+sd+'|'+ln,mk:game+'|sp',code:side,name:t,t,ln,fill:fc(side)});}
   if(m==='tot'||m==='atot'){const ln=m==='tot'?g.tot:arg;const t=(sd==='O'?'Over ':'Under ')+ln+' total';return Object.assign(base,{id:game+'|tot|'+sd+'|'+ln,mk:game+'|tot',code:sd==='O'?'O':'U',name:t,t,ln,fill:'#5B3FD6'});}
   if(m==='pr'||m==='prl'){const pr=g.props[+arg];if(!pr)return null;
-    const t=m==='prl'?(sd==='U'?`${pr.nm} under ${thr} ${pr.u}`:`${pr.nm} ${thr}+ ${pr.u}`):pr.ln==null?`${pr.nm} ${sd==='O'?'anytime TD':'no TD'}`:`${pr.nm} ${sd==='O'?'over':'under'} ${pr.ln} ${pr.u}`;
+    const t=m==='prl'?(sd==='U'?`${pr.nm} under ${thr-0.5} ${pr.u}`:`${pr.nm} over ${thr-0.5} ${pr.u}`):pr.ln==null?`${pr.nm} ${sd==='O'?'anytime TD':'no TD'}`:`${pr.nm} ${sd==='O'?'over':'under'} ${pr.ln} ${pr.u}`;
     return Object.assign(base,{id:game+'|pr|'+arg+'|'+sd+'|'+(thr||''),mk:game+'|pr|'+arg,code:pr.c,pl:pr.nm,name:t,t,ln:pr.ln,k:pr.k,fill:fc(pr.c)});}
   if(m==='pp'){const [pn,pk]=arg.split('~');const pr=plMarket(g,pn,pk);if(!pr)return null;
-    const t=thr?(sd==='U'?`${pr.nm} under ${thr} ${pr.u}`:`${pr.nm} ${thr}+ ${pr.u}`):pr.ln==null?`${pr.nm} ${sd==='O'?'anytime TD':'no TD'}`:`${pr.nm} ${sd==='O'?'over':'under'} ${pr.ln} ${pr.u}`;
+    const t=thr?(sd==='U'?`${pr.nm} under ${thr-0.5} ${pr.u}`:`${pr.nm} over ${thr-0.5} ${pr.u}`):pr.ln==null?`${pr.nm} ${sd==='O'?'anytime TD':'no TD'}`:`${pr.nm} ${sd==='O'?'over':'under'} ${pr.ln} ${pr.u}`;
     return Object.assign(base,{id:game+'|pp|'+arg+'|'+sd+'|'+(thr||''),mk:game+'|pp|'+arg,code:pr.c,pl:pr.nm,name:t,t,fill:fc(pr.c)});}
   return null;}
 function pickAdd(k){const n0=S.picks.length;const had=S.picks.findIndex(x=>x.id===k.id);if(had>=0)S.picks.splice(had,1);else{S.picks=S.picks.filter(x=>(x.mk||x.game)!==(k.mk||k.game));S.picks.push(k);}
@@ -2674,9 +2676,9 @@ function altSheet(kind,pi){const g=S.gm;if(!g)return;const ca=gcol(g.lg,g.a)[0],
   else if(kind==='tot'){title='Alternate totals';const t0=num(g.tot);const st=g.lg==='nba'?4:3;
     for(let d=-3;d<=3;d++){const t=t0+d*(g.lg==='nba'?2:1),pO=cl(g.top[0]-d*st*(g.lg==='nba'?2:1));rows+=`<div class="gp-row">${altBtn(`atot|O|${t}|${g.id}`,`Over ${t}`,pO,'#7B4BF0')}${altBtn(`atot|U|${t}|${g.id}`,`Under ${t}`,101-pO,'#7B4BF0')}</div>`;}}
   else{const pr=g.props[pi];if(!pr||pr.ln==null)return;title=pr.nm;sub=pr.mk+(pr.avg?' · '+pr.avg:'');const col=gcol(g.lg,pr.c)[0];
-    if(pr.ladNow)pr.ladNow.forEach(([th,p])=>{rows+=`<div class="gp-row one"><span>${th}+ ${pr.u}</span>${altBtn(`prl|O|${pi}|${g.id}|${th}`,'Yes',p,col)}</div>`;});else{
+    if(pr.ladNow)pr.ladNow.forEach(([th,p])=>{rows+=`<div class="gp-row one"><span>Over ${th-0.5} ${pr.u}</span>${altBtn(`prl|O|${pi}|${g.id}|${th}`,'Yes',p,col)}</div>`;});else{
     const step=pr.ln>=150?25:pr.ln>=40?10:pr.ln>=12?3:1;const base=Math.ceil(pr.ln);
-    for(let d=-3;d<=3;d++){const th=base+d*step;if(th<1)continue;const p=d===0?pr.po:cl(100/(1+Math.exp((th-0.5-pr.ln)/(step*0.9))));rows+=`<div class="gp-row one"><span>${th}+ ${pr.u}</span>${altBtn(`prl|O|${pi}|${g.id}|${th}`,'Yes',p,col)}</div>`;}}}
+    for(let d=-3;d<=3;d++){const th=base+d*step;if(th<1)continue;const p=d===0?pr.po:cl(100/(1+Math.exp((th-0.5-pr.ln)/(step*0.9))));rows+=`<div class="gp-row one"><span>Over ${th-0.5} ${pr.u}</span>${altBtn(`prl|O|${pi}|${g.id}|${th}`,'Yes',p,col)}</div>`;}}}
   const sh=gSheet(`<h3>${title}</h3><p class="gs-sub">${sub}</p><div class="fp-alt">${rows}</div><p class="gs-ft">Tap a price to add it to your picks.</p>`,'fp-altsheet',title);pickPaint();return sh;}
 function allSheet(){const sh=gSheet(`<h3>All sports</h3><div class="gs-list">${[['NFL','FList','14 games'],['NBA','FListNBA','13 games'],['CBB','',''],['NHL','',''],['Politics','','']].map(([n,to,sub])=>to?`<a href="#" class="gs-row" data-go="${to}"><span class="nm"><b>${n}</b><small>${sub}</small></span><em>›</em></a>`:`<div class="gs-row st" aria-disabled="true"><span class="nm"><b style="opacity:.5">${n}</b><small>Not in this demo yet</small></span></div>`).join('')}</div>`,'','All sports');
   sh.addEventListener('click',e=>{const r=e.target.closest('[data-go]');if(r){e.preventDefault();sh._close();go(r.dataset.go);}});}
@@ -2782,11 +2784,15 @@ function openGame(id,props){const g=GD[id];if(!g){FN.notBuilt();return;}
 S.lv=S.lv||'games';
 // the game page template is shared: basketball gets a court, not a field
 function sportWords(){if(S.screen!=='FGame'||!S.gm||S.gm.lg!=='nba')return;scroll.querySelectorAll('[data-fn=showField]').forEach(b=>{if(b.textContent.trim()==='Field'){b.textContent='Court';b.setAttribute('aria-label','Court');}});}
+function gmHead(){if(S.screen!=='FGame'||!S.gm)return;const sb=scroll.querySelector('[data-sb]');if(!sb||sb.dataset.gh)return;sb.dataset.gh='1';const g=S.gm;
+  sb.classList.add('gh');sb.style.background='none';sb.style.border='0';sb.style.boxShadow='none';sb.style.overflow='visible';sb.style.padding='6px 4px 4px';
+  [...sb.children].forEach(c=>{const cs=c.style;if(cs.position==='absolute'&&(cs.width==='4px'||cs.width==='5px'||cs.width==='6px'||cs.width==='3px'))c.style.display='none';});
+  if(!isLight()){const bg=document.createElement('div');bg.className='gh-bg';bg.setAttribute('aria-hidden','true');bg.style.setProperty('--ca',gcol(g.lg,g.a)[0]);bg.style.setProperty('--ch',gcol(g.lg,g.h)[0]);sb.insertBefore(bg,sb.firstChild);}}
 function gmPost(){
   if(S.screen==='FGameLive'&&!scroll.querySelector('[data-gpprops]')){const sp=[...scroll.querySelectorAll('div')].find(d=>d.style.height==='120px'&&d.style.flex.startsWith('0'));const h=propsSection(GD['nfl-IND-HOU']);if(sp)sp.insertAdjacentHTML('beforebegin',h);}
   if(/^FList(NBA|Cleared)?$/.test(S.screen))listApply();
   if(S.screen==='FPortfolio'&&S.pfTab==='settled')settledApply();
-  pbpAvatars();gmLiveInit();sportWords();chatApply();priceSync();comboApply();playerApply();futApply();gameBars();propWheel();nflHero();nhHome();gmPre();verPaint();simApply();}
+  pbpAvatars();gmLiveInit();sportWords();gmHead();chatApply();priceSync();comboApply();playerApply();futApply();gameBars();propWheel();nflHero();nhHome();gmPre();verPaint();simApply();}
 // ---------- v2.9.1: Players tab in the combo builder ----------
 S.ctab=S.ctab||'nfl';
 const CP_ICON={nfl:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><ellipse cx="12" cy="12" rx="9" ry="5.5" transform="rotate(-35 12 12)"/><path d="M9.5 14.5 L14.5 9.5"/></svg>',
@@ -2961,7 +2967,16 @@ function chatMsgs(g){const P=g.props||[];const pa=P.find(p=>p.c===g.a),ph=P.find
   if(ph)m.push([fanH,g.h,g.ph,'1m',`${last(ph)} is going to eat tonight`,['🍽️ 5']]);
   m.push(['nora.trades',g.a,g.pa,'40s',`Grabbed some ${g.a} at ${g.pa}, letting it ride`,[]]);
   return m;}
-function chatApply(){if(S.screen!=='FChat')return;const g=S.gm||GD['nfl-IND-HOU'];const L=isLight();const mu=L?'#5D5D70':'#9E9BBD',red=L?'#D93B3B':'#F87171';
+// chat: header and message bar stay pinned; only the messages scroll
+function chatApply(){chatApply0();if(S.screen!=='FChat')return;const g=S.gm||GD['nfl-IND-HOU'],L=isLight(),root=scroll.firstElementChild;if(!root)return;
+  const inp=root.querySelector('input[aria-label="Message"]'),bar=inp&&inp.parentElement;if(!bar||bar.dataset.pin)return;bar.dataset.pin='1';
+  const col=bar.parentElement,list=col.children[2],H=scroll.clientHeight;if(!list||list===bar)return;
+  root.style.height=H+'px';root.style.minHeight='0';root.style.overflow='hidden';root.style.display='flex';root.style.flexDirection='column';col.style.height=H+'px';col.style.minHeight='0';col.style.flex='none';
+  list.style.flex='1 1 0';list.style.minHeight='0';list.style.overflowY='auto';list.style.overscrollBehavior='contain';list.style.paddingBottom='16px';list.style.webkitOverflowScrolling='touch';
+  bar.style.cssText+=`;position:static;flex:none;border-top:1px solid ${L?'rgba(18,18,28,0.08)':'rgba(255,255,255,0.08)'}`;
+  scroll.scrollTop=0;list.scrollTop=list.scrollHeight;if(window.MutationObserver)new MutationObserver(()=>{list.scrollTop=list.scrollHeight;}).observe(list,{childList:true});
+}
+function chatApply0(){if(S.screen!=='FChat')return;const g=S.gm||GD['nfl-IND-HOU'];const L=isLight();const mu=L?'#5D5D70':'#9E9BBD',red=L?'#D93B3B':'#F87171';
   const root=scroll.firstElementChild;if(!root)return;
   // header: Game | Chat
   const tabs=[...root.querySelectorAll('a,span')].find(x=>x.textContent.trim()==='Game'&&x.parentElement&&/Chat/.test(x.parentElement.textContent));
@@ -3167,14 +3182,14 @@ function wheelMake(el,o){if(el.dataset.wh)return;el.dataset.wh='1';const ln=o.ln
   let vals=[];if(o.lad&&o.lad.some(x=>x[0]===main)){const k0=o.lad.findIndex(x=>x[0]===main),lo=Math.max(0,Math.min(o.lad.length-7,k0-3));vals=o.lad.slice(lo,lo+7).map(x=>({th:x[0],p:x[1]}));}
   else for(let d=-3;d<=3;d++){const th=main+d*step;if(th>=1)vals.push({th,p:d===0?o.po:cl(100/(1+Math.exp((th-0.5-ln)/(step*0.9))))});}
   const w=document.createElement('div');w.className='gp-wh'+(o.cls?' '+o.cls:'');w.setAttribute('role','slider');w.setAttribute('aria-label',o.mk+' line');w.tabIndex=0;
-  w.innerHTML=`<div class="tr">${vals.map(v=>`<span class="it${v.th===main?' on':''}">${v.th}+</span>`).join('')}</div><small>${o.u}</small>`;
+  w.innerHTML=`<div class="tr">${vals.map(v=>`<span class="it${v.th===main?' on':''}">${v.th-0.5}</span>`).join('')}</div><small>${o.u}</small>`;
   el.replaceWith(w);const tr=w.firstElementChild,items=[...tr.children],i0=vals.findIndex(v=>v.th===main);S.wh=S.wh||{};
-  const set=k=>{items.forEach((x,j)=>x.classList.toggle('on',j===k));const v=vals[k];w.setAttribute('aria-valuetext',v.th+'+ '+o.u);const pb=o.btns();
+  const set=k=>{items.forEach((x,j)=>x.classList.toggle('on',j===k));const v=vals[k];w.setAttribute('aria-valuetext','Over '+(v.th-0.5)+' '+o.u);const pb=o.btns();
     [[pb[0],v.p,'O'],[pb[1],k===i0?o.pu:101-v.p,'U']].forEach(([b,p,sd])=>{if(!b)return;const sm=b.querySelector('small');if(sm)sm.textContent=p+'%';b.dataset.pick=o.pick(sd,k===i0?null:v.th);});
     o.card.classList.toggle('alt',k!==i0);if(k===i0)delete S.wh[o.key];else S.wh[o.key]=v.th;pickPaint();};
   let cur=i0;const near=()=>{const c=tr.scrollLeft+tr.clientWidth/2;let b=0,bd=1e9;items.forEach((x,j)=>{const d=Math.abs(x.offsetLeft+x.offsetWidth/2-c);if(d<bd){bd=d;b=j;}});return b;};
   const to=(k,sm)=>{const it=items[Math.max(0,Math.min(items.length-1,k))];tr.scrollTo({left:it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2,behavior:sm&&!RM.matches?'smooth':'auto'});};
-  {const sv=S.wh[o.key],ks=sv?vals.findIndex(v=>v.th===sv):-1;if(ks>=0&&ks!==i0){cur=ks;set(ks);}else w.setAttribute('aria-valuetext',main+'+ '+o.u);}
+  {const sv=S.wh[o.key],ks=sv?vals.findIndex(v=>v.th===sv):-1;if(ks>=0&&ks!==i0){cur=ks;set(ks);}else w.setAttribute('aria-valuetext','Over '+(main-0.5)+' '+o.u);}
   to(cur,false);let lw=tr.clientWidth;
   if(window.ResizeObserver)new ResizeObserver(()=>{w.scrollTop=0;if(tr.clientWidth!==lw){lw=tr.clientWidth;to(cur,false);}}).observe(tr);
   tr.addEventListener('scroll',()=>{if(tr.clientWidth<40||tr.clientWidth!==lw)return;const k=near();if(k!==cur){cur=k;set(k);try{if(navigator.vibrate)navigator.vibrate(4);}catch(_){}}},{passive:true});
@@ -3189,7 +3204,7 @@ function propWheel(){
 setInterval(()=>{if(!document.hidden)propWheel();},600);
 
 // version check: compare this build with the one on the server and offer a one-tap update
-const APP_V='3.1.49';const VER={latest:null,st:'idle'};
+const APP_V='3.1.50';const VER={latest:null,st:'idle'};
 function verNewer(a,b){const x=String(a).split('.').map(Number),y=String(b).split('.').map(Number);for(let k=0;k<Math.max(x.length,y.length);k++){const d=(x[k]||0)-(y[k]||0);if(d)return d>0;}return false;}
 function verCheck(){VER.st='checking';verPaint();return fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject()).then(j=>{VER.latest=j.v;VER.st=verNewer(j.v,APP_V)?'old':'ok';}).catch(()=>{VER.st='err';}).then(()=>{verPaint();return VER.st;});}
 function verHtml(){const st=VER.st;return `<span class="kl"><span>Version ${APP_V}</span><small>${st==='old'?'Version '+VER.latest+' is available':st==='ok'?'You’re on the latest version':st==='err'?'Couldn’t check. Are you online?':'Checking for updates…'}</small></span>${st==='old'?'<button class="vb" data-verup="1">Update</button>':st==='ok'?'<b aria-hidden="true">✓</b>':st==='err'?'<button class="vb ghost" data-verchk="1">Retry</button>':''}`;}
