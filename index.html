@@ -586,6 +586,27 @@ a{color:#3D1BB8}a:hover{color:#12121C}
 .gp-b.cg-b small{font-size:16px}
 .cg-ft{display:flex;gap:8px;padding-top:10px;border-top:1px solid var(--line)}
 .cg-ft a{flex:1;height:36px;border-radius:18px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:var(--ink);text-decoration:none}
+.sm{padding:0 16px 8px}
+.sm-b{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:8px 0 14px;padding:12px 14px;border-radius:16px;border:1px solid rgba(123,75,240,0.45);background:rgba(123,75,240,0.12)}
+.sm-b span{display:flex;flex-direction:column;gap:2px;min-width:0}
+.sm-b b{font-size:14px;font-weight:600;color:var(--ink)}
+.sm-b small{font-size:13px;color:var(--mu)}
+.sm-b button{flex:none;height:34px;padding:0 14px;border-radius:17px;border:1px solid var(--line);background:transparent;color:var(--ink);font:600 13px 'FP Num','Inter',sans-serif;cursor:pointer}
+.sm-h{margin:18px 2px 10px;font-size:20px;font-weight:700;color:var(--ink);display:flex;align-items:baseline;gap:8px}
+.sm-h span{font:500 13px 'Space Grotesk',sans-serif;color:var(--mu)}
+.sm-h.lv{color:#F87171}
+:root[data-theme="light"] .sm-h.lv{color:#D93B3B}
+.sm-sc{flex:none;font:700 20px 'Space Grotesk','FP Num',sans-serif;min-width:30px;text-align:right;color:var(--ink);font-variant-numeric:tabular-nums}
+.cg-r.lost .cg-n span,.cg-r.lost .sm-sc{color:var(--mu)}
+.cg-card.fin .cg-b{opacity:.45}
+.sm-pbp{margin:14px 16px 0;padding:14px 16px;border-radius:20px;border:1px solid var(--line)}
+.sm-pbp .hd{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.sm-pbp .hd b{font-size:17px;font-weight:600;color:var(--ink)}
+.sm-pbp .hd small{font-size:12px;color:var(--mu)}
+.sm-pbp .pr{display:grid;grid-template-columns:62px 1fr auto;gap:10px;padding:9px 0;border-top:1px solid var(--line);align-items:baseline}
+.sm-pbp .pr span{font:700 12px 'Space Mono',monospace;color:var(--mu)}
+.sm-pbp .pr p{margin:0;font-size:14px;line-height:19px;color:var(--ink)}
+.sm-pbp .pr em{font:600 13px 'Space Grotesk',sans-serif;font-style:normal;color:var(--mu)}
 .fp-slip .tl{gap:0 !important}
 .fp-slip .tl i{box-shadow:0 0 0 2px #4A26C2,inset 0 0 0 1px rgba(255,255,255,0.25) !important}
 .fp-slip .tl i+i{margin-left:-4px}
@@ -1344,9 +1365,9 @@ function go(name,opts){
 function menu(){
   const sc=document.createElement('div');sc.className='fp-scrim';const sh=document.createElement('div');sh.className='fp-sheet';sh.setAttribute('role','dialog');sh.setAttribute('aria-modal','true');
   const t=S.theme;
-  sh.innerHTML=`<span class="g"></span><h3>Settings</h3>${[['system','Match my device'],['dark','Dark'],['light','Light']].map(([v,n])=>`<button class="o" data-theme-v="${v}"><span>${n}</span>${t===v?'<b>✓</b>':''}</button>`).join('')}<button class="o" data-kal="1" role="switch" aria-checked="${KAL.on}"><span class="kl"><span>Live Kalshi data</span><small>Real NFL prices on Home and Games</small></span><i class="fp-sw${KAL.on?' on':''}" aria-hidden="true"></i></button><button class="o" data-tips="1"><span>Replay feature tips</span></button><button class="o" data-reset="1"><span>Reset demo</span></button><p>Clickable prototype with demo money. Placing an order takes cash and adds it to Portfolio; closing a trade gives the money back.</p><div class="o ver" data-ver="1">${verHtml()}</div>`;verCheck();
+  sh.innerHTML=`<span class="g"></span><h3>Settings</h3>${[['system','Match my device'],['dark','Dark'],['light','Light']].map(([v,n])=>`<button class="o" data-theme-v="${v}"><span>${n}</span>${t===v?'<b>✓</b>':''}</button>`).join('')}<button class="o" data-simsw="1" role="switch" aria-checked="${SIM.on}"><span class="kl"><span>Simulator</span><small>Replays Sun, Nov 22 on your clock with real Kalshi data</small></span><i class="fp-sw${SIM.on?' on':''}" aria-hidden="true"></i></button><button class="o" data-tips="1"><span>Replay feature tips</span></button><button class="o" data-reset="1"><span>Reset demo</span></button><p>Clickable prototype with demo money. Placing an order takes cash and adds it to Portfolio; closing a trade gives the money back.</p><div class="o ver" data-ver="1">${verHtml()}</div>`;verCheck();
   const close=()=>{sc.remove();sh.remove();};sc.onclick=close;
-  sh.onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.themeV){S.theme=b.dataset.themeV;try{localStorage.setItem('fpTheme2',S.theme)}catch(_){}applyTheme();close();render(true);}if(b.dataset.kal){const on=!KAL.on;kalSet(on);b.setAttribute('aria-checked',String(on));b.querySelector('.fp-sw').classList.toggle('on',on);setTimeout(()=>{close();render(true);toast(on?'Live prices on':'Live prices off');},260);return;}if(b.dataset.tips){try{localStorage.removeItem('fpTipNba')}catch(_){}close();toast('Tips will show again');return;}if(b.dataset.reset){S.picks=[];S.betAmt='';S.cash=2418.50;S.pos=BASE_POS();S.amt='50';close();S.screen='FHome';render();toast('Demo reset');}};
+  sh.onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.themeV){S.theme=b.dataset.themeV;try{localStorage.setItem('fpTheme2',S.theme)}catch(_){}applyTheme();close();render(true);}if(b.dataset.simsw){const on=!SIM.on;try{localStorage.setItem('fpSim',on?'1':'0')}catch(_){}b.setAttribute('aria-checked',String(on));b.querySelector('.fp-sw').classList.toggle('on',on);toast(on?'Simulator on':'Simulator off');setTimeout(()=>location.reload(),350);return;}if(b.dataset.kal){const on=!KAL.on;kalSet(on);b.setAttribute('aria-checked',String(on));b.querySelector('.fp-sw').classList.toggle('on',on);setTimeout(()=>{close();render(true);toast(on?'Live prices on':'Live prices off');},260);return;}if(b.dataset.tips){try{localStorage.removeItem('fpTipNba')}catch(_){}close();toast('Tips will show again');return;}if(b.dataset.reset){S.picks=[];S.betAmt='';S.cash=2418.50;S.pos=BASE_POS();S.amt='50';close();S.screen='FHome';render();toast('Demo reset');}};
   vp.appendChild(sc);vp.appendChild(sh);}
 
 // ---------- player props drawer (Home hero stat taps) ----------
@@ -2258,7 +2279,7 @@ function tileSvg(lg,c,sz,txt,lab){const [f,k,tc]=gcol(lg,c);const T=txt!=null?St
 const LIVE_ID={nfl:'nfl-IND-HOU',nba:'nba-NY-MIN'};
 OTHER.FGameLive[1].to='gm:nfl-ARI-KC';OTHER.FGameLive[2].to='gm:nfl-MIA-BUF';
 function gmSync(){if(S.screen==='FGameLive')S.gm=GD['nfl-IND-HOU'];else if(S.screen==='FGame'&&(!S.gm||S.gm.id==='nfl-IND-HOU'))S.gm=GD['nfl-ARI-KC'];else if(S.screen==='FProps'&&!S.gm)S.gm=GD['nfl-ARI-KC'];}
-function gmNear(g){const ids=Object.keys(GD).filter(k=>GD[k].lg===g.lg);const i=ids.indexOf(g.id);const out=[];const lv=LIVE_ID[g.lg];if(lv!==g.id)out.push(lv);
+function gmNear(g){const ids=Object.keys(GD).filter(k=>GD[k].lg===g.lg);const i=ids.indexOf(g.id);const out=[];const lv=LIVE_ID[g.lg];if(lv!==g.id&&GD.propertyIsEnumerable(lv))out.push(lv);
   for(let j=1;j<ids.length&&out.length<5;j++){const k=ids[(i+j)%ids.length];if(k!==g.id&&!out.includes(k))out.push(k);}return out;}
 function gmOther(){const g=S.gm;return [g.id].concat(gmNear(g)).map(id=>{const o=GD[id];const eng=o.live===1;
   return {c:o.live===2?o.clk:o.when,a:o.a,b:o.h,pa:o.pa,pb:o.ph,sa:o.sc&&o.sc[0],sb:o.sc&&o.sc[1],me:id===g.id?1:0,live:o.live?1:0,l2:o.live===2?1:0,eng:eng&&id!==g.id?1:0,to:'gm:'+id};});}
@@ -2751,7 +2772,7 @@ function gmPost(){
   if(S.screen==='FGameLive'&&!scroll.querySelector('[data-gpprops]')){const sp=[...scroll.querySelectorAll('div')].find(d=>d.style.height==='120px'&&d.style.flex.startsWith('0'));const h=propsSection(GD['nfl-IND-HOU']);if(sp)sp.insertAdjacentHTML('beforebegin',h);}
   if(/^FList(NBA|Cleared)?$/.test(S.screen))listApply();
   if(S.screen==='FPortfolio'&&S.pfTab==='settled')settledApply();
-  pbpAvatars();gmLiveInit();chatApply();priceSync();comboApply();playerApply();futApply();gameBars();propWheel();nflHero();nhHome();gmPre();verPaint();}
+  pbpAvatars();gmLiveInit();chatApply();priceSync();comboApply();playerApply();futApply();gameBars();propWheel();nflHero();nhHome();gmPre();verPaint();simApply();}
 // ---------- v2.9.1: Players tab in the combo builder ----------
 S.ctab=S.ctab||'nfl';
 const CP_ICON={nfl:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><ellipse cx="12" cy="12" rx="9" ry="5.5" transform="rotate(-35 12 12)"/><path d="M9.5 14.5 L14.5 9.5"/></svg>',
@@ -2902,7 +2923,7 @@ function priceEach(fn){document.querySelectorAll('#scroll [data-bezel],#ov [data
   let k;try{k=pickInfo(b);}catch(_){return;}if(!k)return;const g=GK[k.game];if(!g||g.live)return;
   const el=[...b.querySelectorAll('*')].reverse().find(x=>!x.children.length&&/\d+%$/.test(x.textContent.trim()));if(el)fn(b,el,g,k.code===g.a?g.pa:g.ph);});}
 function priceSync(){priceEach((b,el,g,v)=>{const t=el.textContent.replace(/\d+%$/,v+'%');if(el.textContent!==t)el.textContent=t;});}
-setInterval(()=>{if(document.hidden||document.querySelector('.fp-sheet'))return;const pool=Object.values(GD).filter(g=>!g.live);
+setInterval(()=>{if(document.hidden||document.querySelector('.fp-sheet')||SIM.on)return;const pool=Object.values(GD).filter(g=>!g.live);
   for(let n=0;n<2;n++){const g=pool[Math.floor(Math.random()*pool.length)];const d=(Math.random()<0.5?-1:1)*(Math.random()<0.75?1:2);
     const pa=Math.max(3,Math.min(97,g.pa+d));const dd=pa-g.pa;if(!dd)continue;g.pa=pa;g.ph=Math.max(3,Math.min(97,g.ph-dd));
     priceEach((b,el,gg,v)=>{if(gg!==g)return;const t=el.textContent.replace(/\d+%$/,v+'%');if(el.textContent===t)return;
@@ -3149,7 +3170,7 @@ function propWheel(){
 setInterval(()=>{if(!document.hidden)propWheel();},600);
 
 // version check: compare this build with the one on the server and offer a one-tap update
-const APP_V='3.1.43';const VER={latest:null,st:'idle'};
+const APP_V='3.1.44';const VER={latest:null,st:'idle'};
 function verNewer(a,b){const x=String(a).split('.').map(Number),y=String(b).split('.').map(Number);for(let k=0;k<Math.max(x.length,y.length);k++){const d=(x[k]||0)-(y[k]||0);if(d)return d>0;}return false;}
 function verCheck(){VER.st='checking';verPaint();return fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject()).then(j=>{VER.latest=j.v;VER.st=verNewer(j.v,APP_V)?'old':'ok';}).catch(()=>{VER.st='err';}).then(()=>{verPaint();return VER.st;});}
 function verHtml(){const st=VER.st;return `<span class="kl"><span>Version ${APP_V}</span><small>${st==='old'?'Version '+VER.latest+' is available':st==='ok'?'You’re on the latest version':st==='err'?'Couldn’t check. Are you online?':'Checking for updates…'}</small></span>${st==='old'?'<button class="vb" data-verup="1">Update</button>':st==='ok'?'<b aria-hidden="true">✓</b>':st==='err'?'<button class="vb ghost" data-verchk="1">Retry</button>':''}`;}
@@ -3161,6 +3182,67 @@ document.addEventListener('click',e=>{const ca=e.target.closest('[data-cpalt]');
   if(e.target.closest('[data-verup]')){e.preventDefault();e.stopPropagation();verUpdate();}else if(e.target.closest('[data-verchk]')){e.preventDefault();e.stopPropagation();verCheck();}},true);
 setTimeout(()=>verCheck().then(st=>{if(st==='old')toast('Update available. Open the menu to update.');}),1500);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&VER.st!=='checking')verCheck();});
+// ---------- Simulator: replays Sunday Nov 22, 2026 on your clock, using Kalshi's recorded prices and play-by-play ----------
+const SIM={on:(()=>{try{return localStorage.getItem('fpSim')==='1'}catch(_){return false}})(),st:'off',n:0,of:0,d:{},sig:''};
+const SIM_T0=Date.parse('2026-11-22T05:00:00Z')/1000;                       // midnight Eastern; kickoffs are shown on the viewer's own clock
+// [league, id, away, home, away name, home name, start (minutes after midnight)]
+const SIM_G=[['nfl','nfl-TEN-DAL',780],['nfl','nfl-PIT-PHI',780],['nfl','nfl-NO-CHI',780],['nfl','nfl-MIA-BUF',780],['nfl','nfl-ARI-KC',780],['nfl','nfl-TB-DET',780],['nfl','nfl-BAL-CAR',780],
+  ['nfl','nfl-NYJ-LAC',965],['nfl','nfl-LV-DEN',985],['nfl','nfl-JAX-NYG',985],['nfl','nfl-MIN-SF',1220],
+  ['nba','nba-DET-ATL',930,'DET','ATL','Pistons','Hawks'],['nba','nba-OKC-MIA',1080,'OKC','MIA','Thunder','Heat'],['nba','nba-ORL-WSH',1140,'ORL','WSH','Magic','Wizards'],['nba','nba-DEN-CHI',1140,'DEN','CHI','Nuggets','Bulls'],
+  ['nba','nba-DAL-UTA',1140,'DAL','UTA','Mavericks','Jazz'],['nba','nba-IND-NY',1200,'IND','NY','Pacers','Knicks'],['nba','nba-BOS-GS',1230,'BOS','GS','Celtics','Warriors']];
+const simClock=m=>{const h=Math.floor(m/60),mm=m%60;return `${h%12||12}:${String(mm).padStart(2,'0')} ${h<12?'AM':'PM'}`;};
+function simNow(){const m=/simt=(\d{1,2}):(\d{2})/.exec(location.hash);const d=new Date();const sec=m?(+m[1])*3600+(+m[2])*60+d.getSeconds():d.getHours()*3600+d.getMinutes()*60+d.getSeconds();return SIM_T0+sec;}
+function simInit(){if(!SIM.on)return;SIM.st='loading';
+  Object.assign(GT.nba,{BOS:['#007A33','#BA9653','#FFFFFF'],DAL:['#00538C','#B8C4CA','#FFFFFF'],MIA:['#98002E','#F9A01B','#FFFFFF'],OKC:['#007AC1','#EF3B24','#FFFFFF']});
+  const keep=new Set(SIM_G.map(x=>x[1]));Object.keys(GD).forEach(k=>{if(!keep.has(k))Object.defineProperty(GD,k,{value:GD[k],enumerable:false,writable:true,configurable:true});});   // demo games stay reachable for their engines, but leave every list
+  SIM_G.forEach(([lg,id,st,a,h,an,hn])=>{let g=GD[id];
+    if(!g)g=GD[id]={id,lg,a,h,an,hn,title:`${an} @ ${hn}`,pa:50,ph:50,ra:'',rh:'',sa:'',sh:'',tot:'',spp:[50,50],top:[50,50],vol:0,props:[]};
+    Object.assign(g,{live:0,sim:1,st,when:simClock(st),time:simClock(st),date:'Sun, Nov 22',fin:0,sc:[0,0],clk:''});});
+  simLoad();}
+function simLoad(){const ids=SIM_G.map(x=>x[1]).filter(id=>!SIM.d[id]);SIM.of=SIM_G.length;SIM.n=SIM_G.length-ids.length;SIM.err=0;SIM.st=ids.length?'loading':'live';let k=0;
+  const next=()=>{const id=ids[k++];if(!id){if(SIM.n+SIM.err>=SIM.of){SIM.st=SIM.err?(SIM.n?'part':'err'):'live';simTick(true);}return;}
+    fetch('api/sim?id='+encodeURIComponent(id)).then(r=>r.ok?r.json():Promise.reject(r.status)).then(j=>{if(!j||!j.px)throw 0;SIM.d[id]=j;SIM.n++;}).catch(()=>{SIM.err++;}).then(()=>{simTick(true);next();});};
+  for(let c=0;c<4;c++)next();}
+// where one game stands at simulated time T
+function simState(id,T){const g=GD[id],d=SIM.d[id],start=SIM_T0+g.st*60;const o={status:T<start?'pre':'live',a:0,h:0,clk:'',ph:null,plays:[]};
+  if(d){let p=null;for(const x of d.px){if(x[0]>T)break;p=x[1];}if(p==null&&d.px.length)p=d.px[0][1];o.ph=p;
+    const pl=d.plays;if(pl.length){const first=pl[0][0],last=pl[pl.length-1][0];let lo=0,hi=pl.length;while(lo<hi){const m=(lo+hi)>>1;if(pl[m][0]<=T)lo=m+1;else hi=m;}
+      const cur=lo?pl[lo-1]:null;o.plays=pl.slice(0,lo);
+      if(T<first)o.status=T<start?'pre':'live';else if(T>last+90)o.status='final';else o.status='live';
+      if(cur){o.a=cur[3];o.h=cur[4];o.clk=(cur[1]>4?(g.lg==='nba'?'OT ':'OT '):'Q'+cur[1]+' ')+cur[2];}else if(o.status==='live')o.clk='Starting';}
+    else if(T>start+3.4*3600)o.status='final';}
+  else if(T>start+3.4*3600)o.status='final';
+  return o;}
+function simTick(force){if(!SIM.on)return;const T=simNow();let sig='';
+  SIM_G.forEach(([lg,id])=>{const g=GD[id],o=simState(id,T);g.simS=o;g.fin=o.status==='final'?1:0;g.live=o.status==='pre'?0:2;
+    if(o.ph!=null){g.ph=Math.max(1,Math.min(99,o.ph));g.pa=100-g.ph;}
+    g.sc=[o.a,o.h];g.clk=o.status==='final'?'Final':(o.clk||'Live');g.when=o.status==='pre'?simClock(g.st):g.clk;if(SIM.d[id])g.vol=SIM.d[id].vol;
+    sig+=id+o.status+o.a+'-'+o.h+g.clk+g.ph+'|';});
+  if(sig===SIM.sig&&!force)return;SIM.sig=sig;
+  if(document.querySelector('.fp-sheet,.fp-gs,.tk'))return;
+  if(/^F(Home|List|ListNBA|Combo|Game)$/.test(S.screen))render(true);}
+const simFmtT=()=>{const d=new Date(simNow()*1000-SIM_T0*1000+Date.UTC(2026,10,22));return simClock(d.getUTCHours()*60+d.getUTCMinutes());};
+function simCard(g){const o=g.simS||{status:'pre'},pre=o.status==='pre',fin=o.status==='final';
+  const row=sd=>{const c=sd==='X'?g.a:g.h,nm=sd==='X'?g.an:g.hn,p=sd==='X'?g.pa:g.ph,sc=sd==='X'?g.sc[0]:g.sc[1],win=fin&&(sd==='X'?g.sc[0]>g.sc[1]:g.sc[1]>g.sc[0]);
+    return `<div class="cg-r${fin&&!win?' lost':''}">${tileSvg(g.lg,c,30)}<div class="cg-n"><div><span>${nm}</span></div></div>${pre?'':`<b class="sm-sc">${sc}</b>`}<button data-bezel="1" class="gp-b cg-b" data-pick="ml|${sd}||${g.id}" data-pc="${gcol(g.lg,c)[0]}" aria-label="${nm} to win, ${p}%"${fin?' disabled':''}><span><small>${p}%</small></span></button></div>`;};
+  return `<section class="hx-card cg-card${fin?' fin':''}"><a href="#" class="cg-hd" data-gm="${g.id}" aria-label="${g.title}, open game"><span><b>${g.title}</b><small${pre||fin?'':' class="lv"'}>${pre?simClock(g.st):fin?'Final':'<i></i>'+g.clk}${g.vol?` · $${g.vol>=1e6?(g.vol/1e6).toFixed(1)+'M':Math.round(g.vol/1e3)+'K'} traded`:''}</small></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>${row('X')}${row('Y')}</section>`;}
+function simList(lg){const gs=SIM_G.map(x=>GD[x[1]]).filter(g=>!lg||g.lg===lg);const by=k=>gs.filter(g=>(g.simS||{status:'pre'}).status===k);
+  const sec=(t,a,cls)=>a.length?`<h3 class="sm-h${cls?' '+cls:''}">${t} <span>${a.length}</span></h3>${a.map(simCard).join('')}`:'';
+  const msg=SIM.st==='loading'?`Loading Kalshi’s Nov 22 data… ${SIM.n}/${SIM.of}`:SIM.st==='err'?'Couldn’t load Kalshi’s Nov 22 data.':SIM.st==='part'?`Loaded ${SIM.n} of ${SIM.of} games from Kalshi.`:'Real Kalshi prices and plays from that day.';
+  return `<div class="sm" data-sim="1"><div class="sm-b"><span><b>Simulator · Sun, Nov 22 · ${simFmtT()}</b><small>${msg}</small></span>${SIM.st==='err'||SIM.st==='part'?'<button data-simretry="1">Retry</button>':''}</div>
+    ${sec('Live',by('live'),'lv')}${sec('Upcoming',by('pre'))}${sec('Final',by('final'))}</div>`;}
+function simApply(){if(!SIM.on)return;
+  if(S.screen==='FHome'){const hx=scroll.querySelector('.hx');if(hx&&!hx.parentElement.querySelector(':scope > .sm')){let p=hx.previousElementSibling;while(p&&p.tagName!=='NAV'){p.style.display='none';p=p.previousElementSibling;}
+      hx.insertAdjacentHTML('beforebegin',simList(null));}}
+  if(S.screen==='FList'||S.screen==='FListNBA'){const lg=S.screen==='FList'?'nfl':'nba';const a=scroll.querySelector('[data-lgcombos]');if(a){const par=a.parentElement;const old=par.querySelector(':scope > .sm');if(old)old.remove();
+      let n=a.nextElementSibling;while(n){n.style.display='none';n=n.nextElementSibling;}if(S.lv!=='props')par.insertAdjacentHTML('beforeend',simList(lg));}}
+  if(S.screen==='FGame'&&S.gm&&S.gm.sim){const g=S.gm,o=g.simS||{plays:[]};const card=[...scroll.querySelectorAll('section,div')].find(c=>/^Play\s*-?\s*by\s*-?\s*play/i.test((c.textContent||'').trim()));
+    if(card&&o.status!=='pre'){card.style.display='';card.classList.add('sm-pbp');const last=o.plays.slice(-14).reverse();
+      card.innerHTML=`<div class="hd"><b>Play-by-play</b><small>${SIM.d[g.id]?'From Kalshi’s game feed':'Loading…'}</small></div>${last.map(p=>`<div class="pr"><span>${p[1]>4?'OT':'Q'+p[1]} ${p[2]}</span><p>${p[6]}</p><em>${p[3]}–${p[4]}</em></div>`).join('')||'<p class="gp-note">No plays yet.</p>'}`;}}
+  gameBars();pickPaint();}
+document.addEventListener('click',e=>{if(e.target.closest('[data-simretry]')){e.preventDefault();e.stopPropagation();simLoad();}},true);
+setInterval(()=>{if(!document.hidden)simTick(false);},5000);
+simInit();
 // ---------- v3.1.0: player page (tap a player on any prop card) ----------
 DARK.add('FPlayer');
 SCR.FPlayer='<div data-fit data-plroot style="width:390px;min-height:100%;box-sizing:border-box;background-color:#08071A"></div>';
