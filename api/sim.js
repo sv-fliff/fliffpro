@@ -89,7 +89,13 @@ async function espnEvent(id) {
   const sb = await SB[sp];
   const ev = (sb.events || []).find(e => { const c = ((e.competitions || [])[0] || {}).competitors || []; const h = c.find(x => x.homeAway === 'home'), a = c.find(x => x.homeAway === 'away'); return h && a && ab(h.team.abbreviation) === H && ab(a.team.abbreviation) === A; });
   if (!ev) throw new Error('espn: no event for ' + id);
-  return je(sp + '/summary?event=' + ev.id);
+  const sum = await je(sp + '/summary?event=' + ev.id);
+  if (nfl) {   // the NFL box score has no positions; the team rosters do
+    const ids = sum.header.competitions[0].competitors.map(c => c.id), pos = {};
+    await Promise.all(ids.map(t => je(sp + '/teams/' + t + '/roster').then(r => { (r.athletes || []).forEach(g => (g.items || [g]).forEach(a => { if (a && a.id) pos[String(a.id)] = [(a.position && a.position.abbreviation) || '', a.jersey || '']; })); }).catch(() => {})));
+    sum._pos = pos;
+  }
+  return sum;
 }
 const ts = w => { const t = Date.parse(w || ''); return isFinite(t) ? Math.floor(t / 1000) : 0; };
 const SUF = /\s+(Jr\.?|Sr\.?|II|III|IV|V)$/i;
@@ -101,7 +107,7 @@ function espnParse(id, sum) {
   const hid = String(home.id), aid = String(away.id), [, A, H] = id.split('-');
   // players from the box score, with final stats
   const players = [], byId = {}, byKey = { a: {}, h: {} }, fin = [];
-  const P = (ath, side) => { const k = String(ath.id); if (byId[k] == null) { byId[k] = players.length; players.push([ath.displayName, side === 'h' ? H : A, ath.jersey || '', (ath.position && ath.position.abbreviation) || '']); fin.push({});
+  const P = (ath, side) => { const k = String(ath.id); if (byId[k] == null) { byId[k] = players.length; const rp = (sum._pos || {})[k] || []; players.push([ath.displayName, side === 'h' ? H : A, ath.jersey || rp[1] || '', (ath.position && ath.position.abbreviation) || rp[0] || '']); fin.push({});
       const nm = ath.displayName.replace(SUF, ''), sp = nm.split(' '); byKey[side][nkey(sp[0][0] + sp.slice(1).join(''))] = byId[k]; byKey[side][nkey(sp[0][0] + sp[sp.length - 1])] = byId[k]; } return byId[k]; };
   ((sum.boxscore && sum.boxscore.players) || []).forEach(tm => { const side = String(tm.team.id) === hid ? 'h' : 'a';
     (tm.statistics || []).forEach(st => { const keys = st.keys || st.names || st.labels || []; const ix = n => keys.indexOf(n);
@@ -161,7 +167,7 @@ async function core(id) {
 
 // ---------- props: Kalshi ladders ----------
 const PROPS = {
-  nfl: [['KXNFLPASSYDS', 'py', 2, 12], ['KXNFLPASSTDS', 'ptd', 2, 5], ['KXNFLRSHYDS', 'ry', 4, 12], ['KXNFLRECYDS', 'cy', 6, 12], ['KXNFLTD', 'td', 6, 1]],
+  nfl: [['KXNFLPASSYDS', 'py', 2, 12], ['KXNFLPASSTDS', 'ptd', 2, 5], ['KXNFLRSHYDS', 'ry', 4, 12], ['KXNFLRECYDS', 'cy', 6, 12], ['KXNFLTD', 'td', 8, 1]],
   nba: [['KXNBAPTS', 'pts', 8, 12], ['KXNBAREB', 'reb', 5, 10], ['KXNBAAST', 'ast', 5, 10]],
 };
 function series(cs, s) {   // candles -> [[minutes from start, cents]] on change
