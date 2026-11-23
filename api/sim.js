@@ -40,7 +40,7 @@ function reduce(id, start, candles, stats) {
   ((candles && candles.candlesticks) || []).slice().sort((a, b) => a.end_period_ts - b.end_period_ts).forEach(c => {
     const p = cents(c.price && c.price.close_dollars) ?? cents(c.yes_bid && c.yes_bid.close_dollars);
     vol += parseFloat(c.volume_fp || 0) || 0;
-    if (p != null && p !== last) { px.push([c.end_period_ts, p]); last = p; }
+    if (p != null && p >= 1 && p <= 99 && p !== last) { px.push([c.end_period_ts, p]); last = p; }   // an empty minute after settlement reports 0
   });
   const plays = [];
   const periods = (stats && stats.pbp && stats.pbp.periods) || [];
