@@ -541,13 +541,13 @@ a{color:#3D1BB8}a:hover{color:#12121C}
 .nh-dr i{width:3px;height:11px;border-radius:1.5px;margin-left:6px}
 .gp-ou.gp-ou3:has(.gp-wh){grid-template-columns:1.55fr 1fr 1fr}
 .gp-wh{position:relative;height:56px;box-sizing:border-box;border:1px solid var(--line);border-radius:15px;overflow:hidden;display:flex;flex-direction:column;justify-content:center;min-width:0;outline-offset:2px}
-.gp-wh .tr{display:flex;align-items:baseline;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none;padding:0 calc(50% - 29px);-webkit-mask-image:linear-gradient(90deg,transparent 2%,rgba(0,0,0,.5) 22%,#000 38%,#000 62%,rgba(0,0,0,.5) 78%,transparent 98%);mask-image:linear-gradient(90deg,transparent 2%,rgba(0,0,0,.5) 22%,#000 38%,#000 62%,rgba(0,0,0,.5) 78%,transparent 98%)}
+.gp-wh .tr{display:flex;align-items:baseline;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none;padding:0 calc(50% - 32px);-webkit-mask-image:linear-gradient(90deg,transparent 2%,rgba(0,0,0,.5) 22%,#000 38%,#000 62%,rgba(0,0,0,.5) 78%,transparent 98%);mask-image:linear-gradient(90deg,transparent 2%,rgba(0,0,0,.5) 22%,#000 38%,#000 62%,rgba(0,0,0,.5) 78%,transparent 98%)}
 .gp-wh .tr::-webkit-scrollbar{display:none}
 .gp-wh .tr{flex:none;height:24px}
 .gp-wh small{flex:none;line-height:16px}
 .gp-wh{overflow:clip;padding:0 !important}
-.pls{font-style:normal;font-size:.62em;font-weight:600;vertical-align:.42em;margin-left:1px;opacity:.8;text-decoration:none;display:inline-block}
-.gp-wh .it{flex:none;width:58px;white-space:nowrap;scroll-snap-align:center;scroll-snap-stop:always;text-align:center;font:500 13px 'Space Grotesk','FP Num',sans-serif;line-height:24px;color:var(--mu);opacity:.75;transition:font-size .16s cubic-bezier(.22,1,.36,1),color .16s,opacity .16s;cursor:pointer;font-variant-numeric:tabular-nums}
+.pls{font-style:normal;font-size:1em;font-weight:600;vertical-align:.03em;margin-left:1px;opacity:1;text-decoration:none;display:inline-block}
+.gp-wh .it{flex:none;width:64px;white-space:nowrap;scroll-snap-align:center;scroll-snap-stop:always;text-align:center;font:500 13px 'Space Grotesk','FP Num',sans-serif;line-height:24px;color:var(--mu);opacity:.75;transition:font-size .16s cubic-bezier(.22,1,.36,1),color .16s,opacity .16s;cursor:pointer;font-variant-numeric:tabular-nums}
 .gp-wh .it.on{opacity:1;font-size:18px;font-weight:600;color:var(--ink);text-decoration:underline dotted;text-decoration-thickness:1.5px;text-underline-offset:4px;text-decoration-color:var(--mu)}
 .gp-wh small{margin-top:2px;text-align:center;font-size:12.5px;font-weight:500;color:var(--mu);white-space:nowrap;pointer-events:none}
 .gp-wh::before,.gp-wh::after{content:"";position:absolute;left:50%;width:14px;height:2px;margin-left:-7px;border-radius:1px;background:#7B4BF0;opacity:.85}
@@ -3205,7 +3205,7 @@ function propWheel(){
 setInterval(()=>{if(!document.hidden)propWheel();},600);
 
 // version check: compare this build with the one on the server and offer a one-tap update
-const APP_V='3.1.51';const VER={latest:null,st:'idle'};
+const APP_V='3.1.52';const VER={latest:null,st:'idle'};
 function verNewer(a,b){const x=String(a).split('.').map(Number),y=String(b).split('.').map(Number);for(let k=0;k<Math.max(x.length,y.length);k++){const d=(x[k]||0)-(y[k]||0);if(d)return d>0;}return false;}
 function verCheck(){VER.st='checking';verPaint();return fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject()).then(j=>{VER.latest=j.v;VER.st=verNewer(j.v,APP_V)?'old':'ok';}).catch(()=>{VER.st='err';}).then(()=>{verPaint();return VER.st;});}
 function verHtml(){const st=VER.st;return `<span class="kl"><span>Version ${APP_V}</span><small>${st==='old'?'Version '+VER.latest+' is available':st==='ok'?'You’re on the latest version':st==='err'?'Couldn’t check. Are you online?':'Checking for updates…'}</small></span>${st==='old'?'<button class="vb" data-verup="1">Update</button>':st==='ok'?'<b aria-hidden="true">✓</b>':st==='err'?'<button class="vb ghost" data-verchk="1">Retry</button>':''}`;}
