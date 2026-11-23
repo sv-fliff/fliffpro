@@ -611,6 +611,7 @@ a{color:#3D1BB8}a:hover{color:#12121C}
 .sm-f .nh-lp{display:flex;gap:10px;align-items:flex-start;padding:10px 2px 2px}
 .sm-f .nh-lp>span{display:flex;flex-direction:column;gap:2px;min-width:0;font-size:13.5px;line-height:18px;color:var(--mu)}
 .sm-f .nh-lp b{font-size:15px;font-weight:600;color:var(--ink)}
+.sm-f .nh-lp>span>span{min-height:36px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .sm-f .nh-lp b small{font-size:12px;font-weight:500;color:var(--mu);margin-left:4px}
 .sm-pbp{margin:14px 16px 0;padding:14px 16px;border-radius:20px;border:1px solid var(--line)}
 .sm-pbp .hd{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
@@ -2367,7 +2368,7 @@ const PXTRA={nba:{tpm:'Threes',pra:'Pts + Rebs + Asts'}};   // stat types with n
 function propBtn(g,i,sd,lab,p,col){return `<button data-bezel="1" class="gp-b" data-pick="pr|${sd}|${i}|${g.id}" data-pc="${col}" data-ps="${g.props[i]?gcol(g.lg,g.props[i].c)[1]:''}"><span><b>${lab}</b><small>${p}%</small></span></button>`;}
 function propCard(g,pr,i,compact){const col=gcol(g.lg,pr.c)[0];const ln=pr.ln;const tn=g.a===pr.c?g.an:g.hn;
   const o=ln==null?['Yes',pr.po]:['Over '+ln,pr.po],u=ln==null?['No',pr.pu]:['Under '+ln,pr.pu];
-  return `<div class="gp-card" data-cat="${pr.cat}" data-gid="${g.id}" data-pi="${i}"><div class="gp-fr"><div class="gp-hd" data-pl="${g.id}|${pr.nm}" tabindex="0" role="link" aria-label="${pr.nm} player page">${avatar(g.lg,pr.nm,pr.c,42)}<span><b>${pr.nm}</b><small>${pr.pos?pr.pos+' · ':''}${pr.c} · ${pr.mk}</small></span>${g.sim?(pr.avg?`<span class="gp-l5 sm-now"><i></i>${pr.avg}</span>`:''):`<button class="gp-l5" data-flip aria-label="${pr.avg}. Show ${pr.nm}'s last 5 games">${pr.avg}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 20V12M10 20V8M15 20V13M20 20V5"/></svg></button>`}</div>
+  return `<div class="gp-card" data-cmp="${compact?1:0}" data-cat="${pr.cat}" data-gid="${g.id}" data-pi="${i}"><div class="gp-fr"><div class="gp-hd" data-pl="${g.id}|${pr.nm}" tabindex="0" role="link" aria-label="${pr.nm} player page">${avatar(g.lg,pr.nm,pr.c,42)}<span><b>${pr.nm}</b><small>${pr.pos?pr.pos+' · ':''}${pr.c} · ${pr.mk}</small></span>${g.sim?(pr.avg?`<span class="gp-l5 sm-now"><i></i>${pr.avg}</span>`:''):`<button class="gp-l5" data-flip aria-label="${pr.avg}. Show ${pr.nm}'s last 5 games">${pr.avg}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 20V12M10 20V8M15 20V13M20 20V5"/></svg></button>`}</div>
     <div class="gp-ou gp-ou3">${(()=>{const [tl,tu]=cpLine(pr);return ln!=null&&!compact?`<button class="gp-ln" data-altp="${i}" aria-label="${tl} ${tu}. Change line"><b><u>${tl}</u><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg></b><small>${tu}</small></button>`:`<span class="gp-ln fix"><b>${tl}</b><small>${tu}</small></span>`;})()}${propBtn(g,i,'O','Yes',pr.po,col)}${propBtn(g,i,'U','No',pr.pu,col)}</div></div></div>`;}
 // ---------- v2.9.4: swipe a player prop card left to flip it and see the last 5 games ----------
 // Demo game logs: seeded from the player's season average so every card has stable, plausible numbers.
@@ -3207,7 +3208,7 @@ function propWheel(){
 setInterval(()=>{if(!document.hidden)propWheel();},600);
 
 // version check: compare this build with the one on the server and offer a one-tap update
-const APP_V='3.1.53';const VER={latest:null,st:'idle'};
+const APP_V='3.1.54';const VER={latest:null,st:'idle'};
 function verNewer(a,b){const x=String(a).split('.').map(Number),y=String(b).split('.').map(Number);for(let k=0;k<Math.max(x.length,y.length);k++){const d=(x[k]||0)-(y[k]||0);if(d)return d>0;}return false;}
 function verCheck(){VER.st='checking';verPaint();return fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject()).then(j=>{VER.latest=j.v;VER.st=verNewer(j.v,APP_V)?'old':'ok';}).catch(()=>{VER.st='err';}).then(()=>{verPaint();return VER.st;});}
 function verHtml(){const st=VER.st;return `<span class="kl"><span>Version ${APP_V}</span><small>${st==='old'?'Version '+VER.latest+' is available':st==='ok'?'You’re on the latest version':st==='err'?'Couldn’t check. Are you online?':'Checking for updates…'}</small></span>${st==='old'?'<button class="vb" data-verup="1">Update</button>':st==='ok'?'<b aria-hidden="true">✓</b>':st==='err'?'<button class="vb ghost" data-verchk="1">Retry</button>':''}`;}
@@ -3382,37 +3383,58 @@ function simTick(force){if(!SIM.on)return;const T=simNow();let sig='';
     g.sc=[o.a,o.h];g.clk=o.status==='final'?'Final':(o.clk||'Live');g.when=o.status==='pre'?simClock(g.st):g.clk;if(SIM.d[id])g.vol=SIM.d[id].vol;
     sig+=id+o.status+o.a+'-'+o.h+g.clk+g.ph+'|';const ls=simLines(g,T);if(S.gm&&S.gm.id===id&&S.screen==='FGame')sig+=ls;else sig+=(g.sh||'')+(g.tot||'');});
   Object.keys(PL_C).forEach(k=>{if(GD[k.split('|')[0]]&&GD[k.split('|')[0]].sim)delete PL_C[k];});simSettle(T);
-  if(sig===SIM.sig&&!force)return;SIM.sig=sig;
-  if(document.querySelector('.fp-sheet,.fp-gs,.tk')||SIM.touch){SIM.sig='';return;}
-  if(/^F(Home|List|ListNBA|Combo|Game)$/.test(S.screen))render(true);}
+  if(document.querySelector('.fp-sheet,.fp-gs,.tk')||SIM.touch)return;
+  // only a change of structure (a game starting or ending, props arriving) redraws; everything else is patched in place
+  if(S.screen==='FGame'&&S.gm&&S.gm.sim){if(SIM.gk!==simGk(S.gm))render(true);else simApply();return;}
+  if(S.screen==='FCombo'){const k=SIM_G.map(x=>(GD[x[1]].simS||{}).status).join();if(SIM.ck!==k){const had=SIM.ck!=null;SIM.ck=k;if(had)render(true);}return;}
+  if(/^F(Home|List|ListNBA)$/.test(S.screen))simApply();}
+const simGk=g=>g.id+'|'+(g.simS||{}).status+'|'+(SIM.p[g.id]?1:0)+'|'+g.props.length;
 const simFmtT=()=>{const d=new Date(simNow()*1000-SIM_T0*1000+Date.UTC(2026,10,22));return simClock(d.getUTCHours()*60+d.getUTCMinutes());};
 function simCard(g){const o=g.simS||{status:'pre'},pre=o.status==='pre',fin=o.status==='final';
   const row=sd=>{const c=sd==='X'?g.a:g.h,nm=sd==='X'?g.an:g.hn,p=sd==='X'?g.pa:g.ph,sc=sd==='X'?g.sc[0]:g.sc[1],win=fin&&(sd==='X'?g.sc[0]>g.sc[1]:g.sc[1]>g.sc[0]);
     return `<div class="cg-r${fin&&!win?' lost':''}">${tileSvg(g.lg,c,30)}<div class="cg-n"><div><span>${nm}</span></div></div>${pre?'':`<b class="sm-sc">${sc}</b>`}<button data-bezel="1" class="gp-b cg-b" data-pick="ml|${sd}||${g.id}" data-pc="${gcol(g.lg,c)[0]}" aria-label="${nm} to win, ${p}%"${fin?' disabled':''}><span><small>${p}%</small></span></button></div>`;};
-  return `<section class="hx-card cg-card${fin?' fin':''}"><a href="#" class="cg-hd" data-gm="${g.id}" aria-label="${g.title}, open game"><span><b>${g.title}</b><small${pre||fin?'':' class="lv"'}>${pre?simClock(g.st):fin?'Final':'<i></i>'+g.clk}${g.vol?` · $${g.vol>=1e6?(g.vol/1e6).toFixed(1)+'M':Math.round(g.vol/1e3)+'K'} traded`:''}</small></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>${!pre&&!fin&&o.plays&&o.plays.length?`<p class="sm-lp">${String(o.plays[o.plays.length-1][6]).replace(/</g,'&lt;')}</p>`:''}${row('X')}${row('Y')}</section>`;}
+  return `<section class="hx-card cg-card${fin?' fin':''}" data-simid="${g.id}"><a href="#" class="cg-hd" data-gm="${g.id}" aria-label="${g.title}, open game"><span><b>${g.title}</b><small${pre||fin?'':' class="lv"'}>${pre?simClock(g.st):fin?'Final':'<i></i>'+g.clk}${g.vol?` · $${g.vol>=1e6?(g.vol/1e6).toFixed(1)+'M':Math.round(g.vol/1e3)+'K'} traded`:''}</small></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>${!pre&&!fin&&o.plays&&o.plays.length?`<p class="sm-lp">${String(o.plays[o.plays.length-1][6]).replace(/</g,'&lt;')}</p>`:''}${row('X')}${row('Y')}</section>`;}
 function simList(lg){const gs=SIM_G.map(x=>GD[x[1]]).filter(g=>!lg||g.lg===lg);const by=k=>gs.filter(g=>(g.simS||{status:'pre'}).status===k);
   const sec=(t,a,cls)=>a.length?`<h3 class="sm-h${cls?' '+cls:''}">${t} <span>${a.length}</span></h3>${a.map(simCard).join('')}`:'';
-  const msg=SIM.st==='loading'?`Loading Kalshi’s Nov 22 data… ${SIM.n}/${SIM.of}`:SIM.st==='err'?'Couldn’t load Kalshi’s Nov 22 data.':SIM.st==='part'?`Loaded ${SIM.n} of ${SIM.of} games from Kalshi.`:Object.keys(SIM.p).length<SIM_G.length?`Loading lines and props… ${Object.keys(SIM.p).length}/${SIM_G.length}`:'Real Kalshi prices with ESPN plays and stats from that day.';
-  return `<div class="sm" data-sim="1"><div class="sm-b"><span><b>Simulator · Sun, Nov 22 · ${simFmtT()}</b><small>${msg}</small></span>${SIM.st==='err'||SIM.st==='part'?'<button data-simretry="1">Retry</button>':''}</div>
+  return `<div class="sm" data-sim="1" data-st="${simSt(lg)}">${simBanner()}
     ${sec('Live',by('live'),'lv')}${sec('Upcoming',by('pre'))}${sec('Final',by('final'))}</div>`;}
+const simSt=lg=>SIM_G.map(x=>GD[x[1]]).filter(g=>!lg||g.lg===lg).map(g=>g.id+(g.simS||{status:'pre'}).status).join();
+function simBanner(){const msg=SIM.st==='loading'?`Loading Kalshi’s Nov 22 data… ${SIM.n}/${SIM.of}`:SIM.st==='err'?'Couldn’t load Kalshi’s Nov 22 data.':SIM.st==='part'?`Loaded ${SIM.n} of ${SIM.of} games from Kalshi.`:Object.keys(SIM.p).length<SIM_G.length?`Loading lines and props… ${Object.keys(SIM.p).length}/${SIM_G.length}`:'Real Kalshi prices with ESPN plays and stats from that day.';
+  return `<div class="sm-b"><span><b>Simulator · Sun, Nov 22 · ${simFmtT()}</b><small>${msg}</small></span>${SIM.st==='err'||SIM.st==='part'?'<button data-simretry="1">Retry</button>':''}</div>`;}
+const simSwap=(el,h)=>{const t=document.createElement('div');t.innerHTML=h;const n=t.firstElementChild;n._h=h;el.replaceWith(n);return n;};
+// lists: swap only the cards whose content changed; rebuild the block only when a game moves between Live, Upcoming and Final
+function simListSync(lg,make){const root=scroll.querySelector('.sm');if(!root){make(simList(lg));return;}
+  if(root.dataset.st!==simSt(lg)){simSwap(root,simList(lg));return;}
+  const b=root.querySelector('.sm-b'),nb=simBanner();if(b&&b._h!==nb)simSwap(b,nb);
+  root.querySelectorAll('.cg-card[data-simid]').forEach(c=>{const g=GD[c.dataset.simid];if(!g)return;const o=g.simS||{},k=[o.status,g.sc,g.clk,g.pa,g.ph,g.vol,o.plays&&o.plays.length,isLight()].join('|');if(c._h==null){c._h=k;return;}if(c._h!==k)simSwap(c,simCard(g))._h=k;});}
+// game page: patch spreads, totals and prop cards where they stand
+function simGamePatch(g){scroll.querySelectorAll('button[data-pick]').forEach(b=>{const [m,sd,,gid]=b.dataset.pick.split('|');if(gid!==g.id||(m!=='sp'&&m!=='tot'))return;const lf=[...b.querySelectorAll('span')].filter(x=>!x.childElementCount);if(lf.length<2)return;
+    const v=m==='sp'?[sd==='X'?g.sa:g.sh,(sd==='X'?g.spp[0]:g.spp[1])+'%']:[(sd==='O'?'O ':'U ')+g.tot,(sd==='O'?g.top[0]:g.top[1])+'%'];if(lf[0].textContent!==v[0])lf[0].textContent=v[0];if(lf[1].textContent!==v[1])lf[1].textContent=v[1];});
+  let swapped=false;scroll.querySelectorAll('.gp-card[data-pi]').forEach(c=>{if(c.dataset.gid!==g.id)return;const i=+c.dataset.pi,pr=g.props[i];if(!pr)return;const ln=String(pr.ln),chip=c.querySelector('.sm-now');
+    if(c.dataset.sln==null)c.dataset.sln=ln;
+    if(c.dataset.sln!==ln||(!chip)!==(!pr.avg)){const n=simSwap(c,propCard(g,pr,i,c.dataset.cmp==='1'));n.dataset.sln=ln;n.style.display=c.style.display;swapped=true;return;}
+    if(chip&&chip.lastChild&&chip.lastChild.nodeValue!==pr.avg)chip.lastChild.nodeValue=pr.avg;
+    if(!c.classList.contains('alt')){const sm=c.querySelectorAll('.gp-ou .gp-b small'),v=[pr.po+'%',pr.pu+'%'];[0,1].forEach(k=>{if(sm[k]&&sm[k].textContent!==v[k])sm[k].textContent=v[k];});}});
+  if(swapped)propWheel();}
 function simApply(){if(!SIM.on)return;
-  if(S.screen==='FHome'){const hx=scroll.querySelector('.hx');if(hx&&!hx.parentElement.querySelector(':scope > .sm')){let p=hx.previousElementSibling;while(p&&p.tagName!=='NAV'){p.style.display='none';p=p.previousElementSibling;}
-      hx.insertAdjacentHTML('beforebegin',simList(null));}}
-  if(S.screen==='FList'||S.screen==='FListNBA'){const lg=S.screen==='FList'?'nfl':'nba';const a=scroll.querySelector('[data-lgcombos]');if(a){const par=a.parentElement;const old=par.querySelector(':scope > .sm');if(old)old.remove();
-      let n=a.nextElementSibling;while(n){n.style.display='none';n=n.nextElementSibling;}if(S.lv!=='props')par.insertAdjacentHTML('beforeend',simList(lg));}}
-  if(S.screen==='FGame'&&S.gm&&S.gm.sim){const g=S.gm,o=g.simS||{plays:[]};if(!SIM.p[g.id])simLoadProps(g.id);
+  if(S.screen==='FHome'){const hx=scroll.querySelector('.hx');if(hx)simListSync(null,h=>{let p=hx.previousElementSibling;while(p&&p.tagName!=='NAV'){p.style.display='none';p=p.previousElementSibling;}hx.insertAdjacentHTML('beforebegin',h);});}
+  if(S.screen==='FList'||S.screen==='FListNBA'){const lg=S.screen==='FList'?'nfl':'nba';const a=scroll.querySelector('[data-lgcombos]');if(a){const par=a.parentElement;
+      if(S.lv==='props'){const old=par.querySelector(':scope > .sm');if(old)old.remove();}
+      else simListSync(lg,h=>{let n=a.nextElementSibling;while(n){n.style.display='none';n=n.nextElementSibling;}par.insertAdjacentHTML('beforeend',h);});}}
+  if(S.screen==='FGame'&&S.gm&&S.gm.sim){const g=S.gm,o=g.simS||{plays:[]};if(!SIM.p[g.id])simLoadProps(g.id);SIM.gk=simGk(g);simGamePatch(g);
     const cap=scroll.querySelector('[data-gpcap]');
-    if(cap&&g.lg==='nfl'&&o.status!=='pre'&&o.plays.length){const R=simField(g,o),wrap=cap.parentElement,box=wrap.parentElement;
-      if(R&&!box.querySelector(':scope > .sm-f')){[...box.children].forEach(c=>{if(c!==wrap)c.style.display='none';});const el=document.createElement('div');el.className='sm-f';
-        el.innerHTML=`<div class="nh-f">${R.F.svg}</div><div class="nh-lp">${tileSvg('nfl',R.off,30)}<span><b>${R.F.title} <small>Last play</small></b><span>${R.p[6]}</span></span></div>`;box.insertBefore(el,wrap);cap.textContent=o.status==='final'?'Final':(R.sit||'Live');}}
+    if(cap&&g.lg==='nfl'&&o.status!=='pre'&&o.plays.length){const wrap=cap.parentElement,box=wrap.parentElement;let el=box.querySelector(':scope > .sm-f');const k=o.plays.length+'|'+o.status+'|'+(isLight()?1:0);
+      if(!el||el.dataset.k!==k){const R=simField(g,o);if(R){if(!el){[...box.children].forEach(c=>{if(c!==wrap)c.style.display='none';});el=document.createElement('div');el.className='sm-f';box.insertBefore(el,wrap);}el.dataset.k=k;
+        el.innerHTML=`<div class="nh-f">${R.F.svg}</div><div class="nh-lp">${tileSvg('nfl',R.off,30)}<span><b>${R.F.title} <small>Last play</small></b><span>${R.p[6]}</span></span></div>`;cap.textContent=o.status==='final'?'Final':(R.sit||'Live');}}}
     const row=scroll.querySelector('[data-gprow]'),D=SIM.d[g.id];
     if(row&&D&&D.ev){const T=simNow();let e=null;for(const x of D.ev){if(x[0]>T)break;if(x[2]==='pts')e=x;}
-      if(e){const pl=D.players[e[1]],pts=simStat(g.id,pl[0],'pts',T),pp=o.plays.filter(p=>p[0]===e[0]).pop();row.querySelector('.jr').innerHTML=avatar('nba',pl[0],pl[1],40);row.querySelector('.nm').textContent=pl[0];const stb=row.querySelector('.st');stb.textContent=pts+' pts';row.querySelector('.ex').textContent=`${simStat(g.id,pl[0],'reb',T)} reb · ${simStat(g.id,pl[0],'ast',T)} ast`;row.querySelector('.tx').textContent=pp?pp[6]:'';
+      if(!e)row.style.display='none';
+      else if(row.dataset.k!==String(e[0])+e[1]){row.dataset.k=String(e[0])+e[1];row.style.display='';const pl=D.players[e[1]],pts=simStat(g.id,pl[0],'pts',T),pp=o.plays.filter(p=>p[0]===e[0]).pop();row.querySelector('.jr').innerHTML=avatar('nba',pl[0],pl[1],40);row.querySelector('.nm').textContent=pl[0];const stb=row.querySelector('.st');stb.textContent=pts+' pts';row.querySelector('.ex').textContent=`${simStat(g.id,pl[0],'reb',T)} reb · ${simStat(g.id,pl[0],'ast',T)} ast`;row.querySelector('.tx').textContent=pp?pp[6]:'';
         let sh=null;for(let i=D.ev.length-1;i>=0&&!sh;i--){const x=D.ev[i];if(x[0]>T||x[2]!=='pts')continue;const q=o.plays.filter(p=>p[0]===x[0]&&p[7]>=0&&p[8]>=0).pop();if(q)sh=[x,q];}   // free throws have no spot: mark the latest made shot
-        if(sh){const tm=D.players[sh[0][1]][1],hm=tm===g.h,q=sh[1];try{courtShow(g.id,{u:hm?5.25+q[8]:88.75-q[8],v:hm?q[7]:50-q[7],pin:'+'+sh[0][3],code:tm},false);}catch(_){}}}
-      else row.style.display='none';}const card=[...scroll.querySelectorAll('section,div')].find(c=>/^Play\s*-?\s*by\s*-?\s*play/i.test((c.textContent||'').trim()));
-    if(card&&o.status!=='pre'){card.style.display='';card.classList.add('sm-pbp');const last=o.plays.slice(-14).reverse();
-      card.innerHTML=`<div class="hd"><b>Play-by-play</b><small>${SIM.d[g.id]?(SIM.d[g.id].src==='espn'?'From ESPN’s game feed':'From Kalshi’s game feed'):'Loading…'}</small></div>${last.map(p=>`<div class="pr"><span>${p[1]>4?'OT':'Q'+p[1]} ${p[2]}</span><p>${p[6]}</p><em>${p[3]}–${p[4]}</em></div>`).join('')||'<p class="gp-note">No plays yet.</p>'}`;}}
+        if(sh){const tm=D.players[sh[0][1]][1],hm=tm===g.h,q=sh[1];try{courtShow(g.id,{u:hm?5.25+q[8]:88.75-q[8],v:hm?q[7]:50-q[7],pin:'+'+sh[0][3],code:tm},true);}catch(_){}}}}
+    const card=scroll.querySelector('.sm-pbp')||[...scroll.querySelectorAll('section,div')].find(c=>/^Play\s*-?\s*by\s*-?\s*play/i.test((c.textContent||'').trim()));
+    if(card&&o.status!=='pre'){const k=o.plays.length+'|'+(SIM.d[g.id]?SIM.d[g.id].src:'');if(card.dataset.k!==k){card.dataset.k=k;card.style.display='';card.classList.add('sm-pbp');const last=o.plays.slice(-14).reverse();
+      card.innerHTML=`<div class="hd"><b>Play-by-play</b><small>${SIM.d[g.id]?(SIM.d[g.id].src==='espn'?'From ESPN’s game feed':'From Kalshi’s game feed'):'Loading…'}</small></div>${last.map(p=>`<div class="pr"><span>${p[1]>4?'OT':'Q'+p[1]} ${p[2]}</span><p>${p[6]}</p><em>${p[3]}–${p[4]}</em></div>`).join('')||'<p class="gp-note">No plays yet.</p>'}`;}}}
   gameBars();pickPaint();}
 document.addEventListener('click',e=>{if(e.target.closest('[data-simretry]')){e.preventDefault();e.stopPropagation();SIM.try=0;SIM.pe={};simLoad();simLoadProps();}},true);
 ['touchstart','pointerdown'].forEach(ev=>document.addEventListener(ev,()=>{SIM.touch=1;},{capture:true,passive:true}));['touchend','touchcancel','pointerup','pointercancel'].forEach(ev=>document.addEventListener(ev,()=>{setTimeout(()=>{SIM.touch=0;},600);},{capture:true,passive:true}));
