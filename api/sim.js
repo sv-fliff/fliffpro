@@ -111,12 +111,12 @@ function espnParse(id, sum) {
     (tm.statistics || []).forEach(st => { const keys = st.keys || st.names || st.labels || []; const ix = n => keys.indexOf(n);
       (st.athletes || []).forEach(a => { if (!a.athlete) return; const i = P(a.athlete, side), s = a.stats || [], v = n => { const k = ix(n); return k < 0 ? null : parseFloat(s[k]) || 0; }, f = fin[i];
         if (nfl) {
-          if (st.name === 'passing') { f.py = v('passingYards'); f.ptd = v('passingTouchdowns'); }
-          if (st.name === 'rushing') { f.ry = v('rushingYards'); f.td = (f.td || 0) + (v('rushingTouchdowns') || 0); }
+          if (st.name === 'passing') { f.py = v('passingYards'); f.ptd = v('passingTouchdowns'); const ca = String(s[ix('completions/passingAttempts')] || '').split('/'); if (ca.length === 2) { f.pc = +ca[0] || 0; f.pa = +ca[1] || 0; } }
+          if (st.name === 'rushing') { f.ry = v('rushingYards'); if (v('rushingAttempts') != null) f.ra = v('rushingAttempts'); f.td = (f.td || 0) + (v('rushingTouchdowns') || 0); }
           if (st.name === 'receiving') { f.cy = v('receivingYards'); f.rc = v('receptions'); f.td = (f.td || 0) + (v('receivingTouchdowns') || 0); }
         } else {
           const lab = st.labels || st.names || keys, g = n => { const k = lab.indexOf(n); return k < 0 ? null : parseFloat(s[k]) || 0; };
-          if (g('PTS') != null && s.length) { f.pts = g('PTS'); f.reb = g('REB'); f.ast = g('AST'); }
+          if (g('PTS') != null && s.length) { f.pts = g('PTS'); f.reb = g('REB'); f.ast = g('AST'); const t3 = lab.indexOf('3PT'); if (t3 >= 0) f.tpm = parseInt(String(s[t3]).split('-')[0], 10) || 0; }
         } }); }); });
   // plays
   const raw = nfl ? ((sum.drives && sum.drives.previous) || []).flatMap(d => d.plays || []) : (sum.plays || []);
@@ -134,13 +134,14 @@ function espnParse(id, sum) {
       const c = txt.replace(/\([^)]*\)/g, ' '), who = n => n == null ? null : (byKey[side][nkey(n)] ?? byKey[side === 'h' ? 'a' : 'h'][nkey(n)]);
       const first = (new RegExp('(' + NM + ')').exec(c) || [])[1], y = p.statYardage || 0;
       if (/^(Pass Reception|Passing Touchdown)$/i.test(ty)) { const to = (new RegExp(' to (' + NM + ')').exec(c) || [])[1], pi = who(first), ri = who(to);
-        add(t, pi, 'py', y); add(t, ri, 'cy', y); add(t, ri, 'rc', 1); if (/Touchdown/i.test(ty)) { add(t, pi, 'ptd', 1); add(t, ri, 'td', 1); } }
-      else if (/^(Rush|Rushing Touchdown)$/i.test(ty)) { const ri = who(first); add(t, ri, 'ry', y); if (/Touchdown/i.test(ty)) add(t, ri, 'td', 1); }
+        add(t, pi, 'py', y); add(t, pi, 'pc', 1); add(t, pi, 'pa', 1); add(t, ri, 'cy', y); add(t, ri, 'rc', 1); if (/Touchdown/i.test(ty)) { add(t, pi, 'ptd', 1); add(t, ri, 'td', 1); } }
+      else if (/^(Pass Incompletion|Pass Interception Return|Interception)/i.test(ty)) add(t, who(first), 'pa', 1);
+      else if (/^(Rush|Rushing Touchdown)$/i.test(ty)) { const ri = who(first); add(t, ri, 'ry', y); add(t, ri, 'ra', 1); if (/Touchdown/i.test(ty)) add(t, ri, 'td', 1); }
     } else {
       const co = p.coordinate || {}, cx = co.x >= 0 && co.x <= 50 ? co.x : -1, cy = co.y >= 0 && co.y <= 94 ? co.y : -1;   // shot spot: across the court, then out from the baseline
       plays.push([t, (p.period && p.period.number) || 0, (p.clock && p.clock.displayValue) || '', p.awayScore || 0, p.homeScore || 0, ty, txt, cx, cy]);
       const pa = (p.participants || []).map(x => x.athlete && byId[String(x.athlete.id)]);
-      if (p.scoringPlay && pa[0] != null) { add(t, pa[0], 'pts', p.scoreValue || 0); if (/assist/i.test(txt) && pa[1] != null) add(t, pa[1], 'ast', 1); }
+      if (p.scoringPlay && pa[0] != null) { add(t, pa[0], 'pts', p.scoreValue || 0); if (p.scoreValue === 3) add(t, pa[0], 'tpm', 1); if (/assist/i.test(txt) && pa[1] != null) add(t, pa[1], 'ast', 1); }
       else if (/rebound/i.test(ty) && pa[0] != null) add(t, pa[0], 'reb', 1);
     }
   });
@@ -148,7 +149,10 @@ function espnParse(id, sum) {
   let fix = 0; const endT = plays.length ? plays[plays.length - 1][0] : 0;
   fin.forEach((f, i) => Object.keys(f).forEach(k => { if (f[k] == null) return; const d = f[k] - (acc[i][k] || 0); if (d) { fix++; ev.push([lastT[i][k] || endT, i, k, d]); } }));
   ev.sort((a, b) => a[0] - b[0]);
-  return { plays, players, ev, fix, score: [+away.score || 0, +home.score || 0] };
+  // injury designations, as listed for the game
+  const inj = [];
+  (sum.injuries || []).forEach(tm => { const side = tm.team && String(tm.team.id) === hid ? 'h' : 'a'; (tm.injuries || []).forEach(x => { const a = x.athlete || {}; if (a.displayName) inj.push([a.displayName, side, x.status || (x.type && x.type.description) || '', (a.position && a.position.abbreviation) || '', (x.details && x.details.type) || '']); }); });
+  return { plays, players, ev, fix, inj, score: [+away.score || 0, +home.score || 0] };
 }
 
 async function core(id) {
@@ -159,7 +163,7 @@ async function core(id) {
     espnEvent(id).then(x => espnParse(id, x)).catch(e => ({ err: String(e && e.message || e) })),
   ]);
   const w = winPx(candles), out = { id, start: s, px: w.px, vol: w.vol, src: 'espn', espn: [/^nfl/.test(id) ? 'football/nfl' : 'basketball/nba', EID[id]] };
-  if (esp.plays && esp.plays.length > 20) Object.assign(out, { plays: esp.plays, players: esp.players, ev: esp.ev, fix: esp.fix, score: esp.score });
+  if (esp.plays && esp.plays.length > 20) Object.assign(out, { plays: esp.plays, players: esp.players, ev: esp.ev, fix: esp.fix, inj: esp.inj, score: esp.score });
   else { const st = await j(`/live_data/milestone/${ms}/game_stats`).catch(() => null); out.plays = kalshiPlays(id, s, st, w.px); out.src = 'kalshi'; out.err = esp.err || 'espn: no plays'; }
   return out;
 }
