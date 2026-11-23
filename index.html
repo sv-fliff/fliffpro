@@ -580,7 +580,7 @@ a{color:#3D1BB8}a:hover{color:#12121C}
 .cg-hd small i{width:7px;height:7px;border-radius:4px;background:currentColor}
 .cg-r{display:flex;align-items:center;gap:12px}
 .cg-n{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
-.cg-n>div{display:flex;gap:8px;align-items:baseline}
+.cg-n>div:first-child{display:flex;gap:8px;align-items:baseline}
 .cg-n span{font-size:16px;font-weight:600;color:var(--ink)}
 .gp-b.cg-b{flex:none;width:72px;height:40px}
 .gp-b.cg-b small{font-size:16px}
@@ -2784,6 +2784,10 @@ function cgList(lg){const gs=Object.values(GD).filter(g=>g&&g.lg===lg&&g.title&&
     <div class="cg-ft"><a href="#" data-gm="${g.id}">Team props</a>${g.props&&g.props.length?`<a href="#" data-gm="${g.id}" data-gmp>Player props · ${g.props.length}</a>`:''}</div></section>`).join('')}</div>`;}
 function comboTabs(){const lv=[...scroll.querySelectorAll('span')].find(x=>!x.children.length&&x.textContent.trim()==='Live');return lv&&lv.parentElement?lv.parentElement.parentElement:null;}
 function comboApply(){if(S.screen!=='FCombo')return;const row=comboTabs();if(!row)return;
+  {const pan=row.parentElement,root=pan.parentElement;if(!pan.dataset.pg){pan.dataset.pg='1';   // a full page, not a drawer: the whole list scrolls, header and tabs stay pinned
+    [...root.children].forEach(c=>{if(c!==pan)c.style.display='none';});root.style.height='auto';root.style.minHeight='100%';root.style.overflow='visible';root.style.marginTop='0';
+    const bg=getComputedStyle(pan).backgroundColor;pan.style.cssText+=';position:relative;top:0;bottom:auto;border-radius:0;overflow:visible;min-height:100vh;display:block';
+    const hd=pan.children[0];hd.style.cssText+=`;position:sticky;top:0;z-index:6;background:${bg};padding-top:10px`;row.style.cssText+=`;position:sticky;top:${hd.offsetHeight}px;z-index:6;background:${bg}`;row.dataset.on=row.dataset.on||'';}}
   if(!row.dataset.ct){row.dataset.ct='1';row.classList.add('cp-tabs');row.setAttribute('role','tablist');row.setAttribute('aria-label','Browse');
     const kids=[...row.children];const on=kids.find(x=>x.textContent.trim()==='NFL');const off=kids.find(x=>x.textContent.trim()==='NBA');if(!on||!off)return;
     row.dataset.on=on.getAttribute('style');row.dataset.off=off.getAttribute('style');
@@ -2799,6 +2803,7 @@ function comboApply(){if(S.screen!=='FCombo')return;const row=comboTabs();if(!ro
   let n=row.nextElementSibling;while(n){if(!n.classList.contains('cp-wrap'))n.style.display='none';n=n.nextElementSibling;}
   const old=row.parentElement.querySelector(':scope > .cp-wrap');if(old)old.remove();
   row.insertAdjacentHTML('afterend',P?cpGrid():cgList(tab));
+  [...ov.children].forEach(c=>{if(!c.classList.contains('fp-slipw')&&!c.classList.contains('fp-undo')&&/pick combo|Recalculating|Continue/.test(c.textContent))c.style.display='none';});   // the page uses the live pick bar, not the static sample bar
   pickPaint();gameBars();}
 // ---------- v2.9.1: player picks show the player's initials on their tile ----------
 function pkIni(nm){const w=String(nm||'').replace(/\b(Jr|Sr|II|III|IV|V)\.?$/,'').trim().split(/\s+/).filter(Boolean);if(!w.length)return '';
@@ -3144,7 +3149,7 @@ function propWheel(){
 setInterval(()=>{if(!document.hidden)propWheel();},600);
 
 // version check: compare this build with the one on the server and offer a one-tap update
-const APP_V='3.1.42';const VER={latest:null,st:'idle'};
+const APP_V='3.1.43';const VER={latest:null,st:'idle'};
 function verNewer(a,b){const x=String(a).split('.').map(Number),y=String(b).split('.').map(Number);for(let k=0;k<Math.max(x.length,y.length);k++){const d=(x[k]||0)-(y[k]||0);if(d)return d>0;}return false;}
 function verCheck(){VER.st='checking';verPaint();return fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject()).then(j=>{VER.latest=j.v;VER.st=verNewer(j.v,APP_V)?'old':'ok';}).catch(()=>{VER.st='err';}).then(()=>{verPaint();return VER.st;});}
 function verHtml(){const st=VER.st;return `<span class="kl"><span>Version ${APP_V}</span><small>${st==='old'?'Version '+VER.latest+' is available':st==='ok'?'You’re on the latest version':st==='err'?'Couldn’t check. Are you online?':'Checking for updates…'}</small></span>${st==='old'?'<button class="vb" data-verup="1">Update</button>':st==='ok'?'<b aria-hidden="true">✓</b>':st==='err'?'<button class="vb ghost" data-verchk="1">Retry</button>':''}`;}
