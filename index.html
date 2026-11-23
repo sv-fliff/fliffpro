@@ -481,7 +481,7 @@ a{color:#3D1BB8}a:hover{color:#12121C}
 @media (prefers-reduced-motion:reduce){.fp-bet .slide .lbl span{animation:none}.fp-slipw,.fp-undo,.fp-slip .tl i.pop,.fp-slip .tx b.bump{animation:none}}
 
 /* ---- v2.4: combo bar tiles overlap ---- */
-.gb{display:flex;gap:2px;width:100%;max-width:104px;height:4px;margin-top:0;opacity:.9}
+.gb{display:flex;flex:none;gap:2px;width:104px;height:4px;margin-top:0;opacity:.9}
 .gb i{flex:1;height:100%;border-radius:1px;transform:skewX(-20deg);background:rgba(255,255,255,0.09)}
 :root[data-theme="light"] .gb i{background:rgba(18,18,28,0.07)}
 .gb i.on{background:linear-gradient(90deg,var(--c) var(--a),rgba(255,255,255,0.09) var(--a));animation:gbIn .36s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--i) * 28ms)}
@@ -663,7 +663,7 @@ a{color:#3D1BB8}a:hover{color:#12121C}
 .hx-fr{display:flex;align-items:center;gap:10px;width:100%;padding:0;border:none;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
 .hx-fr .nm{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
 .hx-fr .nm>span:first-child{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.hx-fr .gb{max-width:150px}
+.hx-fr .gb{width:104px}
 .hx-fr em{font:700 17px 'Space Grotesk',sans-serif;font-style:normal;min-width:44px;text-align:right}
 .hx-grid{display:grid;grid-auto-flow:column;grid-template-rows:repeat(2,auto);grid-auto-columns:164px;gap:12px;padding:0 16px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;scroll-padding:0 16px;overscroll-behavior-x:contain}
 .hx-grid::-webkit-scrollbar{display:none}
@@ -1250,7 +1250,7 @@ function go(name,opts){
 function menu(){
   const sc=document.createElement('div');sc.className='fp-scrim';const sh=document.createElement('div');sh.className='fp-sheet';sh.setAttribute('role','dialog');sh.setAttribute('aria-modal','true');
   const t=S.theme;
-  sh.innerHTML=`<span class="g"></span><h3>Settings</h3>${[['system','Match my device'],['dark','Dark'],['light','Light']].map(([v,n])=>`<button class="o" data-theme-v="${v}"><span>${n}</span>${t===v?'<b>✓</b>':''}</button>`).join('')}<button class="o" data-kal="1" role="switch" aria-checked="${KAL.on}"><span class="kl"><span>Live Kalshi data</span><small>Real NFL prices on Home and Games</small></span><i class="fp-sw${KAL.on?' on':''}" aria-hidden="true"></i></button><button class="o" data-tips="1"><span>Replay feature tips</span></button><button class="o" data-reset="1"><span>Reset demo</span></button><p>Clickable prototype with demo money. Placing an order takes cash and adds it to Portfolio; closing a trade gives the money back.<br><span style="opacity:.7">Prototype v3.1.37</span></p>`;
+  sh.innerHTML=`<span class="g"></span><h3>Settings</h3>${[['system','Match my device'],['dark','Dark'],['light','Light']].map(([v,n])=>`<button class="o" data-theme-v="${v}"><span>${n}</span>${t===v?'<b>✓</b>':''}</button>`).join('')}<button class="o" data-kal="1" role="switch" aria-checked="${KAL.on}"><span class="kl"><span>Live Kalshi data</span><small>Real NFL prices on Home and Games</small></span><i class="fp-sw${KAL.on?' on':''}" aria-hidden="true"></i></button><button class="o" data-tips="1"><span>Replay feature tips</span></button><button class="o" data-reset="1"><span>Reset demo</span></button><p>Clickable prototype with demo money. Placing an order takes cash and adds it to Portfolio; closing a trade gives the money back.<br><span style="opacity:.7">Prototype v3.1.38</span></p>`;
   const close=()=>{sc.remove();sh.remove();};sc.onclick=close;
   sh.onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.themeV){S.theme=b.dataset.themeV;try{localStorage.setItem('fpTheme2',S.theme)}catch(_){}applyTheme();close();render(true);}if(b.dataset.kal){const on=!KAL.on;kalSet(on);b.setAttribute('aria-checked',String(on));b.querySelector('.fp-sw').classList.toggle('on',on);setTimeout(()=>{close();render(true);toast(on?'Live prices on':'Live prices off');},260);return;}if(b.dataset.tips){try{localStorage.removeItem('fpTipNba')}catch(_){}close();toast('Tips will show again');return;}if(b.dataset.reset){S.picks=[];S.betAmt='';S.cash=2418.50;S.pos=BASE_POS();S.amt='50';close();S.screen='FHome';render();toast('Demo reset');}};
   vp.appendChild(sc);vp.appendChild(sh);}
@@ -2514,9 +2514,9 @@ function homeExtras(){const root=scroll.firstElementChild;if(!root||root.querySe
       <span class="hx-ch${d<0?' dn':''}">${d>0?'▲':'▼'} ${Math.abs(d)} pts<span style="color:var(--mu);font-weight:500;font-family:inherit">· 1h</span></span></a>`;}).join('');
   // 2) futures: multi-outcome markets
   const fut=(lg,title,meta,pcts)=>{const codes=Object.keys(names[lg]).slice(0,pcts.length);if(codes.length<2)return '';
-    return `<div class="hx-card hx-fu" data-fut="${lg==='nfl'?'sb':'nbac'}" role="link" tabindex="0" aria-label="${title}, open market"><div class="hd"><b>${title}</b><small>${meta}</small></div>${codes.map((c,k)=>`<button class="hx-fr" data-hxfut style="--tc:${gcol(lg,c)[0]}" aria-label="${names[lg][c]} ${pcts[k]}%">${tileSvg(lg,c,28)}<span class="nm"><span>${names[lg][c]}</span>${gbHtml(pcts[k]*3/100,gcol(lg,c)[0],16)}</span><em>${pcts[k]}%</em></button>`).join('')}<span class="ft">+ ${lg==='nfl'?28:26} more teams</span></div>`;};
+    return `<div class="hx-card hx-fu" data-fut="${lg==='nfl'?'sb':'nbac'}" role="link" tabindex="0" aria-label="${title}, open market"><div class="hd"><b>${title}</b><small>${meta}</small></div>${codes.map((c,k)=>`<button class="hx-fr" data-hxfut style="--tc:${gcol(lg,c)[0]}" aria-label="${names[lg][c]} ${pcts[k]}%">${tileSvg(lg,c,28)}<span class="nm"><span>${names[lg][c]}</span>${gbHtml(pcts[k]*3/100,gcol(lg,c)[0])}</span><em>${pcts[k]}%</em></button>`).join('')}<span class="ft">+ ${lg==='nfl'?28:26} more teams</span></div>`;};
   const pl=[];all.forEach(g=>(g.props||[]).forEach(p=>{if(g.lg==='nba'&&!pl.some(x=>x.p.nm===p.nm))pl.push({g,p});}));
-  const mvpP=[31,22,14,9];const mvp=pl.length>=3?`<div class="hx-card hx-fu" data-fut="mvp" role="link" tabindex="0" aria-label="NBA MVP, open market"><div class="hd"><b>NBA MVP</b><small>$1.9M traded · Settles in June</small></div>${pl.slice(0,4).map((x,k)=>`<button class="hx-fr" data-hxfut style="--tc:${gcol('nba',x.p.c)[0]}" aria-label="${x.p.nm} ${mvpP[k]}%">${avatar('nba',x.p.nm,x.p.c,28)}<span class="nm"><span>${x.p.nm}</span>${gbHtml(mvpP[k]*3/100,gcol('nba',x.p.c)[0],16)}</span><em>${mvpP[k]}%</em></button>`).join('')}<span class="ft">+ 18 more players</span></div>`:'';
+  const mvpP=[31,22,14,9];const mvp=pl.length>=3?`<div class="hx-card hx-fu" data-fut="mvp" role="link" tabindex="0" aria-label="NBA MVP, open market"><div class="hd"><b>NBA MVP</b><small>$1.9M traded · Settles in June</small></div>${pl.slice(0,4).map((x,k)=>`<button class="hx-fr" data-hxfut style="--tc:${gcol('nba',x.p.c)[0]}" aria-label="${x.p.nm} ${mvpP[k]}%">${avatar('nba',x.p.nm,x.p.c,28)}<span class="nm"><span>${x.p.nm}</span>${gbHtml(mvpP[k]*3/100,gcol('nba',x.p.c)[0])}</span><em>${mvpP[k]}%</em></button>`).join('')}<span class="ft">+ 18 more players</span></div>`:'';
   const futures=fut('nfl','Super Bowl winner','$4.2M traded · Settles Feb 14',[19,14,11,9])+fut('nba','NBA champion','$6.8M traded · Settles in June',[24,17,12,8])+mvp;
   // 3) popular props (real cards: picks and player sheets work)
   const props=cpPool().slice(0,12).map(([g,i])=>cpCard(g,i)).join('');
@@ -2916,7 +2916,7 @@ function futPage(){const ms=futAll();const m=S.fut&&ms.find(x=>x.id===S.fut);
   const head=(lab,title,sub)=>`<header class="fu-hd"><button class="fu-back" data-futback aria-label="Back">${FU_BACK}</button><div class="fu-tt"><div class="fu-t1">${lab?`<span>${lab}</span><span aria-hidden="true">·</span>`:''}<h1>${title}</h1></div><small>${sub}</small></div></header>`;
   if(!m)return `<div class="fu">${head('','Futures','Season-long markets · Sports only')}
     ${ms.map(x=>`<a href="#" class="gp-card fu-ix" data-fut="${x.id}" aria-label="${x.title}, open market"><div class="hd"><span><b>${x.title}</b><small>${x.lg.toUpperCase()} · ${x.vol} traded · ${x.settle}</small></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></div>
-      ${x.rows.slice(0,3).map(r=>`<div class="hx-fr" style="--tc:${r.fill}">${r.av(28)}<span class="nm"><span>${r.nm}</span>${gbHtml(r.p*3/100,r.fill,16)}</span><em>${r.p}%</em></div>`).join('')}
+      ${x.rows.slice(0,3).map(r=>`<div class="hx-fr" style="--tc:${r.fill}">${r.av(28)}<span class="nm"><span>${r.nm}</span>${gbHtml(r.p*3/100,r.fill)}</span><em>${r.p}%</em></div>`).join('')}
       <span class="ft">+ ${x.total-3} more ${x.unit}</span></a>`).join('')}
     <p class="gp-note">Demo data. Futures prices and volumes are sample figures.</p></div>`;
   const r=l5Seed('futd-'+m.id);
