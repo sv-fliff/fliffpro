@@ -25,9 +25,12 @@ const G = {
 };
 
 async function j(u) {
-  const r = await fetch(B + u, { headers: { accept: 'application/json' } });
-  if (!r.ok) throw new Error(u.split('?')[0] + ' ' + r.status);
-  return r.json();
+  for (let n = 0; ; n++) {
+    const r = await fetch(B + u, { headers: { accept: 'application/json' } });
+    if (r.ok) return r.json();
+    if (r.status !== 429 || n >= 3) throw new Error(u.split('?')[0] + ' ' + r.status);
+    await new Promise(ok => setTimeout(ok, 500 * (n + 1) + Math.random() * 400));   // Kalshi rate limit: wait and try again
+  }
 }
 const cents = v => (v == null || v === '' ? null : Math.round(parseFloat(v) * 100));
 
@@ -51,6 +54,20 @@ function reduce(id, start, candles, stats) {
   }));
   plays.sort((a, b) => a[9] - b[9] || a[0] - b[0]);
   plays.forEach(p => p.pop());
+  // Some feeds were back-filled, so their wall clocks squeeze the whole game into an hour.
+  // When that happens, place each play by its game clock between kickoff and the moment the market settled.
+  if (plays.length > 20 && px.length > 1) {
+    const end = px[px.length - 1][0], span = plays[plays.length - 1][0] - plays[0][0];
+    if (end - start > 5400 && span < 0.6 * (end - start)) {
+      const Q = /^nba/.test(id) ? 720 : 900, half = 780, t0 = start + 240, live = Math.max(3600, end - t0 - half);
+      plays.forEach(p => {
+        const m = /^(\d+):(\d+)/.exec(p[2] || ''), left = m ? +m[1] * 60 + +m[2] : Q;
+        const el = Math.min(4 * Q, (Math.min(p[1] || 1, 4) - 1) * Q + (Q - Math.min(Q, left)) + (p[1] > 4 ? Q : 0));
+        p[0] = Math.round(t0 + (el / (4 * Q)) * live + (p[1] >= 3 ? half : 0));
+      });
+      for (let i = 1; i < plays.length; i++) if (plays[i][0] < plays[i - 1][0]) plays[i][0] = plays[i - 1][0];
+    }
+  }
   return { id, start, px, vol: Math.round(vol), plays };
 }
 

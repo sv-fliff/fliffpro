@@ -3170,7 +3170,7 @@ function propWheel(){
 setInterval(()=>{if(!document.hidden)propWheel();},600);
 
 // version check: compare this build with the one on the server and offer a one-tap update
-const APP_V='3.1.44';const VER={latest:null,st:'idle'};
+const APP_V='3.1.45';const VER={latest:null,st:'idle'};
 function verNewer(a,b){const x=String(a).split('.').map(Number),y=String(b).split('.').map(Number);for(let k=0;k<Math.max(x.length,y.length);k++){const d=(x[k]||0)-(y[k]||0);if(d)return d>0;}return false;}
 function verCheck(){VER.st='checking';verPaint();return fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject()).then(j=>{VER.latest=j.v;VER.st=verNewer(j.v,APP_V)?'old':'ok';}).catch(()=>{VER.st='err';}).then(()=>{verPaint();return VER.st;});}
 function verHtml(){const st=VER.st;return `<span class="kl"><span>Version ${APP_V}</span><small>${st==='old'?'Version '+VER.latest+' is available':st==='ok'?'You’re on the latest version':st==='err'?'Couldn’t check. Are you online?':'Checking for updates…'}</small></span>${st==='old'?'<button class="vb" data-verup="1">Update</button>':st==='ok'?'<b aria-hidden="true">✓</b>':st==='err'?'<button class="vb ghost" data-verchk="1">Retry</button>':''}`;}
@@ -3200,9 +3200,9 @@ function simInit(){if(!SIM.on)return;SIM.st='loading';
     Object.assign(g,{live:0,sim:1,st,when:simClock(st),time:simClock(st),date:'Sun, Nov 22',fin:0,sc:[0,0],clk:''});});
   simLoad();}
 function simLoad(){const ids=SIM_G.map(x=>x[1]).filter(id=>!SIM.d[id]);SIM.of=SIM_G.length;SIM.n=SIM_G.length-ids.length;SIM.err=0;SIM.st=ids.length?'loading':'live';let k=0;
-  const next=()=>{const id=ids[k++];if(!id){if(SIM.n+SIM.err>=SIM.of){SIM.st=SIM.err?(SIM.n?'part':'err'):'live';simTick(true);}return;}
+  const next=()=>{const id=ids[k++];if(!id){if(SIM.n+SIM.err>=SIM.of){SIM.st=SIM.err?(SIM.n?'part':'err'):'live';simTick(true);if(SIM.err&&(SIM.try=(SIM.try||0)+1)<=3)setTimeout(simLoad,4000);}return;}
     fetch('api/sim?id='+encodeURIComponent(id)).then(r=>r.ok?r.json():Promise.reject(r.status)).then(j=>{if(!j||!j.px)throw 0;SIM.d[id]=j;SIM.n++;}).catch(()=>{SIM.err++;}).then(()=>{simTick(true);next();});};
-  for(let c=0;c<4;c++)next();}
+  for(let c=0;c<2;c++)next();}
 // where one game stands at simulated time T
 function simState(id,T){const g=GD[id],d=SIM.d[id],start=SIM_T0+g.st*60;const o={status:T<start?'pre':'live',a:0,h:0,clk:'',ph:null,plays:[]};
   if(d){let p=null;for(const x of d.px){if(x[0]>T)break;p=x[1];}if(p==null&&d.px.length)p=d.px[0][1];o.ph=p;
