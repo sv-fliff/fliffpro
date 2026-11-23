@@ -3189,7 +3189,7 @@ function propWheel(){
 setInterval(()=>{if(!document.hidden)propWheel();},600);
 
 // version check: compare this build with the one on the server and offer a one-tap update
-const APP_V='3.1.48';const VER={latest:null,st:'idle'};
+const APP_V='3.1.49';const VER={latest:null,st:'idle'};
 function verNewer(a,b){const x=String(a).split('.').map(Number),y=String(b).split('.').map(Number);for(let k=0;k<Math.max(x.length,y.length);k++){const d=(x[k]||0)-(y[k]||0);if(d)return d>0;}return false;}
 function verCheck(){VER.st='checking';verPaint();return fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject()).then(j=>{VER.latest=j.v;VER.st=verNewer(j.v,APP_V)?'old':'ok';}).catch(()=>{VER.st='err';}).then(()=>{verPaint();return VER.st;});}
 function verHtml(){const st=VER.st;return `<span class="kl"><span>Version ${APP_V}</span><small>${st==='old'?'Version '+VER.latest+' is available':st==='ok'?'You’re on the latest version':st==='err'?'Couldn’t check. Are you online?':'Checking for updates…'}</small></span>${st==='old'?'<button class="vb" data-verup="1">Update</button>':st==='ok'?'<b aria-hidden="true">✓</b>':st==='err'?'<button class="vb ghost" data-verchk="1">Retry</button>':''}`;}
@@ -3339,7 +3339,7 @@ function simLog(d,m){const G=simLogs(d);if(!G||!SIMGL[m.k]||!SIMGL[m.k].some(n=>
 function simGameLog(d){const G=simLogs(d);if(!G)return `<p class="gp-empty">${SIM.gl&&SIM.gl[simAth(d)]==='wait'?'Loading game log…':'No game log for this player.'}</p>`;if(!G.rows.length)return '<p class="gp-empty">No earlier games this season.</p>';
   const cols=d.mk.filter(m=>SIMGL[m.k]&&SIMGL[m.k].some(n=>G.names.includes(n)));
   return `<div class="pl-logw" tabindex="0" role="region" aria-label="${d.nm} game log"><table class="pl-log"><thead><tr><th scope="col">Game</th>${cols.map(m=>`<th scope="col">${m.u}</th>`).join('')}</tr></thead><tbody>${G.rows.slice().reverse().map(x=>`<tr><th scope="row">${simGd(x)} ${x.home?'vs':'@'} ${x.o}${x.res?` <small>${x.res}</small>`:''}</th>${cols.map(m=>`<td>${simGv(G,x,m.k)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;}
-window.__sim=()=>SIM_G.map(x=>{const d=SIM.d[x[1]]||{},p=SIM.p[x[1]]||{};return [x[1].slice(4),d.src,(d.plays||[]).length,'fix'+d.fix,(d.players||[]).length,'props'+(p.pl||[]).length,(d.score||[]).join('-')].join(' ');}).join(' | ');
+window.__sim=()=>SIM_G.map(x=>{const d=SIM.d[x[1]]||{},p=SIM.p[x[1]]||{};return [x[1].slice(4),d.src,(d.plays||[]).length,'fix'+d.fix,(d.players||[]).length,'props'+(p.pl||[]).length,(d.score||[]).join('-'),'xy'+(d.plays||[]).filter(q=>q.length===9&&q[7]>=0&&q[8]>=0).length].join(' ');}).join(' | ');
 function simLoadProps(first){if(!SIM.on)return;SIM.pq=SIM.pq||{};const ids=SIM_G.map(x=>x[1]).filter(id=>!SIM.p[id]&&!SIM.pq[id]&&(SIM.pe[id]||0)<3);if(first&&ids.includes(first)){ids.splice(ids.indexOf(first),1);ids.unshift(first);}
   const run=()=>{if(Object.keys(SIM.pq).length>=2)return;const id=ids.shift();if(!id)return;SIM.pq[id]=1;
     fetch('api/sim?part=props&id='+encodeURIComponent(id)).then(r=>r.ok?r.json():Promise.reject(r.status)).then(j=>{if(!j||!j.pl)throw 0;simProps(id,j);}).catch(()=>{SIM.pe[id]=(SIM.pe[id]||0)+1;}).then(()=>{delete SIM.pq[id];simTick(true);if(ids.length)run();else if(SIM_G.some(x=>!SIM.p[x[1]]&&(SIM.pe[x[1]]||0)<3))setTimeout(()=>simLoadProps(),5000);});};
@@ -3390,7 +3390,8 @@ function simApply(){if(!SIM.on)return;
     const row=scroll.querySelector('[data-gprow]'),D=SIM.d[g.id];
     if(row&&D&&D.ev){const T=simNow();let e=null;for(const x of D.ev){if(x[0]>T)break;if(x[2]==='pts')e=x;}
       if(e){const pl=D.players[e[1]],pts=simStat(g.id,pl[0],'pts',T),pp=o.plays.filter(p=>p[0]===e[0]).pop();row.querySelector('.jr').innerHTML=avatar('nba',pl[0],pl[1],40);row.querySelector('.nm').textContent=pl[0];const stb=row.querySelector('.st');stb.textContent=pts+' pts';row.querySelector('.ex').textContent=`${simStat(g.id,pl[0],'reb',T)} reb · ${simStat(g.id,pl[0],'ast',T)} ast`;row.querySelector('.tx').textContent=pp?pp[6]:'';
-        if(pp&&pp[7]>=0&&pp[8]>=0){const hm=pl[1]===g.h;try{courtShow(g.id,{u:hm?5.25+pp[8]:88.75-pp[8],v:hm?pp[7]:50-pp[7],pin:'+'+e[3],code:pl[1]},false);}catch(_){}}}
+        let sh=null;for(let i=D.ev.length-1;i>=0&&!sh;i--){const x=D.ev[i];if(x[0]>T||x[2]!=='pts')continue;const q=o.plays.filter(p=>p[0]===x[0]&&p[7]>=0&&p[8]>=0).pop();if(q)sh=[x,q];}   // free throws have no spot: mark the latest made shot
+        if(sh){const tm=D.players[sh[0][1]][1],hm=tm===g.h,q=sh[1];try{courtShow(g.id,{u:hm?5.25+q[8]:88.75-q[8],v:hm?q[7]:50-q[7],pin:'+'+sh[0][3],code:tm},false);}catch(_){}}}
       else row.style.display='none';}const card=[...scroll.querySelectorAll('section,div')].find(c=>/^Play\s*-?\s*by\s*-?\s*play/i.test((c.textContent||'').trim()));
     if(card&&o.status!=='pre'){card.style.display='';card.classList.add('sm-pbp');const last=o.plays.slice(-14).reverse();
       card.innerHTML=`<div class="hd"><b>Play-by-play</b><small>${SIM.d[g.id]?(SIM.d[g.id].src==='espn'?'From ESPN’s game feed':'From Kalshi’s game feed'):'Loading…'}</small></div>${last.map(p=>`<div class="pr"><span>${p[1]>4?'OT':'Q'+p[1]} ${p[2]}</span><p>${p[6]}</p><em>${p[3]}–${p[4]}</em></div>`).join('')||'<p class="gp-note">No plays yet.</p>'}`;}}
