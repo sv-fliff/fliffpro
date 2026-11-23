@@ -57,8 +57,10 @@ function reduce(id, start, candles, stats) {
   // Some feeds were back-filled, so their wall clocks squeeze the whole game into an hour.
   // When that happens, place each play by its game clock between kickoff and the moment the market settled.
   if (plays.length > 20 && px.length > 1) {
-    const end = px[px.length - 1][0], span = plays[plays.length - 1][0] - plays[0][0];
-    if (end - start > 5400 && span < 0.6 * (end - start)) {
+    const nfl = /^nfl/.test(id), lastW = plays[plays.length - 1][0], span = lastW - plays[0][0];
+    // NFL feeds stamp most plays late (three quarters inside 45 minutes), so NFL is always placed by game clock; the final whistle's stamp is real.
+    const end = nfl ? (lastW - start > 9900 && lastW - start < 13800 ? lastW : start + 11400) : px[px.length - 1][0];
+    if (nfl || (end - start > 5400 && span < 0.6 * (end - start))) {
       const Q = /^nba/.test(id) ? 720 : 900, half = 780, t0 = start + 240, live = Math.max(3600, end - t0 - half);
       plays.forEach(p => {
         const m = /^(\d+):(\d+)/.exec(p[2] || ''), left = m ? +m[1] * 60 + +m[2] : Q;
