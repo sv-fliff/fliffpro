@@ -82,13 +82,11 @@ function kalshiPlays(id, start, stats, px) {
 // ---------- core: ESPN ----------
 const EAB = { UTAH: 'UTA', WAS: 'WSH', JAC: 'JAX', NYK: 'NY', GSW: 'GS', SAS: 'SA', NOP: 'NO' };
 const ab = a => EAB[a] || a;
-const SB = {};
+// ESPN event ids for the day
+const EID = { 'nfl-MIA-BUF': '401873070', 'nfl-NO-CHI': '401873071', 'nfl-TEN-DAL': '401873073', 'nfl-TB-DET': '401873072', 'nfl-ARI-KC': '401873067', 'nfl-PIT-PHI': '401873076', 'nfl-BAL-CAR': '401873068', 'nfl-NYJ-LAC': '401873074', 'nfl-LV-DEN': '401873075', 'nfl-JAX-NYG': '401873069', 'nfl-MIN-SF': '401873077',
+  'nba-DET-ATL': '401910029', 'nba-OKC-MIA': '401910030', 'nba-ORL-WSH': '401910031', 'nba-DEN-CHI': '401910032', 'nba-DAL-UTA': '401910033', 'nba-IND-NY': '401910034', 'nba-BOS-GS': '401910035' };
 async function espnEvent(id) {
-  const nfl = /^nfl/.test(id), sp = nfl ? 'football/nfl' : 'basketball/nba', [, A, H] = id.split('-');
-  if (!SB[sp]) SB[sp] = je(sp + '/scoreboard?dates=20261122&limit=100').catch(e => { delete SB[sp]; throw e; });
-  const sb = await SB[sp];
-  const ev = (sb.events || []).find(e => { const c = ((e.competitions || [])[0] || {}).competitors || []; const h = c.find(x => x.homeAway === 'home'), a = c.find(x => x.homeAway === 'away'); return h && a && ab(h.team.abbreviation) === H && ab(a.team.abbreviation) === A; });
-  if (!ev) throw new Error('espn: no event for ' + id);
+  const nfl = /^nfl/.test(id), sp = nfl ? 'football/nfl' : 'basketball/nba', ev = { id: EID[id] };
   const sum = await je(sp + '/summary?event=' + ev.id);
   if (nfl) {   // the NFL box score has no positions; the team rosters do
     const ids = sum.header.competitions[0].competitors.map(c => c.id), pos = {};
@@ -159,7 +157,7 @@ async function core(id) {
     j(`/series/${ser}/markets/${tk}/candlesticks${q}`).catch(() => j(`/historical/markets/${tk}/candlesticks${q}`)),
     espnEvent(id).then(x => espnParse(id, x)).catch(e => ({ err: String(e && e.message || e) })),
   ]);
-  const w = winPx(candles), out = { id, start: s, px: w.px, vol: w.vol, src: 'espn' };
+  const w = winPx(candles), out = { id, start: s, px: w.px, vol: w.vol, src: 'espn', espn: [/^nfl/.test(id) ? 'football/nfl' : 'basketball/nba', EID[id]] };
   if (esp.plays && esp.plays.length > 20) Object.assign(out, { plays: esp.plays, players: esp.players, ev: esp.ev, fix: esp.fix, score: esp.score });
   else { const st = await j(`/live_data/milestone/${ms}/game_stats`).catch(() => null); out.plays = kalshiPlays(id, s, st, w.px); out.src = 'kalshi'; out.err = esp.err || 'espn: no plays'; }
   return out;
@@ -227,11 +225,11 @@ async function props(id) {
 
 module.exports = async (req, res) => {
   const q = (req.query && req.query.id) ? req.query : Object.fromEntries(new URL(req.url, 'http://x').searchParams);
-  const id = q.id, send = (code, body, cache) => { res.statusCode = code; res.setHeader('content-type', 'application/json'); res.setHeader('Cache-Control', cache ? 'public, max-age=0, s-maxage=604800, stale-while-revalidate=2592000' : 'no-store'); res.end(JSON.stringify(body)); };
+  const id = q.id, send = (code, body, cache) => { res.statusCode = code; res.setHeader('content-type', 'application/json'); res.setHeader('Cache-Control', cache ? `public, max-age=0, s-maxage=${cache === 2 ? 3600 : 604800}, stale-while-revalidate=2592000` : 'no-store'); res.end(JSON.stringify(body)); };
   if (!G[id]) return send(404, { error: 'unknown game', ids: Object.keys(G) });
   try {
     if (q.part === 'props') { const o = await props(id); return send(200, o, o.sp.length + o.tot.length + o.pl.length > 0 && !o.dbg); }
-    const o = await core(id); return send(200, o, o.px.length > 0 && o.src === 'espn');
+    const o = await core(id); return send(200, o, o.px.length > 0 ? (o.src === 'espn' ? 1 : 2) : 0);   // when ESPN refuses the server, the app asks ESPN itself; cache that answer only briefly
   } catch (e) { send(502, { error: String(e && e.message || e) }); }
 };
 Object.assign(module.exports, { G, espnParse, series, winPx, kalshiPlays });
