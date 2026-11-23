@@ -105,7 +105,7 @@ function espnParse(id, sum) {
   const hid = String(home.id), aid = String(away.id), [, A, H] = id.split('-');
   // players from the box score, with final stats
   const players = [], byId = {}, byKey = { a: {}, h: {} }, fin = [];
-  const P = (ath, side) => { const k = String(ath.id); if (byId[k] == null) { byId[k] = players.length; const rp = (sum._pos || {})[k] || []; players.push([ath.displayName, side === 'h' ? H : A, ath.jersey || rp[1] || '', (ath.position && ath.position.abbreviation) || rp[0] || '']); fin.push({});
+  const P = (ath, side) => { const k = String(ath.id); if (byId[k] == null) { byId[k] = players.length; const rp = (sum._pos || {})[k] || []; players.push([ath.displayName, side === 'h' ? H : A, ath.jersey || rp[1] || '', (ath.position && ath.position.abbreviation) || rp[0] || '', k]); fin.push({});
       const nm = ath.displayName.replace(SUF, ''), sp = nm.split(' '); byKey[side][nkey(sp[0][0] + sp.slice(1).join(''))] = byId[k]; byKey[side][nkey(sp[0][0] + sp[sp.length - 1])] = byId[k]; } return byId[k]; };
   ((sum.boxscore && sum.boxscore.players) || []).forEach(tm => { const side = String(tm.team.id) === hid ? 'h' : 'a';
     (tm.statistics || []).forEach(st => { const keys = st.keys || st.names || st.labels || []; const ix = n => keys.indexOf(n);
@@ -137,7 +137,8 @@ function espnParse(id, sum) {
         add(t, pi, 'py', y); add(t, ri, 'cy', y); add(t, ri, 'rc', 1); if (/Touchdown/i.test(ty)) { add(t, pi, 'ptd', 1); add(t, ri, 'td', 1); } }
       else if (/^(Rush|Rushing Touchdown)$/i.test(ty)) { const ri = who(first); add(t, ri, 'ry', y); if (/Touchdown/i.test(ty)) add(t, ri, 'td', 1); }
     } else {
-      plays.push([t, (p.period && p.period.number) || 0, (p.clock && p.clock.displayValue) || '', p.awayScore || 0, p.homeScore || 0, ty, txt, 0, 0]);
+      const co = p.coordinate || {}, cx = co.x >= 0 && co.x <= 50 ? co.x : -1, cy = co.y >= 0 && co.y <= 94 ? co.y : -1;   // shot spot: across the court, then out from the baseline
+      plays.push([t, (p.period && p.period.number) || 0, (p.clock && p.clock.displayValue) || '', p.awayScore || 0, p.homeScore || 0, ty, txt, cx, cy]);
       const pa = (p.participants || []).map(x => x.athlete && byId[String(x.athlete.id)]);
       if (p.scoringPlay && pa[0] != null) { add(t, pa[0], 'pts', p.scoreValue || 0); if (/assist/i.test(txt) && pa[1] != null) add(t, pa[1], 'ast', 1); }
       else if (/rebound/i.test(ty) && pa[0] != null) add(t, pa[0], 'reb', 1);
@@ -165,8 +166,8 @@ async function core(id) {
 
 // ---------- props: Kalshi ladders ----------
 const PROPS = {
-  nfl: [['KXNFLPASSYDS', 'py', 2, 12], ['KXNFLPASSTDS', 'ptd', 2, 5], ['KXNFLRSHYDS', 'ry', 4, 12], ['KXNFLRECYDS', 'cy', 6, 12], ['KXNFLTD', 'td', 8, 1]],
-  nba: [['KXNBAPTS', 'pts', 8, 12], ['KXNBAREB', 'reb', 5, 10], ['KXNBAAST', 'ast', 5, 10]],
+  nfl: [['KXNFLPASSYDS', 'py', 3, 12], ['KXNFLPASSTDS', 'ptd', 3, 5], ['KXNFLRSHYDS', 'ry', 7, 12], ['KXNFLRECYDS', 'cy', 12, 12], ['KXNFLTD', 'td', 16, 1]],
+  nba: [['KXNBAPTS', 'pts', 14, 12], ['KXNBAREB', 'reb', 10, 10], ['KXNBAAST', 'ast', 10, 10]],
 };
 function series(cs, s) {   // candles -> [[minutes from start, cents]] on change
   const out = []; let last = null;
