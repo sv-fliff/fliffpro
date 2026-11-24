@@ -542,13 +542,13 @@ a{color:#3D1BB8}a:hover{color:#12121C}
 .nh-dr i{width:3px;height:11px;border-radius:1.5px;margin-left:6px}
 .gp-ou.gp-ou3:has(.gp-wh){grid-template-columns:1.55fr 1fr 1fr}
 .gp-wh{position:relative;height:56px;box-sizing:border-box;border:1px solid var(--line);border-radius:15px;overflow:hidden;display:flex;flex-direction:column;justify-content:center;min-width:0;outline-offset:2px}
-.gp-wh .tr{display:flex;align-items:baseline;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none;padding:0 calc(50% - 32px);-webkit-mask-image:linear-gradient(90deg,transparent 2%,rgba(0,0,0,.5) 22%,#000 38%,#000 62%,rgba(0,0,0,.5) 78%,transparent 98%);mask-image:linear-gradient(90deg,transparent 2%,rgba(0,0,0,.5) 22%,#000 38%,#000 62%,rgba(0,0,0,.5) 78%,transparent 98%)}
+.gp-wh .tr{display:flex;align-items:baseline;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none;padding:0 calc(50% - 28px);-webkit-mask-image:linear-gradient(90deg,transparent 2%,rgba(0,0,0,.5) 22%,#000 38%,#000 62%,rgba(0,0,0,.5) 78%,transparent 98%);mask-image:linear-gradient(90deg,transparent 2%,rgba(0,0,0,.5) 22%,#000 38%,#000 62%,rgba(0,0,0,.5) 78%,transparent 98%)}
 .gp-wh .tr::-webkit-scrollbar{display:none}
 .gp-wh .tr{flex:none;height:24px}
 .gp-wh small{flex:none;line-height:16px}
 .gp-wh{overflow:clip;padding:0 !important}
 .pls{font-style:normal;font-size:1em;font-weight:600;vertical-align:.03em;margin-left:1px;opacity:1;text-decoration:none;display:inline-block}
-.gp-wh .it{flex:none;width:64px;white-space:nowrap;scroll-snap-align:center;scroll-snap-stop:always;text-align:center;font:500 13px 'Space Grotesk','FP Num',sans-serif;line-height:24px;color:var(--mu);opacity:.75;transition:font-size .16s cubic-bezier(.22,1,.36,1),color .16s,opacity .16s;cursor:pointer;font-variant-numeric:tabular-nums}
+.gp-wh .it{flex:none;width:56px;white-space:nowrap;scroll-snap-align:center;scroll-snap-stop:always;text-align:center;font:500 13px 'Space Grotesk','FP Num',sans-serif;line-height:24px;color:var(--mu);opacity:.75;transition:font-size .16s cubic-bezier(.22,1,.36,1),color .16s,opacity .16s;cursor:pointer;font-variant-numeric:tabular-nums}
 .gp-wh .it.on{opacity:1;font-size:18px;font-weight:600;color:var(--ink);text-decoration:underline dotted;text-decoration-thickness:1.5px;text-underline-offset:4px;text-decoration-color:var(--mu)}
 .gp-wh small{margin-top:2px;text-align:center;font-size:12.5px;font-weight:500;color:var(--mu);white-space:nowrap;pointer-events:none}
 .gp-wh::before,.gp-wh::after{content:"";position:absolute;left:50%;width:14px;height:2px;margin-left:-7px;border-radius:1px;background:#7B4BF0;opacity:.85}
@@ -2296,7 +2296,7 @@ function legTrack(x){const g=GD[x.gid],o={st:'open',live:false,fin:false,game:''
   o.live=g.sim?!!(s&&s.status==='live'):!!g.live;o.fin=g.sim?!!(s&&s.status==='final'):false;
   o.game=o.fin?'Final':o.live?('Live'+(g.sim||g.live===2?' · '+g.clk:'')):(g.sim?'Starts '+g.when:(g.when||g.time||'Not started'));if((o.live||o.fin)&&g.sc)o.score=`${g.a} ${a} – ${h} ${g.h}`;
   if(g.sim){const r=simLeg(x,T);if(r)o.st=r;}
-  if((m==='pr'||m==='prl')&&g.sim){const v=simStat(g.id,x.pl,x.k,T),N=m==='prl'?+thr:x.ln==null?1:Math.ceil(x.ln);if(v!=null){o.cur=v;o.need=x.ln==null&&m==='pr'?1:N-0.5;o.unit=(SIMK[x.k]||[])[2]||'';o.frac=Math.min(1,v/N);o.under=sd==='U';}}
+  if((m==='pr'||m==='prl')&&g.sim){const v=simStat(g.id,x.pl,x.k,T),N=m==='prl'?+thr:x.ln==null?1:Math.ceil(x.ln);if(v!=null){o.cur=v;o.need=N;o.unit=(SIMK[x.k]||[])[2]||'';o.frac=Math.min(1,v/N);o.under=sd==='U';}}
   else if((m==='tot'||m==='atot')&&g.sc){o.cur=a+h;o.need=num(x.ln);o.unit='points';o.frac=Math.min(1,(a+h)/o.need);o.under=sd==='U';}
   else if(m==='mx'&&arg.indexOf('tt:')===0&&g.sc){const kp=arg.split(':');o.cur=kp[1]==='X'?a:h;o.need=+kp[2];o.unit='points';o.frac=Math.min(1,o.cur/o.need);o.under=sd==='U';}
   else if((m==='ml'||m==='sp'||m==='asp')&&g.sc){o.margin=(sd==='X'?a-h:h-a)+(m==='ml'?0:num(x.ln));o.chance=g.sim||g.live?(m==='ml'?(sd==='X'?g.pa:g.ph):x.p):x.p;}
@@ -2594,7 +2594,7 @@ function propsBlock(g){if(!g.props.length)return `<p class="gp-empty">No player 
   const xm=g.sim?{}:(PXTRA[g.lg]||{});let extra='';const names=[...new Set(g.props.map(p=>p.nm))];
   Object.keys(xm).forEach(k=>names.forEach(nm=>{const d=plData(g.id,nm);const m=d&&d.mk.find(x=>x.key===k&&!x.real&&x.ln!=null);if(!m)return;
     extra+=`<div class="gp-card" data-cat="${xm[k]}" data-x="1" style="display:none"><div class="gp-fr"><div class="gp-hd" data-pl="${g.id}|${nm}" tabindex="0" role="link" aria-label="${nm} player page">${avatar(g.lg,nm,m.c,42)}<span><b>${nm}</b><small>${m.pos} · ${m.c} · ${m.mk}</small></span><span class="gp-l5" style="cursor:default">${m.avg}</span></div>
-      <div class="gp-ou">${plBtn(d,m,'O','Over '+m.ln,m.po)}${plBtn(d,m,'U','Under '+m.ln,m.pu)}</div></div></div>`;}));
+      <div class="gp-ou">${plBtn(d,m,'O',Math.ceil(m.ln)+'+',m.po)}${plBtn(d,m,'U','Under '+Math.ceil(m.ln),m.pu)}</div></div></div>`;}));
   const has=c=>c==='Popular'||g.props.some(p=>p.cat===c)||extra.includes(`data-cat="${c}"`);const cats=PCATS[g.lg].filter(has);
   return `<div class="gp-cats" role="tablist" aria-label="Prop type">${cats.map((c,k)=>`<button role="tab" aria-selected="${k===0}" data-pcat="${c}">${c}</button>`).join('')}</div>${g.props.map((p,i)=>propCard(g,p,i)).join('')}${extra}`;}
 function propsFeed(lg){return Object.values(GD).filter(g=>g.lg===lg).map(g=>{if(!g.props.length)return '';const seen=new Set(),first=[];
@@ -2609,12 +2609,12 @@ function gmPick(btn){const [m,sd,arg,gid,thr]=btn.dataset.pick.split('|');const 
   if(m==='sp'||m==='asp'){const ln=m==='sp'?(sd==='X'?g.sa:g.sh):arg;const t=nm(side)+' '+ln;return Object.assign(base,{id:game+'|sp|'+sd+'|'+ln,mk:game+'|sp',code:side,name:t,t,ln,fill:fc(side)});}
   if(m==='tot'||m==='atot'){const ln=m==='tot'?g.tot:arg;const t=(sd==='O'?'Over ':'Under ')+ln+' total';return Object.assign(base,{id:game+'|tot|'+sd+'|'+ln,mk:game+'|tot',code:sd==='O'?'O':'U',name:t,t,ln,fill:'#5B3FD6'});}
   if(m==='pr'||m==='prl'){const pr=g.props[+arg];if(!pr)return null;
-    const t=m==='prl'?(sd==='U'?`${pr.nm} under ${thr-0.5} ${pr.u}`:`${pr.nm} over ${thr-0.5} ${pr.u}`):pr.ln==null?`${pr.nm} ${sd==='O'?'anytime TD':'no TD'}`:`${pr.nm} ${sd==='O'?'over':'under'} ${pr.ln} ${pr.u}`;
+    const t=m==='prl'?(sd==='U'?`${pr.nm} under ${thr} ${pr.u}`:`${pr.nm} ${thr}+ ${pr.u}`):pr.ln==null?`${pr.nm} ${sd==='O'?'anytime TD':'no TD'}`:(sd==='O'?`${pr.nm} ${Math.ceil(pr.ln)}+ ${pr.u}`:`${pr.nm} under ${Math.ceil(pr.ln)} ${pr.u}`);
     return Object.assign(base,{id:game+'|pr|'+arg+'|'+sd+'|'+(thr||''),mk:game+'|pr|'+arg,code:pr.c,pl:pr.nm,name:t,t,ln:pr.ln,k:pr.k,fill:fc(pr.c)});}
   if(m==='mx'){const kp=arg.split(':'),team=sd==='X'?g.a:sd==='Y'?g.h:kp[0]==='tt'?(kp[1]==='X'?g.a:g.h):null;
     return Object.assign(base,{id:game+'|mx|'+arg+'|'+sd,mk:game+'|mx|'+(kp[0]==='tt'?kp[0]+kp[1]:kp[0]),code:team||(sd==='O'?'O':'U'),name:thr,t:thr,fill:team?fc(team):'#5B3FD6'});}
   if(m==='pp'){const [pn,pk]=arg.split('~');const pr=plMarket(g,pn,pk);if(!pr)return null;
-    const t=thr?(sd==='U'?`${pr.nm} under ${thr-0.5} ${pr.u}`:`${pr.nm} over ${thr-0.5} ${pr.u}`):pr.ln==null?`${pr.nm} ${sd==='O'?'anytime TD':'no TD'}`:`${pr.nm} ${sd==='O'?'over':'under'} ${pr.ln} ${pr.u}`;
+    const t=thr?(sd==='U'?`${pr.nm} under ${thr} ${pr.u}`:`${pr.nm} ${thr}+ ${pr.u}`):pr.ln==null?`${pr.nm} ${sd==='O'?'anytime TD':'no TD'}`:(sd==='O'?`${pr.nm} ${Math.ceil(pr.ln)}+ ${pr.u}`:`${pr.nm} under ${Math.ceil(pr.ln)} ${pr.u}`);
     return Object.assign(base,{id:game+'|pp|'+arg+'|'+sd+'|'+(thr||''),mk:game+'|pp|'+arg,code:pr.c,pl:pr.nm,name:t,t,fill:fc(pr.c)});}
   return null;}
 function pickAdd(k){const n0=S.picks.length;const had=S.picks.findIndex(x=>x.id===k.id);if(had>=0)S.picks.splice(had,1);else{S.picks=S.picks.filter(x=>(x.mk||x.game)!==(k.mk||k.game));S.picks.push(k);}
@@ -2695,7 +2695,7 @@ function nbaTip(){
 }
 // ---------- v3.1.28: popular combos. Each card is a ready-made set of picks from today's slate; tapping it loads them into the slip. ----------
 function comboSets(lg){const games=Object.values(GD).filter(g=>g&&g.pa!=null&&(!lg||g.lg===lg));if(!games.length)return [];
-  const prop=(g,i)=>{const p=g.props[i];if(!p)return null;const td=p.ln==null;return {pick:`pr|O|${i}|${g.id}`,gid:g.id,a:cpShort(p.nm),b:td?'anytime TD':`over ${p.ln} ${p.u}`,big:()=>avatar(g.lg,p.nm,p.c,44),p:p.po,txt:td?`${cpShort(p.nm)} anytime TD`:`${cpShort(p.nm)} over ${p.ln} ${p.u}`,av:avatar(g.lg,p.nm,p.c,26)};};
+  const prop=(g,i)=>{const p=g.props[i];if(!p)return null;const td=p.ln==null;return {pick:`pr|O|${i}|${g.id}`,gid:g.id,a:cpShort(p.nm),b:td?'anytime TD':`${Math.ceil(p.ln)}+ ${p.u}`,big:()=>avatar(g.lg,p.nm,p.c,44),p:p.po,txt:td?`${cpShort(p.nm)} anytime TD`:`${cpShort(p.nm)} ${Math.ceil(p.ln)}+ ${p.u}`,av:avatar(g.lg,p.nm,p.c,26)};};
   const ml=g=>{const fav=g.pa>=g.ph;return {pick:`ml|${fav?'X':'Y'}||${g.id}`,gid:g.id,a:fav?g.an:g.hn,b:'to win',big:()=>tileSvg(g.lg,fav?g.a:g.h,44),p:fav?g.pa:g.ph,txt:`${fav?g.an:g.hn} to win`,av:tileSvg(g.lg,fav?g.a:g.h,26)};};
   let sd=7;for(const ch of (lg||'all'))sd=(sd*31+ch.charCodeAt(0))>>>0;const rnd=()=>{sd=(sd*1664525+1013904223)>>>0;return sd/4294967296;};
   const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
@@ -2847,7 +2847,7 @@ function altSheet(kind,pi){const g=S.gm;if(!g)return;const ca=gcol(g.lg,g.a)[0],
   else if(kind==='tot'||kind==='htot'||kind==='tta'||kind==='tth'){title=MKT_T[kind]||`${kind==='tta'?g.an:g.hn} total`;mkList(g,kind).forEach(([t,p])=>{rows+=`<div class="gp-row">${altBtn(mkPick(g,kind,'O',t),`Over ${t}`,p,'#7B4BF0')}${altBtn(mkPick(g,kind,'U',t),`Under ${t}`,cl(101-p),'#7B4BF0')}</div>`;});}
   else{const pr=g.props[pi];if(!pr||pr.ln==null)return;title=pr.nm;sub=pr.mk+(pr.avg?' · '+pr.avg:'');const col=gcol(g.lg,pr.c)[0];let L=pr.ladNow;
     if(!L){L=[];const step=pr.ln>=150?25:pr.ln>=40?10:pr.ln>=12?3:1,base=Math.ceil(pr.ln);for(let d=-3;d<=3;d++){const th=base+d*step;if(th>=1)L.push([th,d===0?pr.po:cl(100/(1+Math.exp((th-0.5-pr.ln)/(step*0.9))))]);}}
-    L.forEach(([th,p])=>{rows+=`<div class="gp-row tri"><span>${th-0.5}<i class="pls" aria-hidden="true">+</i> ${pr.u}</span>${altBtn(`prl|O|${pi}|${g.id}|${th}`,'Yes',p,col)}${altBtn(`prl|U|${pi}|${g.id}|${th}`,'No',cl(101-p),col)}</div>`;});}
+    L.forEach(([th,p])=>{rows+=`<div class="gp-row tri"><span>${th}<i class="pls" aria-hidden="true">+</i> ${pr.u}</span>${altBtn(`prl|O|${pi}|${g.id}|${th}`,'Yes',p,col)}${altBtn(`prl|U|${pi}|${g.id}|${th}`,'No',cl(101-p),col)}</div>`;});}
   const sh=gSheet(`<h3>${title}</h3><p class="gs-sub">${sub}</p><div class="fp-alt">${rows}</div><p class="gs-ft">Tap a price to add it to your picks.</p>`,'fp-altsheet',title);pickPaint();
   return sh;}
 // picking a line in a sheet closes it; the pick bar then shows the selection
@@ -3427,14 +3427,14 @@ function wheelMake(el,o){if(el.dataset.wh)return;el.dataset.wh='1';const ln=o.ln
   let vals=[];if(o.lad&&o.lad.some(x=>x[0]===main)){const k0=o.lad.findIndex(x=>x[0]===main),lo=Math.max(0,Math.min(o.lad.length-7,k0-3));vals=o.lad.slice(lo,lo+7).map(x=>({th:x[0],p:x[1]}));}
   else for(let d=-3;d<=3;d++){const th=main+d*step;if(th>=1)vals.push({th,p:d===0?o.po:cl(100/(1+Math.exp((th-0.5-ln)/(step*0.9))))});}
   const w=document.createElement('div');w.className='gp-wh'+(o.cls?' '+o.cls:'');w.setAttribute('role','slider');w.setAttribute('aria-label',o.mk+' line');w.tabIndex=0;
-  w.innerHTML=`<div class="tr">${vals.map(v=>`<span class="it${v.th===main?' on':''}">${o.fmt?o.fmt(v.th):(v.th-0.5)+'<i class="pls" aria-hidden="true">+</i>'}</span>`).join('')}</div><small>${o.u}</small>`;
+  w.innerHTML=`<div class="tr">${vals.map(v=>`<span class="it${v.th===main?' on':''}">${o.fmt?o.fmt(v.th):v.th+'<i class="pls" aria-hidden="true">+</i>'}</span>`).join('')}</div><small>${o.u}</small>`;
   el.replaceWith(w);const tr=w.firstElementChild,items=[...tr.children],i0=vals.findIndex(v=>v.th===main);S.wh=S.wh||{};
-  const set=k=>{items.forEach((x,j)=>x.classList.toggle('on',j===k));const v=vals[k];w.setAttribute('aria-valuetext','Over '+(v.th-0.5)+' '+o.u);const pb=o.btns();
+  const set=k=>{items.forEach((x,j)=>x.classList.toggle('on',j===k));const v=vals[k];w.setAttribute('aria-valuetext',(o.fmt?o.fmt(v.th):v.th+'+')+' '+o.u);const pb=o.btns();
     [[pb[0],v.p,'O'],[pb[1],k===i0?o.pu:101-v.p,'U']].forEach(([b,p,sd])=>{if(!b)return;const sm=b.querySelector('small');if(sm)sm.textContent=p+'%';b.dataset.pick=o.pick(sd,k===i0?null:v.th);});
     if(o.after)o.after(v,pb);o.card.classList.toggle('alt',k!==i0);if(k===i0)delete S.wh[o.key];else S.wh[o.key]=v.th;pickPaint();};
   let cur=i0;const near=()=>{const c=tr.scrollLeft+tr.clientWidth/2;let b=0,bd=1e9;items.forEach((x,j)=>{const d=Math.abs(x.offsetLeft+x.offsetWidth/2-c);if(d<bd){bd=d;b=j;}});return b;};
   const to=(k,sm)=>{const it=items[Math.max(0,Math.min(items.length-1,k))];tr.scrollTo({left:it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2,behavior:sm&&!RM.matches?'smooth':'auto'});};
-  {const sv=S.wh[o.key],ks=sv?vals.findIndex(v=>v.th===sv):-1;if(ks>=0&&ks!==i0){cur=ks;set(ks);}else w.setAttribute('aria-valuetext','Over '+(main-0.5)+' '+o.u);}
+  {const sv=S.wh[o.key],ks=sv?vals.findIndex(v=>v.th===sv):-1;if(ks>=0&&ks!==i0){cur=ks;set(ks);}else w.setAttribute('aria-valuetext',(o.fmt?o.fmt(main):main+'+')+' '+o.u);}
   to(cur,false);let lw=tr.clientWidth;
   if(window.ResizeObserver)new ResizeObserver(()=>{w.scrollTop=0;if(tr.clientWidth!==lw){lw=tr.clientWidth;to(cur,false);}}).observe(tr);
   tr.addEventListener('scroll',()=>{if(tr.clientWidth<40||tr.clientWidth!==lw)return;const k=near();if(k!==cur){cur=k;set(k);try{if(navigator.vibrate)navigator.vibrate(4);}catch(_){}}},{passive:true});
@@ -3449,7 +3449,7 @@ function propWheel(){
 setInterval(()=>{if(!document.hidden)propWheel();},600);
 
 // version check: compare this build with the one on the server and offer a one-tap update
-const APP_V='3.1.59';const VER={latest:null,st:'idle'};
+const APP_V='3.1.60';const VER={latest:null,st:'idle'};
 function verNewer(a,b){const x=String(a).split('.').map(Number),y=String(b).split('.').map(Number);for(let k=0;k<Math.max(x.length,y.length);k++){const d=(x[k]||0)-(y[k]||0);if(d)return d>0;}return false;}
 function verCheck(){VER.st='checking';verPaint();return fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject()).then(j=>{VER.latest=j.v;VER.st=verNewer(j.v,APP_V)?'old':'ok';}).catch(()=>{VER.st='err';}).then(()=>{verPaint();return VER.st;});}
 function verHtml(){const st=VER.st;return `<span class="kl"><span>Version ${APP_V}</span><small>${st==='old'?'Version '+VER.latest+' is available':st==='ok'?'You’re on the latest version':st==='err'?'Couldn’t check. Are you online?':'Checking for updates…'}</small></span>${st==='old'?'<button class="vb" data-verup="1">Update</button>':st==='ok'?'<b aria-hidden="true">✓</b>':st==='err'?'<button class="vb ghost" data-verchk="1">Retry</button>':''}`;}
@@ -3732,7 +3732,7 @@ function plChart(d,m){if(d.g.sim&&!simLog(d,m))return '';const td=m.ln==null,lin
   const H=104,top=Math.max(line*1.35,...log.map(x=>x.v))||1,y=v=>Math.round(v/top*H);
   const cols=log.map(x=>`<div class="l5-c"><div class="l5-bar${x.v>line?' up':''}${x.v===0?' z':''}" style="height:${x.v>0?Math.max(y(x.v),18):0}px" aria-hidden="true"><b>${x.v}</b></div>${x.v===0?'<b class="l5-zero" aria-hidden="true">0</b>':''}<span class="l5-lb"><span class="l5-d">${x.d}</span><span class="l5-o">${x.home?'vs':'@'} ${x.o}</span></span></div>`).join('');
   const sr=log.map(x=>`${x.d} ${x.home?'vs':'at'} ${x.o}: ${x.v} ${unit}`).join('; ');
-  return `<p class="pl-l5s">Last 5 · ${td?'scored in':'over '+line+' in'} <em class="${hit>=3?'up':''}">${hit} of ${log.length}</em> · avg ${Math.round(avg*10)/10}</p>
+  return `<p class="pl-l5s">Last 5 · ${td?'scored in':Math.ceil(line)+'+ in'} <em class="${hit>=3?'up':''}">${hit} of ${log.length}</em> · avg ${Math.round(avg*10)/10}</p>
     <div class="l5-ch" style="height:150px;--lb:30px" role="img" aria-label="${d.nm}, ${m.mk}, last 5 games. Line ${line}. ${sr}."><div class="l5-ln" style="bottom:${y(line)+36}px" aria-hidden="true"></div>${cols}</div>`;}
 function plSeason(d){const s=d.st,f1=v=>(Math.round(v*10)/10).toFixed(1);
   if(d.g.sim){const T=simNow(),v=k=>simStat(d.g.id,d.nm,k,T)||0,pre=(d.g.simS||{}).status==='pre';
